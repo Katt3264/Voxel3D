@@ -1,0 +1,8 @@
+.DS_Store
+/store/worlds
+/GameData/Minecraft
+/screenshots
+TODO
+/bin/
+/library/
+launch.command

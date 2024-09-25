@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="library/lwjgl.jar"/>
+	<classpathentry kind="lib" path="library/lwjgl-assimp.jar"/>
+	<classpathentry kind="lib" path="library/lwjgl-assimp-natives-macos.jar"/>
+	<classpathentry kind="lib" path="library/lwjgl-glfw.jar"/>
+	<classpathentry kind="lib" path="library/lwjgl-glfw-natives-macos.jar"/>
+	<classpathentry kind="lib" path="library/lwjgl-natives-macos.jar"/>
+	<classpathentry kind="lib" path="library/lwjgl-openal.jar"/>
+	<classpathentry kind="lib" path="library/lwjgl-openal-natives-macos.jar"/>
+	<classpathentry kind="lib" path="library/lwjgl-opengl.jar"/>
+	<classpathentry kind="lib" path="library/lwjgl-opengl-natives-macos.jar"/>
+	<classpathentry kind="lib" path="library/lwjgl-stb.jar"/>
+	<classpathentry kind="lib" path="library/lwjgl-stb-natives-macos.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
