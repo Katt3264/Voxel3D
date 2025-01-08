@@ -1,25 +1,24 @@
 package voxel3d.item.all;
 
+import voxel3d.entity.all.Lazer;
 import voxel3d.entity.all.Player;
-import voxel3d.entity.all.Rocket;
 import voxel3d.global.AssetLoader;
-import voxel3d.global.Objects;
 import voxel3d.graphics.Texture;
 import voxel3d.item.Item;
 import voxel3d.item.context.ItemRenderContext;
 import voxel3d.item.context.ItemUseContext;
 import voxel3d.utility.Vector3d;
 
-public class RocketLauncherItem extends Item {
+public class LazerGunItem extends Item {
 
-	private static Texture texture = AssetLoader.loadItemTexture("Rocket launcher");
-	private static RocketLauncherItem sharedInstance = new RocketLauncherItem();
+	private static Texture texture = AssetLoader.loadItemTexture("Lazer gun");
+	private static LazerGunItem sharedInstance = new LazerGunItem();
 	
 	static {
 		Item.setItemDeserializerForName(sharedInstance);
 	}
 	
-	public static RocketLauncherItem getInstance()
+	public static LazerGunItem getInstance()
 	{
 		return sharedInstance;
 	}
@@ -27,7 +26,7 @@ public class RocketLauncherItem extends Item {
 	@Override
 	public String getName() 
 	{
-		return "Rocket launcher";
+		return "Lazer gun";
 	}
 	
 	@Override
@@ -39,11 +38,11 @@ public class RocketLauncherItem extends Item {
 	public void onUse(ItemUseContext context)
 	{
 		Player player = context.getPlayer();
-		Rocket rocket = new Rocket();
-		rocket.audioSource = Objects.audioManager.playSound(player.camera.position, Objects.rocketLaunch);
-		rocket.audioSource.setGain(0.02f);
-		rocket.velocity.set(player.camera.forward);
-		rocket.velocity.multiply(10);
+		Lazer lazer = new Lazer();
+		//rocket.audioSource = Objects.audioManager.playSound(player.camera.position, Objects.rocketLaunch);
+		//rocket.audioSource.setGain(0.02f);
+		lazer.velocity.set(player.camera.forward);
+		lazer.velocity.multiply(20);
 		Vector3d p = new Vector3d();
 		Vector3d right = new Vector3d();
 		right.setCross(player.camera.up, player.camera.forward);
@@ -53,9 +52,9 @@ public class RocketLauncherItem extends Item {
 		p.set(player.camera.forward);
 		p.multiply(0.1);
 		p.add(right);
-		rocket.position.set(player.camera.position);
-		rocket.position.add(p);
-		context.addEntity(rocket);
+		lazer.position.set(player.camera.position);
+		lazer.position.add(p);
+		context.addEntity(lazer);
 	}
 
 }

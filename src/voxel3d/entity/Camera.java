@@ -11,7 +11,7 @@ public class Camera {
 	public Vector3d forward = new Vector3d();
 	public Vector3d up = new Vector3d();
 	
-	private float nearClippingPlane = 0.1f;
+	private float nearClippingPlane = 0.02f;
 	private float farClippingPlane = 500;
 	
 	public Camera(double fov)

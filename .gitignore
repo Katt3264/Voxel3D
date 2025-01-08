@@ -1,7 +1,8 @@
 .DS_Store
 /store/worlds
 /GameData/Minecraft
+/GameData/Core/textures/unused
 /screenshots
-TODO
+/text
 /bin/
 launch.command

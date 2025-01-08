@@ -8,6 +8,7 @@ public class MeshContainer {
 	private long consistentWith;
 	
 	public boolean wip = false;
+	public long lastChange = System.currentTimeMillis();
 	
 	public MeshContainer()
 	{

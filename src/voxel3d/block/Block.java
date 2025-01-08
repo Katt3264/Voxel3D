@@ -34,11 +34,7 @@ public abstract class Block implements DataStreamable {
 		Item.setItemDeserializerForName(new BlockItem(block));
 	}
 	
-	public static Block GetOutOfBounds()
-	{
-		return AirBlock.getInstance();
-	}
-	
+	//TODO: Correctly manage not generated chunks
 	public static Block GetNotYetLoaded()
 	{
 		return DirtBlock.getInstance();
@@ -137,6 +133,11 @@ public abstract class Block implements DataStreamable {
 	}
 	
 	public void onUse(BlockOnUseContext context)
+	{
+		
+	}
+	
+	public void onRandomUpdate(BlockOnSimulateContext context)
 	{
 		
 	}

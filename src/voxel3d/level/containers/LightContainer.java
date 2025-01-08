@@ -18,6 +18,7 @@ public class LightContainer {
 	
 	public boolean wip = false;
 	public boolean stable = false;
+	public long lastChange = System.currentTimeMillis();
 	
 	public LightContainer(float skyLight, float redLight, float greenLight, float blueLight) 
 	{

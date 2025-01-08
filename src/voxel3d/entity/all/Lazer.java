@@ -12,12 +12,11 @@ import voxel3d.physics.Ray;
 import voxel3d.utility.GeometryUtility;
 import voxel3d.utility.Vector3d;
 
-public class Rocket extends Entity {
+public class Lazer extends Entity {
 	
-	public AudioSource audioSource;
 
 	static {
-		Entity.setEntityDeserializerForType(new Rocket());
+		Entity.setEntityDeserializerForType(new Lazer());
 	}
 	
 	
@@ -33,11 +32,6 @@ public class Rocket extends Entity {
 			explode = true;
 		}
 		
-		if(audioSource != null)
-		{
-			audioSource.setPosition((float)position.x, (float)position.y, (float)position.z);
-			audioSource.setVelocity((float)velocity.x, (float)velocity.y, (float)velocity.z);
-		}
 		
 		Vector3d normalVelociy = new Vector3d();
 		normalVelociy.set(velocity);
@@ -52,7 +46,7 @@ public class Rocket extends Entity {
 				Vector3d dir = new Vector3d();
 				dir.set(velocity);
 				dir.normalize();
-				dir.multiply(4);
+				dir.multiply(1);
 				hit.strike(dir, 50);
 				explode = true;
 			}
@@ -64,22 +58,18 @@ public class Rocket extends Entity {
 	
 	private void explode()
 	{
-		if(audioSource != null)
-		{
-			audioSource.stop();
-		}
 		this.alive = false;
-		AudioSource as = Objects.audioManager.playSound(position, Objects.explosion);
-		as.setGain(0.05f);
+		//AudioSource as = Objects.audioManager.playSound(position, Objects.explosion);
+		//as.setGain(0.05f);
 		
 	}
 	
 	@Override
 	public void draw(EntityRenderContext context)
 	{
-		super.draw(context);
+		//super.draw(context);
 		double size = 0.2;
-		GeometryUtility.drawBox(new Vector3d(0, 0, 0), new Vector3d(size, 0, 0), new Vector3d(0, size, 0), new Vector3d(0, 0, size), Objects.slime);
+		GeometryUtility.drawBox(new Vector3d(0, 0, 0), new Vector3d(size, 0, 0), new Vector3d(0, size, 0), new Vector3d(0, 0, size), Objects.lazer);
 	}
 	
 	@Override
@@ -93,13 +83,13 @@ public class Rocket extends Entity {
 	@Override
 	public String getType()
 	{
-		return super.getType() + ":Rocket";
+		return super.getType() + ":Lazer";
 	}
 
 	@Override
 	public Entity getDataStreamableInstance() 
 	{
-		return new Rocket();
+		return new Lazer();
 	}
 
 }

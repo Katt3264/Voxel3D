@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import voxel3d.block.Block;
-import voxel3d.generation.*;
+import voxel3d.generation.biome.Biome;
 import voxel3d.generation.structures.*;
 import voxel3d.global.Debug;
 import voxel3d.global.Settings;
@@ -30,10 +30,6 @@ public class ChunkPopulator implements Executable {
 	
 	public static LightContainer getInitialLight(int chunkX, int chunkY, int chunkZ)
 	{
-		/*int x = chunkX * Settings.CHUNK_SIZE;
-		int y = chunkY * Settings.CHUNK_SIZE;
-		int z = chunkZ * Settings.CHUNK_SIZE;*/
-		
 		if(chunkY > -2)
 			return new LightContainer(1f, 0, 0, 0);
 		else
@@ -68,7 +64,7 @@ public class ChunkPopulator implements Executable {
 					int y = chunkY * Settings.CHUNK_SIZE + yp;
 					int z = chunkZ * Settings.CHUNK_SIZE + zp;
 					
-					blocks[index] = TerrainGen.getBlock(x, y, z);
+					blocks[index] = getBlock(x, y, z);
 				}
 			}
 		}
@@ -84,6 +80,11 @@ public class ChunkPopulator implements Executable {
 		Debug.chunkGens++;
 		
 		container.wip = false;
+	}
+	
+	public static Block getBlock(int x, int y, int z)
+	{
+		return Biome.staticGetBlock(x, y, z);
 	}
 	
 }

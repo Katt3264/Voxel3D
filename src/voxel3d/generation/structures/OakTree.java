@@ -4,7 +4,7 @@ import java.util.Random;
 
 import voxel3d.block.Block;
 import voxel3d.block.all.*;
-import voxel3d.generation.*;
+import voxel3d.level.ChunkPopulator;
 import voxel3d.global.Settings;
 
 public class OakTree extends Structure {
@@ -58,7 +58,7 @@ public class OakTree extends Structure {
 			int y = yy + cy * Settings.CHUNK_SIZE;
 			int z = zz + cz * Settings.CHUNK_SIZE;
 			
-			if(TerrainGen.getBlock(x, y - 1, z) instanceof GrassBlock)
+			if(ChunkPopulator.getBlock(x, y - 1, z) instanceof GrassBlock)
 			{
 				int px = xx + ox * Settings.CHUNK_SIZE;
 				int py = yy + oy * Settings.CHUNK_SIZE;

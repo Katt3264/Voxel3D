@@ -26,6 +26,11 @@ public class BlockOnSimulateContext {
 		this.z = z;
 	}
 	
+	public void replaceSelf(Block newBlock)
+	{
+		blocks[1][1][1].setBlock(x, y, z, newBlock);
+	}
+	
 	public Block getLocalBlock(int lx, int ly, int lz)
 	{
 		int chunkX = MathX.chunkFloorDiv(x+lx) + 1;

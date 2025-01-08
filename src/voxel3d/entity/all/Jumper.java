@@ -2,7 +2,7 @@ package voxel3d.entity.all;
 
 
 import voxel3d.entity.Entity;
-import voxel3d.entity.MovingEntity;
+import voxel3d.entity.BasicHostileEntity;
 import voxel3d.entity.context.EntityRenderContext;
 import voxel3d.entity.context.EntityUpdateContext;
 import voxel3d.global.Objects;
@@ -11,7 +11,7 @@ import voxel3d.physics.AABB;
 import voxel3d.utility.GeometryUtility;
 import voxel3d.utility.Vector3d;
 
-public class Jumper extends MovingEntity {
+public class Jumper extends Entity {
 	
 	
 	private float waitTimer = 0;
@@ -42,20 +42,6 @@ public class Jumper extends MovingEntity {
 			velocity.y -= velocity.y*Time.deltaTime*friction;
 			velocity.z -= velocity.z*Time.deltaTime*friction;
 			
-			if(waitTimer < 0)
-			{
-				waitTimer = jumpDelay;
-				velocity.y = jumpHeight;
-				
-				Vector3d dir = new Vector3d();
-				dir.set(target);
-				dir.subtract(position);
-				dir.y = 0;
-				dir.normalize();
-				dir.multiply(jumpSpeed);
-				
-				velocity.add(dir);
-			}
 		}
 		
 		velocity.y += -gravity * Time.deltaTime;

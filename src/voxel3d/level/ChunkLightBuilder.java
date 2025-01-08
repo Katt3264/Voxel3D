@@ -64,6 +64,7 @@ public class ChunkLightBuilder implements Executable {
 		}
 		Debug.chunkLights++;
 		
+		lightCenter.lastChange = System.currentTimeMillis();
 		lightCenter.wip = false;
 	}
 	

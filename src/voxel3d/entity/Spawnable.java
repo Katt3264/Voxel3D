@@ -4,6 +4,6 @@ import voxel3d.level.containers.World;
 
 public interface Spawnable {
 	
-	public void trySpawn(int x, int y, int z, World world);
+	public boolean trySpawn(int x, int y, int z, World world);
 
 }

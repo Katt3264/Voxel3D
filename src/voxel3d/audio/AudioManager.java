@@ -48,7 +48,7 @@ public class AudioManager {
 			throw new IllegalStateException("Audio library not supported!");
 		}
 		
-		alDistanceModel(AL_EXPONENT_DISTANCE);
+		alDistanceModel(AL_LINEAR_DISTANCE);
 	}
 	
 	public void playGlobalSound(AudioClip clip)

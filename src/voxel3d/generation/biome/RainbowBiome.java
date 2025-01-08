@@ -51,4 +51,10 @@ public class RainbowBiome extends Biome {
 		return (int) (h*h/16);
 	}
 
+	@Override
+	public double getSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

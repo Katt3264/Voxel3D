@@ -22,8 +22,7 @@ public class WorldTask {
 	
 	public WorldTask()
 	{
-		//this.rStart = rStart;
-		//this.rEnd = rEnd;
+		
 	}
 		
 	
@@ -49,12 +48,13 @@ public class WorldTask {
 			}
 		}
 		
-		//System.out.println(worldScheduler.workerChunkGen.getTaskCount() + "\t" + worldScheduler.workerChunkLight.getTaskCount() + "\t" + worldScheduler.workerChunkMesh.getTaskCount());
 		
-		int genTasks = Settings.taskSaturation - worldScheduler.workerChunkGen.getTaskCount();
-		int lightTasks = Settings.taskSaturation - worldScheduler.workerChunkLight.getTaskCount();
-		int meshTasks = Settings.taskSaturation - worldScheduler.workerChunkMesh.getTaskCount();
+		int chunkGens = Settings.taskSaturation*4 - worldScheduler.workerChunkGen.getTaskCount();
+		int chunkLights = Settings.taskSaturation - worldScheduler.workerChunkLight.getTaskCount();
+		int chunkBuilds = Settings.taskSaturation - worldScheduler.workerChunkMesh.getTaskCount();
 		
+		
+		//Chunk population iss simpler to managethis way	
 		for(int r = 0; r <= world.getRenderDistance(); r++)
 		{
 			for(int x = 0 ; x < size; x++)
@@ -63,27 +63,29 @@ public class WorldTask {
 				{
 					for(int z = 0 ; z < size; z++)
 					{
-						int trueR = Math.max(Math.abs(x - halfSize), Math.max(Math.abs(y - halfSize), Math.abs(z - halfSize)));
-							
-						if(r != trueR)
+						int trueR = Math.max(Math.abs(x-halfSize), Math.max(Math.abs(y-halfSize), Math.abs(z-halfSize)));
+						if(trueR != r)
 							continue;
 						
-						if(genTasks > 0)
+						if(chunkGens > 0)
 							if(checkGen(x,y,z))
-								genTasks--;
+								chunkGens--;
 						
-						if(lightTasks > 0)
-							if(checkLight(x,y,z))
-								lightTasks--;
+						long minElapsedMillisBuild = r <= 1 ? 100 : 100;
+						long minElapsedMillisLight = r <= 1 ? 1000 : r*r*1000;
 						
-						if(meshTasks > 0)
-							if(checkMesh(x,y,z))
-								meshTasks--;
+						if(chunkLights > 0)
+							if(checkLight(x,y,z,minElapsedMillisLight))
+								chunkLights--;
 						
+						if(chunkBuilds > 0)
+							if(checkMesh(x,y,z,minElapsedMillisBuild))
+								chunkBuilds--;
 					}
 				}
 			}
 		}
+		
 	}
 	
 	private void performSimulation() 
@@ -100,12 +102,8 @@ public class WorldTask {
 		
 		for(Entry<Vector3I, BlockContainer> entry : allBlocks)
 		{
-			if(entry.getValue().getSimulableBlocks().size() == 0)
-				continue;
-			
 			if(!world.getBufferedBlockContainers(entry.getKey().x, entry.getKey().y, entry.getKey().z, blocks))
 				continue;
-			
 			
 			ChunkUpdater updater = new ChunkUpdater(entry.getKey(), blocks, elapse);
 			worldScheduler.workerChunkSimulate.addTask(updater);
@@ -164,7 +162,7 @@ public class WorldTask {
 		return false;
 	}
 	
-	private boolean checkLight(int x, int y, int z)
+	private boolean checkLight(int x, int y, int z, long minElapsedMillis)
 	{
 		MeshContainer mesh = world.getMeshContainer(offset.x + x, offset.y + y, offset.z + z);
 		if(mesh == null) 
@@ -176,6 +174,8 @@ public class WorldTask {
 		if(!world.getPersistentBlockContainers(offset.x + x, offset.y + y, offset.z + z, blocks))
 			return false;
 		
+		if(lights[1][1][1].lastChange + minElapsedMillis > System.currentTimeMillis())
+			return false;
 		
 		long lightVer = 0;
 		long blockVer = 0;
@@ -213,10 +213,13 @@ public class WorldTask {
 		return false;
 	}
 	
-	private boolean checkMesh(int x, int y, int z)
+	private boolean checkMesh(int x, int y, int z, long minElapsedMillis)
 	{
 		MeshContainer mesh = world.getMeshContainer(offset.x + x, offset.y + y, offset.z + z);	
 		if(mesh == null) 
+			return false;
+		
+		if(mesh.lastChange + minElapsedMillis > System.currentTimeMillis())
 			return false;
 		
 		if(!world.getPersistentLightContainers(offset.x + x, offset.y + y, offset.z + z, lights))
@@ -242,6 +245,7 @@ public class WorldTask {
 					lightVer = Math.max(lightVer, lights[xx][yy][zz].getLastModified());
 					blockVer = Math.max(blockVer, blocks[xx][yy][zz].getLastModified());
 					
+					// only build when light has stabilized
 					//if(!lights[xx][yy][zz].stable)
 						//return false;
 				}

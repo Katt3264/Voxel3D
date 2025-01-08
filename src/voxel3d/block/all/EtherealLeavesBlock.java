@@ -1,17 +1,17 @@
 package voxel3d.block.all;
 
 import voxel3d.block.Block;
-import voxel3d.block.TransparentCubeBlock;
+import voxel3d.block.SolidCubeBlock;
 import voxel3d.block.context.BlockOnBreakContext;
 import voxel3d.block.utility.BlockBreakTimeUtility;
 import voxel3d.item.Item;
 import voxel3d.item.all.StickItem;
 import voxel3d.utility.Vector2f;
 
-public class EtherealLeavesBlock extends TransparentCubeBlock {
+public class EtherealLeavesBlock extends SolidCubeBlock {
 
 	private static EtherealLeavesBlock sharedInstance = new EtherealLeavesBlock();
-	private static Vector2f[] uvs = TransparentCubeBlock.getUVFromName("Ethereal leaves");
+	private static Vector2f[] uvs = SolidCubeBlock.getUVFromName("Ethereal leaves");
 	
 	static {
 		Block.setBlockDeserializerForLegacyID(sharedInstance);

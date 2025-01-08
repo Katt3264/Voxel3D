@@ -54,23 +54,26 @@ public class Objects {
 	
 	public static Texture slime;
 	public static Texture redSlime;
+	public static Texture lazer;
 	public static Texture undead;
 	public static Texture runner;
 	public static Texture deer;
 	
 	public static Texture skyBoxSunrise;
 	public static Texture skyBoxSunset;
+	
 	public static Texture skyBoxDay;
+	public static Texture skyBoxSun;
+	public static Texture skyBoxMoon;
 	public static Texture skyBoxStars;
+	public static Texture skyBoxHorizon;
 	
 	public static Texture skyBoxDay1Sunrise;
 	public static Texture skyBoxDay1Sunset;
 	public static Texture skyBoxDay1Day;
 	public static Texture skyBoxDay1Night;
 	
-	public static Texture skyboxSun;
-	public static Texture skyboxMoon;
-	
+
 	public static AudioClip testSound;
 	public static AudioClip rocketLaunch;
 	public static AudioClip explosion;
@@ -91,7 +94,6 @@ public class Objects {
 		audioManager = new AudioManager();
 		
 		AssetLoader.LoadAllTextures();
-		AssetLoader.LoadAllFluids();
 		chunkAtlas = AssetLoader.LoadAllBlocks();
 		AssetLoader.LoadAllItems();
 		AssetLoader.LoadAllRecipes();
@@ -143,22 +145,16 @@ public class Objects {
 		
 		slime = AssetLoader.loadEntityTexture("Slime");
 		redSlime = AssetLoader.loadEntityTexture("Red slime");
+		lazer = AssetLoader.loadEntityTexture("Lazer");
 		undead = AssetLoader.loadEntityTexture("Undead");
 		runner = AssetLoader.loadEntityTexture("Runner");
 		deer = AssetLoader.loadEntityTexture("Deer ghost");
 		
-		//skyBoxSunrise = AssetLoader.loadTexture("skybox_sunrise");
-		//skyBoxSunset = AssetLoader.loadTexture("skybox_sunset");
 		skyBoxDay = AssetLoader.loadTexture("skybox_day");
-		skyBoxStars = AssetLoader.loadTexture("skybox_stars2");
-		
-		//skyBoxDay1Sunrise = AssetLoader.loadTexture("sky1_sunrise");
-		//skyBoxDay1Sunset = AssetLoader.loadTexture("sky1_sunset");
-		//skyBoxDay1Day = AssetLoader.loadTexture("sky1_day");
-		//skyBoxDay1Night = AssetLoader.loadTexture("sky1_night");
-		
-		skyboxSun = AssetLoader.loadTexture("Skybox sun");
-		skyboxMoon = AssetLoader.loadTexture("Skybox moon");
+		skyBoxStars = AssetLoader.loadTexture("skybox_stars");
+		skyBoxSun = AssetLoader.loadTexture("skybox_sun");
+		skyBoxMoon = AssetLoader.loadTexture("skybox_moon");
+		skyBoxHorizon = AssetLoader.loadTexture("skybox_horizon");
 		
 		testSound = AssetLoader.loadAudio("test");
 		rocketLaunch = AssetLoader.loadAudio("rocket launch");

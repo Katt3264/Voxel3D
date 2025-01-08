@@ -28,7 +28,6 @@ public class BasicCharacterModel {
 	private static final float[][][] basicCharacterLegUV = GeometryUtility.generateBoxUV(uvPixelSize * 0f, uvPixelSize * 16f, uvPixelSize * 4f, uvPixelSize * 12f, uvPixelSize * 4f);
 	
 	private static final double pixelSize = 2d/32d;
-	
 	private static final double extremidyHeight = 12d * pixelSize;
 	private static final double extremidyWidth = 4d * pixelSize;
 	private static final double bodyHeight = 12d * pixelSize;

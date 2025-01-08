@@ -9,6 +9,7 @@ import voxel3d.entity.all.Player;
 import voxel3d.item.Item;
 import voxel3d.level.containers.World;
 import voxel3d.physics.Ray;
+import voxel3d.utility.Color;
 import voxel3d.utility.Vector3I;
 import voxel3d.utility.Vector3d;
 
@@ -39,6 +40,11 @@ public class EntityUpdateContext {
 	public Block getBlock(int x, int y, int z)
 	{
 		return world.getBlock(x, y, z);
+	}
+	
+	public void getColor(int x, int y, int z, Color writeback)
+	{
+		world.getColor(x, y, z, writeback);
 	}
 	
 	public void breakBlock(int x, int y, int z, Item item)

@@ -1,17 +1,17 @@
 package voxel3d.block.all;
 
 import voxel3d.block.Block;
-import voxel3d.block.TransparentCubeBlock;
+import voxel3d.block.SolidCubeBlock;
 import voxel3d.block.context.BlockOnBreakContext;
 import voxel3d.block.utility.BlockBreakTimeUtility;
 import voxel3d.item.Item;
 import voxel3d.item.all.StickItem;
 import voxel3d.utility.Vector2f;
 
-public class CrimsonLeavesBlock extends TransparentCubeBlock {
+public class CrimsonLeavesBlock extends SolidCubeBlock {
 
 	private static CrimsonLeavesBlock sharedInstance = new CrimsonLeavesBlock();
-	private static Vector2f[] uvs = TransparentCubeBlock.getUVFromName("Crimson leaves");
+	private static Vector2f[] uvs = SolidCubeBlock.getUVFromName("Crimson leaves");
 	
 	static {
 		Block.setBlockDeserializerForLegacyID(sharedInstance);

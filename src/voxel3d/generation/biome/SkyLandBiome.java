@@ -44,4 +44,10 @@ public class SkyLandBiome extends Biome{
 	{
 		return (int) (Fields.OctaveMap2D(x, z, 64) * 16d - 3d);
 	}
+
+	@Override
+	public double getSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

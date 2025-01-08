@@ -58,6 +58,7 @@ public class Debug {
 	public static void err(String string)
 	{
 		System.err.println("[ERROR] " + string);
+		//new Exception().printStackTrace();
 	}
 	
 

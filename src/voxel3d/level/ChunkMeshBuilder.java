@@ -162,6 +162,7 @@ public class ChunkMeshBuilder implements MainThreadExecutable, Executable {
 			colorList.free();
 		}
 		meshContainer.set(newMesh, newConsistent);
+		meshContainer.lastChange = System.currentTimeMillis();
 		meshContainer.wip = false;
 	}
 	

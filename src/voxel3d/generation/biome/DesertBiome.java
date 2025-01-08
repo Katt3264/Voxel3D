@@ -1,43 +1,66 @@
 package voxel3d.generation.biome;
 
+import java.util.Random;
+
 import voxel3d.block.Block;
 import voxel3d.block.all.*;
 import voxel3d.generation.Fields;
-import voxel3d.generation.OreGen;
-import voxel3d.utility.Color;
 
 public class DesertBiome extends Biome{
+	
+	private double size;
+	public DesertBiome(double size)
+	{
+		this.size = size;
+	}
 	
 	@Override
 	public Block getBlock(int x, int y, int z)
 	{
-		int l = y - getHeight(x, z);
+		int height = (int) Math.floor(getHeight(x, z));
 		
-		if(l > 1)
-			return AirBlock.getInstance();
-		else if(l == 1)
+		Block ret = AirBlock.getInstance();
+		
+		if(y > height + 1)
 		{
-			if(getRandom(z,x,z,50) == 0)
-				return DryGrass.getInstance();
-			else
-				return AirBlock.getInstance();
+			ret = AirBlock.getInstance();
 		}
-		else if(l == 0)
-			return SandBlock.getInstance();
-		else if(l >= -8)
-			return SandBlock.getInstance();
+		else if(y == height + 1)
+		{
+			ret = foliageBlock(x,y,z);
+		}
+		else if(y <= height)
+		{
+			ret = SandBlock.getInstance();
+		}
+		
+		return ret;
+	}
+	
+	private static Block foliageBlock(int x, int y, int z)
+	{
+		Random random = new Random();
+		random.setSeed(getPositionSeed(x, y, z));
+		
+		if(random.nextInt(16) == 0)
+			return DryGrass.getInstance();
 		else
-			return OreGen.getBlock(x, y, z);
+			return AirBlock.getInstance();
 	}
 	
+	private static int getPositionSeed(int x, int y, int z)
+	{
+		return (x * 74317 + y * 2345897 + z * 4216754);
+	}
+	
+	private static double getHeight(int x, int z)
+	{
+		return Fields.OctaveMap2D(x, z, 64) * 5d;
+	}
+
 	@Override
-	public void getBiomeColorFactor(Color writeback)
+	public double getSize() 
 	{
-		writeback.set(1.0f, 1.0f, 0.5f);
-	}
-	
-	private static int getHeight(int x, int z)
-	{
-		return (int) (Fields.OctaveMap2D(x, z, 64) * 5d);
+		return size;
 	}
 }

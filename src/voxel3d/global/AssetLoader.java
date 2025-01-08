@@ -172,28 +172,6 @@ public class AssetLoader {
 		return Texture.get(LoadFile("entity textures", name + ".png").getPath());
 	}
 	
-	protected static void LoadAllFluids()
-	{
-		File operatorFile = new File("bin/voxel3d/fluid/all");
-
-	    File[] files = operatorFile.listFiles(new FilenameFilter() {
-	        @Override public boolean accept(File dir, String name) {
-	            return name.endsWith(".class");
-	        }
-	    });
-	    
-	    for (File file : files) {
-	        String className = "voxel3d.fluid.all." + file.getName().substring(0, file.getName().length() - 6);
-	        try {
-	        	Debug.assetLoadLog("fluid class loaded: " + className);
-	        	@SuppressWarnings("unused")
-				Class<?> addedClass = Class.forName(className);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-	    }
-	}
-	
 	protected static Texture loadGUITexture(String name)
 	{
 		return Texture.get(LoadFile("gui textures", name + ".png").getPath());

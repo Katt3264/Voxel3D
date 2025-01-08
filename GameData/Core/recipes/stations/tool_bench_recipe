@@ -2,13 +2,13 @@ outItem=Tool bench
 outValue=1
 
 item=Stick
-value=5
+value=1
 
 item=Dirt
-value=5
+value=1
 
 item=Flint
-value=5
+value=1
 
 station=Craft bench
 

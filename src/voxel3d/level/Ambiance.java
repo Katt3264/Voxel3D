@@ -37,19 +37,24 @@ public class Ambiance {
 	{
 		double angle = time * Math.PI * 2d;
 		
-		float r1 = (float) Math.min(Math.max(-Math.cos(angle)*2 + 1.8, 0), 1);
-		float r2 = (float) Math.min(Math.max(-Math.cos(angle)*2 + 1.2, 0), 1);
-		float r3 = (float) Math.min(Math.max(-Math.cos(angle)*2 + 0.6, 0), 1);
+		//float r1 = (float) Math.min(Math.max(-Math.cos(angle)*2 + 1.8, 0), 1);
+		//float r2 = (float) Math.min(Math.max(-Math.cos(angle)*2 + 1.2, 0), 1);
+		//float r3 = (float) Math.min(Math.max(-Math.cos(angle)*2 + 0.6, 0), 1);
 		
+		//writeback.set(r1, r2, r3);
 		
-		writeback.set(r1, r2, r3);
+		//5:25 first sun
+		//6:35 full sun
+		float r0 = (float) Math.min(Math.max((0.25-Math.cos(angle))*2, 0), 1);
+		writeback.set(r0, r0, r0);
 	}
 	
 	public void draw()
 	{
 		double sunradAng = time*2.0*Math.PI; // 0 24:00
 		
-		float skyFadeIn = (float) Math.min(1, Math.max(0, -Math.cos(sunradAng) * 4));
+		//float skyFadeIn = (float) Math.min(1, Math.max(0, -Math.cos(sunradAng) * 4));
+		float skyFadeIn = (float) Math.min(Math.max((0.25-Math.cos(sunradAng))*2, 0), 1);
 		
 		Vector3d upX = new Vector3d(Math.cos(sunradAng), Math.sin(sunradAng),0);
 		Vector3d upY = new Vector3d(-Math.sin(sunradAng), Math.cos(sunradAng),0);
@@ -89,14 +94,23 @@ public class Ambiance {
 			new Vector3d(0,0,0), upX, upY, z, 
 			GeometryUtility.skyBoxMapUV,
 			GeometryUtility.skyBoxMap,
-			Objects.skyboxSun);
+			Objects.skyBoxSun);
 		
 		// moon
 		GeometryUtility.drawBox(
 				new Vector3d(0,0,0), upX, upY, z, 
 				GeometryUtility.skyBoxMapUV,
 				GeometryUtility.skyBoxMap,
-				Objects.skyboxMoon);
+				Objects.skyBoxMoon);
+		
+		// horizon
+		//glColor3f(0, 0.5f, 0);
+		glColor3f(0 * skyColor.r, 0.5f * skyColor.g, 0.8f * skyColor.b);
+		GeometryUtility.drawBox(
+				new Vector3d(0,0,0), new Vector3d(1,0,0), new Vector3d(0,1,0), new Vector3d(0,0,1), 
+				GeometryUtility.skyBoxMapUV,
+				GeometryUtility.skyBoxMap,
+				Objects.skyBoxHorizon);
 		
 		
 	}

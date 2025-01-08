@@ -1,21 +1,5 @@
 package voxel3d.level.containers;
 
-import static org.lwjgl.opengl.GL11.GL_ALPHA_TEST;
-import static org.lwjgl.opengl.GL11.GL_BACK;
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.GL_GREATER;
-import static org.lwjgl.opengl.GL11.GL_LEQUAL;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.glAlphaFunc;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glCullFace;
-import static org.lwjgl.opengl.GL11.glDepthFunc;
-import static org.lwjgl.opengl.GL11.glDepthRange;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL20.*;
 
 import java.io.IOException;
@@ -39,7 +23,6 @@ import voxel3d.entity.all.ItemEntity;
 import voxel3d.entity.all.Player;
 import voxel3d.entity.context.EntityRenderContext;
 import voxel3d.entity.context.EntityUpdateContext;
-import voxel3d.generation.biome.Biome;
 import voxel3d.global.Debug;
 import voxel3d.global.Objects;
 import voxel3d.global.Settings;
@@ -505,27 +488,29 @@ public class World implements DataStreamable {
 	
 	public void spawnRoutine()
 	{
-		int spawnableCount = 0;
-		for(Entity entity : getEntities())
-		{
-			if(entity instanceof Spawnable)
-			{
-				spawnableCount++;
-			}
-		}
-		
-		if(spawnableCount >= Settings.spawnableLimit)
-			return;
-		
-		
 		Random random = new Random();
 		for(Spawnable spawnable : Entity.getSpawnables())
 		{
-			double spawnRadius = 64;
-			int x = (int)(player.position.x + (random.nextDouble() * 2.0 - 1.0)*spawnRadius);
-			int y = (int)(player.position.y + (random.nextDouble() * 2.0 - 1.0)*spawnRadius);
-			int z = (int)(player.position.z + (random.nextDouble() * 2.0 - 1.0)*spawnRadius);
-			spawnable.trySpawn(x, y, z, this);
+			int spawnableCount = 0;
+			for(Entity entity : getEntities())
+			{
+				if(entity.getType().equals(((Entity)spawnable).getType()))
+					spawnableCount++;
+			}
+			
+			if(spawnableCount >= Settings.spawnableLimit)
+				continue;
+			
+			//TODO: dont spawn too close to player
+			for(int i = 0; i < 64; i++)
+			{
+				double spawnRadius = 64;
+				int x = (int)(player.position.x + (random.nextDouble() * 2.0 - 1.0)*spawnRadius);
+				int y = (int)(player.position.y + (random.nextDouble() * 2.0 - 1.0)*spawnRadius);
+				int z = (int)(player.position.z + (random.nextDouble() * 2.0 - 1.0)*spawnRadius);
+				if (spawnable.trySpawn(x, y, z, this))
+					break;
+			}
 		}
 	}
 	
@@ -585,12 +570,12 @@ public class World implements DataStreamable {
 			}
 		}
 		
-		Color colorF = new Color();
-		Color colorA = new Color();
+		//Color colorF = new Color();
+		//Color colorA = new Color();
 		Color skyColor = new Color();
 		
-		Biome.getBiome((int)player.position.x, (int)player.position.y, (int)player.position.z).getBiomeColorFactor(colorF);
-		Biome.getBiome((int)player.position.x, (int)player.position.y, (int)player.position.z).getBiomeColorAcc(colorA);
+		//Biome.getBiome((int)player.position.x, (int)player.position.y, (int)player.position.z).getBiomeColorFactor(colorF);
+		//Biome.getBiome((int)player.position.x, (int)player.position.y, (int)player.position.z).getBiomeColorAcc(colorA);
 		ambiance.getLight(skyColor);
 	}
 	
@@ -641,38 +626,30 @@ public class World implements DataStreamable {
 		int size = 2 * renderDistance + 1;
 		int transformMatrixLocation = glGetUniformLocation(Objects.shader.getProgramId(), "modelMatrix");
 		Objects.chunkAtlas.glBind();
-		for(int r = 0; r <= renderDistance; r++)
+		for(int x = 0; x < size; x++)
 		{
-			for(int x = 0; x < size; x++)
+			for(int y = 0; y < size; y++)
 			{
-				for(int y = 0; y < size; y++)
+				for(int z = 0; z < size; z++)
 				{
-					for(int z = 0; z < size; z++)
-					{
-						int halfSize = renderDistance;
-						int trueR = Math.max(Math.abs(x - halfSize), Math.max(Math.abs(y - halfSize), Math.abs(z - halfSize)));
-						if(r != trueR)
-							continue;
-						
-						MeshContainer builder = meshContainers.get(x, y, z);
-						if(builder == null) {continue;}
-						
-						Mesh mesh = builder.getMesh();
-						if(mesh == null) {continue;}
-						mesh.notifyUsed();
-						
-						if(mesh.triangles == 0) {continue;}
-						
-						transform[12] = (x) * Settings.CHUNK_SIZE;
-						transform[13] = (y) * Settings.CHUNK_SIZE;
-						transform[14] = (z) * Settings.CHUNK_SIZE;
-						if(!inFrustum(transform[12], transform[13], transform[14])) {continue;}
-						
-						Debug.triangles += mesh.triangles;
-						
-						glUniformMatrix4fv(transformMatrixLocation, false, transform);
-						mesh.draw();
-					}
+					MeshContainer builder = meshContainers.get(x, y, z);
+					if(builder == null) {continue;}
+					
+					Mesh mesh = builder.getMesh();
+					if(mesh == null) {continue;}
+					mesh.notifyUsed();
+					
+					if(mesh.triangles == 0) {continue;}
+					
+					transform[12] = (x) * Settings.CHUNK_SIZE;
+					transform[13] = (y) * Settings.CHUNK_SIZE;
+					transform[14] = (z) * Settings.CHUNK_SIZE;
+					if(!inFrustum(transform[12], transform[13], transform[14])) {continue;}
+					
+					Debug.triangles += mesh.triangles;
+					
+					glUniformMatrix4fv(transformMatrixLocation, false, transform);
+					mesh.draw();
 				}
 			}
 		}
@@ -701,6 +678,7 @@ public class World implements DataStreamable {
         //Objects.shader.unbind();
 	}
 	
+	//TODO: not correct
 	private boolean inFrustum(double cx, double cy, double cz)
 	{
 		// position of centre of chunk

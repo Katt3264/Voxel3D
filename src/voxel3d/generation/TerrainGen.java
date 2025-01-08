@@ -9,11 +9,9 @@ public class TerrainGen {
 	
 	private static double size = 64;
 	
-	public static Block getBlock(int x, int y, int z)
+	public static Block getBlock__(int x, int y, int z)
 	{
 		int height = (int) Math.floor(getHeight(x, z));
-		
-		
 		
 		Block ret = AirBlock.getInstance();
 		
@@ -50,7 +48,7 @@ public class TerrainGen {
 	
 	public static double OctaveMap2D(int x, int z, double scale)
 	{
-		/*double val = 0;
+		double val = 0;
 		double amp = 0.5;
 		
 		for(int i = 0; i < 6; i++)
@@ -59,10 +57,10 @@ public class TerrainGen {
 			z += 326745;
 			val += SimplexNoise.noise(x / scale, z / scale) * amp;
 			scale *= 0.5;
-			amp *= 0.5;
+			amp *= 0.4;
 		}
-		return val;*/
-		return SimplexNoise.noise(x / scale, z / scale);
+		return val;
+		//return SimplexNoise.noise(x / scale, z / scale);
 	}
 	
 	public static Block foliageBlock(int x, int y, int z)
@@ -81,8 +79,12 @@ public class TerrainGen {
 		Random random = new Random();
 		random.setSeed(getPositionSeed(x, y, z));
 		
-		if(random.nextInt(7) == 0)
+		double sandGravel = OctaveMap2D(x + 2368915, z + 2368915, 32);
+		
+		if(sandGravel > 0.8)
 			return GravelBlock.getInstance();
+		else if(sandGravel < -0.8)
+			return SandBlock.getInstance();
 		else
 			return GrassBlock.getInstance();
 	}

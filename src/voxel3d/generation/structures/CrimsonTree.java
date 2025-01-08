@@ -4,37 +4,27 @@ import java.util.Random;
 
 import voxel3d.block.Block;
 import voxel3d.block.all.*;
-import voxel3d.generation.*;
+import voxel3d.level.ChunkPopulator;
 import voxel3d.global.Settings;
 
 public class CrimsonTree extends Structure {
 	
 	@Override
 	public void placeBlocks(int x, int y, int z, Block[] blocks)
-	{
-		for(int xx = -2; xx <= 2; xx++)
+	{	
+		for(int xx = -9; xx <= 9; xx++)
 		{
-			for(int yy = 3; yy <= 5; yy++)
+			for(int yy = -3; yy <= 3; yy++)
 			{
-				for(int zz = -2; zz <= 2; zz++)
+				for(int zz = -9; zz <= 9; zz++)
 				{
-					placeBlock(x + xx, y + yy, z + zz, CrimsonLeavesBlock.getInstance(), blocks);
+					if(xx*xx + yy*yy*8 + zz*zz < 9*9)
+						placeBlock(x + xx, y + 10 + yy, z + zz, CrimsonLeavesBlock.getInstance(), blocks);
 				}
 			}
 		}
 		
-		for(int xx = -1; xx <= 1; xx++)
-		{
-			for(int yy = 5; yy <= 7; yy++)
-			{
-				for(int zz = -1; zz <= 1; zz++)
-				{
-					placeBlock(x + xx, y + yy, z + zz, CrimsonLeavesBlock.getInstance(), blocks);
-				}
-			}
-		}
-		
-		for(int h = 0; h < 5; h++)
+		for(int h = 0; h < 12; h++)
 		{
 			placeBlock(x, y + h, z, CrimsonLogBlock.getInstance(), blocks);
 		}
@@ -47,7 +37,7 @@ public class CrimsonTree extends Structure {
 		Random random = new Random();
 		random.setSeed(cx * 2133 + cy * 2142767 + cz * 736329);
 		
-		int tests = (Settings.CHUNK_SIZE * Settings.CHUNK_SIZE * Settings.CHUNK_SIZE) / 50;
+		int tests = (Settings.CHUNK_SIZE * Settings.CHUNK_SIZE * Settings.CHUNK_SIZE) / 150;
 		for(int i = 0; i < tests; i++)
 		{
 			int xx = random.nextInt(Settings.CHUNK_SIZE);
@@ -58,7 +48,7 @@ public class CrimsonTree extends Structure {
 			int y = yy + cy * Settings.CHUNK_SIZE;
 			int z = zz + cz * Settings.CHUNK_SIZE;
 			
-			if(TerrainGen.getBlock(x, y - 1, z) instanceof CrimsonGrassBlock)
+			if(ChunkPopulator.getBlock(x, y - 1, z) instanceof CrimsonGrassBlock)
 			{
 				int px = xx + ox * Settings.CHUNK_SIZE;
 				int py = yy + oy * Settings.CHUNK_SIZE;

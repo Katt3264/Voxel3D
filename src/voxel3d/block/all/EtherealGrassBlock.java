@@ -1,13 +1,15 @@
 package voxel3d.block.all;
 
 import voxel3d.block.Block;
+import voxel3d.block.DirtSpreadable;
 import voxel3d.block.SolidCubeBlock;
 import voxel3d.block.context.BlockOnBreakContext;
+import voxel3d.block.context.BlockOnSimulateContext;
 import voxel3d.block.utility.BlockBreakTimeUtility;
 import voxel3d.item.Item;
 import voxel3d.utility.Vector2f;
 
-public class EtherealGrassBlock extends SolidCubeBlock {
+public class EtherealGrassBlock extends SolidCubeBlock implements DirtSpreadable {
 	
 	private static EtherealGrassBlock sharedInstance = new EtherealGrassBlock();
 	private static Vector2f[][] uvs = SolidCubeBlock.getUVsFromTopSideBottom("Ethereal grass block top", "Ethereal grass block", "Dirt");
@@ -49,6 +51,13 @@ public class EtherealGrassBlock extends SolidCubeBlock {
 	public double getBreakTime(Item tool)
 	{
 		return BlockBreakTimeUtility.getBreakTimeSoil(tool);
+	}
+	
+	@Override
+	public void onRandomUpdate(BlockOnSimulateContext context)
+	{
+		if(context.getLocalBlock(0, 1, 0).isSolidBlock())
+			context.replaceSelf(DirtBlock.getInstance());
 	}
 
 }

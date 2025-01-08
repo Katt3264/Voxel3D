@@ -2,7 +2,7 @@ package voxel3d;
 
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL40.*;
 
 import voxel3d.global.Debug;
 import voxel3d.global.Input;
