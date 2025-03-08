@@ -2,11 +2,10 @@ package voxel3d.global;
 
 public class Settings {
 	
-	
-	//public static final float targetFrameTime = 1f / 30f;
+	public static final float targetFrameDeltaTime = 1f / 30f;
 	public static final float maxFrameDeltaTime = 1f / 30f;
 	
-	public static final int renderDistance = 6;
+	public static final int renderDistance = 8;
 	public static final int lightDistance = 16;
 	
 	public static final int CHUNK_SIZE_LOG = 4;
@@ -21,9 +20,12 @@ public class Settings {
 	
 	public static final int floatPoolBufferSize = 256;
 	public static final int floatPoolArraySize = 256*256;
+	
 	public static final int IOThreads = 16;
 	//public static final int threadCount = 4;
 	public static final int taskSaturation = 16;
+	public static final int taskWorkerNoTaskSleep = 33;
+	public static final int worldTaskSleep = 10;
 	
 	
 	//public static final String[] resourceOrder = new String[]{"Minecraft", "Core"};

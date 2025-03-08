@@ -28,8 +28,6 @@ public class WorldScheduler {
 		scheduler = this;
 		this.world = world;
 		
-		runner = new Runner();
-		
 		workerChunkGen = new TaskWorker(1);
 		workerChunkGen.start();
 		
@@ -41,13 +39,12 @@ public class WorldScheduler {
 		
 		workerChunkSimulate = new TaskWorker(1);
 		workerChunkSimulate.start();
-	}
-	
-	public void start()
-	{
+		
+		runner = new Runner();
 		runner.start();
 	}
 	
+	//TODO: potential lagg spikes
 	public void mainThreadFrameEntry()
 	{
 		while(Objects.mainQueue.size() != 0)
@@ -112,7 +109,7 @@ public class WorldScheduler {
 				try 
 				{
 					task.performAction(world, scheduler);
-					Thread.sleep(16);
+					Thread.sleep(Settings.worldTaskSleep);
 				}
 				catch (Exception e)
 				{

@@ -2,6 +2,8 @@ package voxel3d.utility;
 
 import java.util.LinkedList;
 
+import voxel3d.global.Settings;
+
 public class TaskWorker {
 	
 	private final LinkedList<Executable> taskList = new LinkedList<Executable>();
@@ -87,7 +89,8 @@ public class TaskWorker {
 		while(isActive())
 		{
 			try {
-				Thread.sleep(16);
+				//TODO: improve
+				Thread.sleep(1);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -106,6 +109,7 @@ public class TaskWorker {
 				try {
 					if(paused)
 					{
+						//TODO: improve
 						Thread.sleep(16);
 					}
 					else
@@ -124,7 +128,8 @@ public class TaskWorker {
 						else
 						{
 							active = false;
-							Thread.sleep(1);
+							//TODO: wake up when a task exists
+							Thread.sleep(Settings.taskWorkerNoTaskSleep);
 						}
 					}
 				} catch (Exception e)

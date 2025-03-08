@@ -7,28 +7,18 @@ public class Debug {
 	
 	public static float fps;
 	public static float worstfps;
-	//public static float load;
+	public static float load;
 	public static long memory;
 	
 	public static long updateTime;
 	public static long drawDispatchTime;
-	//public static long drawTime;
-	//public static long waitForSwap;
-	//public static long frameTime;
-	
-	/*public static double t1;
-	public static double t2;
-	public static double t3;
-	public static double t4;
-	public static double t5;*/
+	public static long waitForDrawTime;
+	public static long waitForSwapTime;
 	
 	public static long chunkGens = 0;
 	public static long chunkBuilds = 0;
 	public static long chunkLights = 0;
 	public static long chunkTicks = 0;
-	
-	//public static long chunkBuildTime = 0;
-	//public static long chunkLightTime = 0;
 	
 	public static void log(String string)
 	{

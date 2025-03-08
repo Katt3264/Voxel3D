@@ -1,7 +1,6 @@
 package voxel3d.level;
 
 
-import static org.lwjgl.opengl.GL11.GL_ALPHA_TEST;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
@@ -16,7 +15,6 @@ import static org.lwjgl.opengl.GL11.glLoadIdentity;
 import static org.lwjgl.opengl.GL11.glLoadMatrixd;
 import static org.lwjgl.opengl.GL11.glMatrixMode;
 
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -43,20 +41,17 @@ public class Level {
 	
 	public Level(String name)
 	{
+		hud = new HUD();
+		pauesMenu = new PauseMenu();
 		this.world  = new World(Settings.renderDistance, -Settings.renderDistance, -Settings.renderDistance, -Settings.renderDistance, name);
 		this.worldScheduler = new WorldScheduler(world);
 	}
 	
-	public void start() throws IOException
-	{
-		hud = new HUD();
-		pauesMenu = new PauseMenu();
-		
-		worldScheduler.start();
-	}
-	
 	public void draw() 
 	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClearColor(0, 0, 1, 1.0f);
+		
 		if(!worldScheduler.loadingInProgress)
 		{
 			world.render();
@@ -67,21 +62,19 @@ public class Level {
 			{
 				pauesMenu.draw();
 			}
-			glDisable(GL_ALPHA_TEST);
+			//glDisable(GL_ALPHA_TEST);
 			
 			if(Settings.debugScreen)
-			{
-				glColor3f(0f, 0f, 1f);
-			
-				//GUIUtill.drawString("update time   ms " + (Debug.updateTime / 1000_000), -1f, 0.95f, 0.05f);
-				//GUIUtill.drawString("draw dispatch ms " + (Debug.drawDispatchTime / 1000_000), -1f, 0.90f, 0.05f);
-				//GUIUtill.drawString("wait for draw ms " + (Debug.drawTime / 1000_000), -1f, 0.85f, 0.05f);
+			{	
 				GUIUtill.drawString("Memory use:" + NumberFormat.getNumberInstance(Locale.US).format(Debug.memory) + " B", 	-1f, 0.90f, 0.05f);
 				GUIUtill.drawString("fps        " + ((int)(Debug.fps*10f))/10f, 			-1f, 0.85f, 0.05f);
 				GUIUtill.drawString("fps low    " + ((int)(Debug.worstfps*10f))/10f, 			-1f, 0.80f, 0.05f);
 				
 				GUIUtill.drawString("update          " + String.format("%.4G ", (Debug.updateTime / 1E6)) 		+ " ms", 	0f, 0.75f, 0.05f);
 				GUIUtill.drawString("render disbatch " + String.format("%.4G ", (Debug.drawDispatchTime / 1E6)) + " ms", 	0f, 0.70f, 0.05f);
+				GUIUtill.drawString("wait for render " + String.format("%.4G ", (Debug.waitForDrawTime /  1E6)) + " ms", 	0f, 0.65f, 0.05f);
+				GUIUtill.drawString("wait for swap   " + String.format("%.4G ", (Debug.waitForSwapTime /  1E6)) + " ms", 	0f, 0.60f, 0.05f);
+				GUIUtill.drawString("load            " + String.format("%.4G ", (Debug.load)) + " %", 	0f, 0.50f, 0.05f);
 				
 				GUIUtill.drawString("gens       " + (Debug.chunkGens), 		-1f, 0.75f, 0.05f);
 				GUIUtill.drawString("light      " + (Debug.chunkLights), 	-1f, 0.70f, 0.05f);

@@ -58,7 +58,7 @@ public class World implements DataStreamable {
 	private final Color skyColor = new Color();
 	private final Ambiance ambiance;
 	private long time = 0;
-	
+	private int seed;
 
 	private AABB[] aabbBuffer = new AABB[1024];
 
@@ -68,6 +68,8 @@ public class World implements DataStreamable {
 		this.ox = ox;
 		this.oy = oy;
 		this.oz = oz;
+		
+		seed = new Random().nextInt();
 		
 		this.renderDistance = renderDistance;
 		this.blockContainers = new PersistentVector3D<BlockContainer>(2 * renderDistance + 1);
@@ -586,19 +588,26 @@ public class World implements DataStreamable {
 		float[] perspective = new float[4*4];
 		float[] view = new float[4*4];
 		
+		//here 4ms
+		
         // ignore depth buffer and binary alpha test
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_ALPHA_TEST);
 		player.camera.getMatrix(-player.camera.position.x, -player.camera.position.y, -player.camera.position.z, perspective, view);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glMatrixMode(GL_PROJECTION);
 		glLoadMatrixf(perspective);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadMatrixf(view);
 		glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
+        
+        //here 5ms
+        
     	ambiance.draw();
     	
+        //here 6.5ms
+		
     	// normal 3D
     	glEnable(GL_DEPTH_TEST);
     	glDepthRange(0, 1);
@@ -609,7 +618,9 @@ public class World implements DataStreamable {
     	glAlphaFunc(GL_GREATER, 0.5f);
     	glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
-
+		
+        //Here - 7.5ms
+        
     	player.camera.getMatrix(-ox * Settings.CHUNK_SIZE, -oy * Settings.CHUNK_SIZE, -oz * Settings.CHUNK_SIZE, perspective, view);
 		Objects.shader.bind();
         glUniformMatrix4fv(glGetUniformLocation(Objects.shader.getProgramId(), "projectionMatrix"), false, perspective);
@@ -617,7 +628,7 @@ public class World implements DataStreamable {
         ambiance.getLight(skyColor);
         glUniform3f(glGetUniformLocation(Objects.shader.getProgramId(), "skyColor"), skyColor.r, skyColor.g, skyColor.b);
         glUniform1f(glGetUniformLocation(Objects.shader.getProgramId(), "brightness"), Settings.brightness);
-		        
+		
         float[] transform = new float[4*4];
         transform[0] = 1;
         transform[5] = 1;
@@ -658,6 +669,8 @@ public class World implements DataStreamable {
 		transform[13] = 0;
 		transform[14] = 0;
 		Objects.shader.unbind();
+		
+		//here 14ms
 		
 		//TODO: add support for this in shader
 		//player.camera.getMatrix(-player.position.x, -player.position.y, -player.position.z, perspective, view);
@@ -706,12 +719,14 @@ public class World implements DataStreamable {
 	public void read(DataInputStream stream) throws IOException 
 	{
 		ambiance.setTime(stream.readDouble());
+		stream.readInt();
 	}
 
 	@Override
 	public void write(DataOutputStream stream) 
 	{
 		stream.writeDouble(ambiance.time);
+		stream.writeInt(seed);
 	}
 	
 }

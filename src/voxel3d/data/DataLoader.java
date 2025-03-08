@@ -21,41 +21,41 @@ import voxel3d.utility.Vector3I;
 public class DataLoader {
 	
 	
-	public static void loadLevel(World level)
+	public static void loadLevel(World world)
 	{
 		try {
-			level.player.inventory.read(getInPath("store/worlds/" + level.name + "/player/inventory"));
+			world.player.inventory.read(getInPath("store/worlds/" + world.name + "/player/inventory"));
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {e.printStackTrace();}
 		
 		try {
-			level.player.read(getInPath("store/worlds/" + level.name + "/player/player data"));
+			world.player.read(getInPath("store/worlds/" + world.name + "/player/player data"));
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {e.printStackTrace();}
 		
 		try {
-			level.addEntities(getInPath("store/worlds/" + level.name + "/entities/entity data").readEntities());
+			world.addEntities(getInPath("store/worlds/" + world.name + "/entities/entity data").readEntities());
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {e.printStackTrace();}
 		
 		try {
-			level.read(getInPath("store/worlds/" + level.name + "/world/world data"));
+			world.read(getInPath("store/worlds/" + world.name + "/world/world data"));
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {e.printStackTrace();}
 		
 		
-		File[] chunks = new File("store/worlds/" + level.name + "/chunks").listFiles();
+		File[] chunks = new File("store/worlds/" + world.name + "/chunks").listFiles();
 		if(chunks != null)
 		{
 			TaskWorker loader = new TaskWorker(Settings.IOThreads);
 			
-			level.loadProgress = 0;
+			world.loadProgress = 0;
 			for(File file : chunks)
 			{
 				if(!file.getName().contains("chunk"))
 					continue;
 				
-				loader.addTask(new ChunkLoader(file, level));
+				loader.addTask(new ChunkLoader(file, world));
 			}
 			
 			loader.start();
