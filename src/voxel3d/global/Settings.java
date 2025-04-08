@@ -2,7 +2,7 @@ package voxel3d.global;
 
 public class Settings {
 	
-	public static final float targetFrameDeltaTime = 1f / 30f;
+	public static final float targetFrameDeltaTime = 1f / 60f;
 	public static final float maxFrameDeltaTime = 1f / 30f;
 	
 	public static final int renderDistance = 8;
@@ -24,7 +24,7 @@ public class Settings {
 	public static final int IOThreads = 16;
 	//public static final int threadCount = 4;
 	public static final int taskSaturation = 16;
-	public static final int taskWorkerNoTaskSleep = 33;
+	public static final int taskWorkerNoTaskSleep = 16;
 	public static final int worldTaskSleep = 10;
 	
 	

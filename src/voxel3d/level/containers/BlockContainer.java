@@ -17,9 +17,9 @@ import voxel3d.global.Time;
 import voxel3d.utility.MathX;
 import voxel3d.utility.Vector3I;
 
-public class BlockContainer implements DataStreamable{
+public class BlockContainer /*implements DataStreamable*/{
 	
-	private BlockOctree blocks;
+	/*private BlockOctree blocks;
 	
 	private Collection<Entry<Vector3I, BlockSimulable>> simulableBlocks = Collections.<Entry<Vector3I, BlockSimulable>>emptyList();
 	
@@ -148,5 +148,5 @@ public class BlockContainer implements DataStreamable{
 	public void write(DataOutputStream stream)
 	{
 		blocks.write(stream);
-	}
+	}*/
 }

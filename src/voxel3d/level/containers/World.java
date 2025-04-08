@@ -40,15 +40,13 @@ import voxel3d.utility.Vector3d;
 
 public class World implements DataStreamable {
 	
-	
 	private int ox, oy, oz;
 	private int renderDistance;
 	
-	
 	private final ConcurrentNavigableMap<Vector3I, BlockContainer> allBlockContainers;
-	private final PersistentVector3D<BlockContainer> blockContainers;
-	private final PersistentVector3D<LightContainer> lightContainers;
-	private final PersistentVector3D<MeshContainer> meshContainers;
+	//private final PersistentVector3D<BlockContainer> blockContainers;
+	//private final PersistentVector3D<LightContainer> lightContainers;
+	//private final PersistentVector3D<MeshContainer> meshContainers;
 	private final ConcurrentLinkedQueue<Entity> entities;
 	
 	public final String name;
@@ -72,9 +70,9 @@ public class World implements DataStreamable {
 		seed = new Random().nextInt();
 		
 		this.renderDistance = renderDistance;
-		this.blockContainers = new PersistentVector3D<BlockContainer>(2 * renderDistance + 1);
-		this.lightContainers = new PersistentVector3D<LightContainer>(2 * renderDistance + 1);
-		this.meshContainers = new PersistentVector3D<MeshContainer>(2 * renderDistance + 1);
+		//this.blockContainers = new PersistentVector3D<BlockContainer>(2 * renderDistance + 1);
+		//this.lightContainers = new PersistentVector3D<LightContainer>(2 * renderDistance + 1);
+		//this.meshContainers = new PersistentVector3D<MeshContainer>(2 * renderDistance + 1);
 		
 		entities = new ConcurrentLinkedQueue<Entity>();
 		player = new Player();
@@ -146,7 +144,7 @@ public class World implements DataStreamable {
 		}
 	}
 	
-	public void setBlockContainer(int x, int y, int z, BlockContainer blockContainer)
+	/*public void setBlockContainer(int x, int y, int z, BlockContainer blockContainer)
 	{
 		synchronized(this)
 		{	
@@ -155,7 +153,7 @@ public class World implements DataStreamable {
 			key.set(x, y, z);
 			allBlockContainers.put(key, blockContainer);
 		}
-	}
+	}*/
 	
 	public boolean setBlock(int x, int y, int z, Block block)
 	{
@@ -179,21 +177,21 @@ public class World implements DataStreamable {
 		}
 	}
 	
-	public void setLightContainer(int x, int y, int z, LightContainer lightContainer)
+	/*public void setLightContainer(int x, int y, int z, LightContainer lightContainer)
 	{
 		synchronized(this)
 		{
 			lightContainers.set(x - ox, y - oy, z - oz, lightContainer);
 		}
-	}
+	}*/
 	
-	public void setMeshContainer(int x, int y, int z, MeshContainer meshContainer)
+	/*public void setMeshContainer(int x, int y, int z, MeshContainer meshContainer)
 	{
 		synchronized(this)
 		{
 			meshContainers.set(x - ox, y - oy, z - oz, meshContainer);
 		}
-	}
+	}*/
 	
 	public void setCenter(int x, int y, int z, int newRenderDistance)
 	{
@@ -215,23 +213,23 @@ public class World implements DataStreamable {
 		}
 	}
 	
-	public MeshContainer getMeshContainer(int x, int y, int z)
+	/*public MeshContainer getMeshContainer(int x, int y, int z)
 	{
 		synchronized(this)
 		{
 			return meshContainers.get(x - ox, y - oy, z - oz);
 		}
-	}
+	}*/
 	
-	public BlockContainer getPersistentBlockContainer(int x, int y, int z)
+	/*public BlockContainer getPersistentBlockContainer(int x, int y, int z)
 	{
 		synchronized(this)
 		{
 			return blockContainers.get(x - ox, y - oy, z - oz);
 		}
-	}
+	}*/
 	
-	public BlockContainer getBufferedBlockContainer(int x, int y, int z)
+	/*public BlockContainer getBufferedBlockContainer(int x, int y, int z)
 	{
 		synchronized(this)
 		{
@@ -239,33 +237,33 @@ public class World implements DataStreamable {
 			key.set(x, y, z);
 			return allBlockContainers.get(key);
 		}
-	}
+	}*/
 	
-	public Iterable<Entry<Vector3I, BlockContainer>> getAllBlockContainers()
+	/*public Iterable<Entry<Vector3I, BlockContainer>> getAllBlockContainers()
 	{
 		synchronized(this)
 		{
 			return allBlockContainers.entrySet();
 		}
-	}
+	}*/
 	
-	public LightContainer getPersistentLightContainer(int x, int y, int z)
+	/*public LightContainer getPersistentLightContainer(int x, int y, int z)
 	{
 		synchronized(this)
 		{
 			return lightContainers.get(x - ox, y - oy, z - oz);
 		}
-	}
+	}*/
 	
-	public boolean getPersistentBlockContainers(int x, int y, int z, BlockContainer[][][] arr)
+	/*public boolean getPersistentBlockContainers(int x, int y, int z, BlockContainer[][][] arr)
 	{
 		synchronized(this)
 		{
 			return blockContainers.getNeighbours(x - ox, y - oy, z - oz, arr);
 		}
-	}
+	}*/
 	
-	public boolean getBufferedBlockContainers(int x, int y, int z, BlockContainer[][][] arr)
+	/*public boolean getBufferedBlockContainers(int x, int y, int z, BlockContainer[][][] arr)
 	{
 		synchronized(this)
 		{
@@ -284,22 +282,19 @@ public class World implements DataStreamable {
 			}
 			return true;
 		}
-	}
+	}*/
 	
-	public boolean getPersistentLightContainers(int x, int y, int z, LightContainer[][][] arr)
+	/*public boolean getPersistentLightContainers(int x, int y, int z, LightContainer[][][] arr)
 	{
 		synchronized(this)
 		{
 			return lightContainers.getNeighbours(x - ox, y - oy, z - oz, arr);
 		}
-	}
+	}*/
 	
 	public int getRenderDistance()
 	{
-		synchronized(this)
-		{
-			return renderDistance;
-		}
+		return renderDistance;
 	}
 	
 	public void getOffset(Vector3I writeback)

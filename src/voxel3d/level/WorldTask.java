@@ -54,7 +54,7 @@ public class WorldTask {
 		int chunkBuilds = Settings.taskSaturation - worldScheduler.workerChunkMesh.getTaskCount();
 		
 		
-		//Chunk population iss simpler to managethis way	
+		//Chunk population is simpler to manage this way	
 		for(int r = 0; r <= world.getRenderDistance(); r++)
 		{
 			for(int x = 0 ; x < size; x++)
@@ -71,15 +71,16 @@ public class WorldTask {
 							if(checkGen(x,y,z))
 								chunkGens--;
 						
-						long minElapsedMillisBuild = r <= 1 ? 100 : 100;
-						long minElapsedMillisLight = r <= 1 ? 1000 : r*r*1000;
+						long minElapsedMillisBuild = r <= 1 ? 10 : 100;
+						long minElapsedMillisLight = r <= 1 ? 10 : r*r*1000;
+						boolean priority = (r <= 1);
 						
-						if(chunkLights > 0)
-							if(checkLight(x,y,z,minElapsedMillisLight))
+						if(chunkLights > 0 || priority)
+							if(checkLight(x,y,z,minElapsedMillisLight,priority))
 								chunkLights--;
 						
-						if(chunkBuilds > 0)
-							if(checkMesh(x,y,z,minElapsedMillisBuild))
+						if(chunkBuilds > 0 || priority)
+							if(checkMesh(x,y,z,minElapsedMillisBuild,priority))
 								chunkBuilds--;
 					}
 				}
@@ -147,6 +148,7 @@ public class WorldTask {
 		}
 	}
 	
+	//TODO: priority check
 	private boolean checkGen(int x, int y, int z)
 	{
 		BlockContainer blockContainer = world.getPersistentBlockContainer(offset.x + x, offset.y + y, offset.z + z);
@@ -162,7 +164,7 @@ public class WorldTask {
 		return false;
 	}
 	
-	private boolean checkLight(int x, int y, int z, long minElapsedMillis)
+	private boolean checkLight(int x, int y, int z, long minElapsedMillis, boolean priority)
 	{
 		MeshContainer mesh = world.getMeshContainer(offset.x + x, offset.y + y, offset.z + z);
 		if(mesh == null) 
@@ -206,14 +208,17 @@ public class WorldTask {
 		{
 			long newContainerConsistency = Math.max(blockVer, lightVer);
 			ChunkLightBuilder lightBuilder = new ChunkLightBuilder(lights, blocks[1][1][1], newContainerConsistency);
-			worldScheduler.workerChunkLight.addTask(lightBuilder);
+			if(priority)
+				worldScheduler.workerChunkLight.addPriorityTask(lightBuilder);
+			else
+				worldScheduler.workerChunkLight.addTask(lightBuilder);
 			lights = new LightContainer[3][3][3];
 			return true;
 		}
 		return false;
 	}
 	
-	private boolean checkMesh(int x, int y, int z, long minElapsedMillis)
+	private boolean checkMesh(int x, int y, int z, long minElapsedMillis, boolean priority)
 	{
 		MeshContainer mesh = world.getMeshContainer(offset.x + x, offset.y + y, offset.z + z);	
 		if(mesh == null) 
@@ -261,7 +266,10 @@ public class WorldTask {
 		{
 			long newContainerConsistency = Math.max(blockVer, lightVer);
 			ChunkMeshBuilder meshBuilder = new ChunkMeshBuilder(blocks, lights, mesh, newContainerConsistency);
-			worldScheduler.workerChunkMesh.addTask(meshBuilder);
+			if(priority)
+				worldScheduler.workerChunkMesh.addPriorityTask(meshBuilder);
+			else
+				worldScheduler.workerChunkMesh.addTask(meshBuilder);
 			lights = new LightContainer[3][3][3];
 			blocks = new BlockContainer[3][3][3];
 			return true;

@@ -7,7 +7,7 @@ import voxel3d.utility.MathX;
 import voxel3d.utility.Color5;
 
 public class LightContainer {
-	
+	/*
 	private byte[] red;
 	private byte[] green;
 	private byte[] blue;
@@ -119,5 +119,5 @@ public class LightContainer {
 		
 		result.set(lightRed, lightGreen, lightBlue, lightSky);
 	}
-
+*/
 }

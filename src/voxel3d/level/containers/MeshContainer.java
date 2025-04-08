@@ -3,7 +3,7 @@ package voxel3d.level.containers;
 import voxel3d.graphics.Mesh;
 
 public class MeshContainer {
-	
+	/*
 	private Mesh mesh;
 	private long consistentWith;
 	
@@ -31,5 +31,5 @@ public class MeshContainer {
 	{
 		return consistentWith;
 	}
-
+*/
 }
