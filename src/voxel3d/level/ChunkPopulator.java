@@ -8,8 +8,7 @@ import voxel3d.generation.biome.Biome;
 import voxel3d.generation.structures.*;
 import voxel3d.global.Debug;
 import voxel3d.global.Settings;
-import voxel3d.level.containers.BlockContainer;
-import voxel3d.level.containers.LightContainer;
+import voxel3d.level.world.Chunk;
 import voxel3d.utility.Executable;
 import voxel3d.utility.MathX;
 
@@ -28,24 +27,16 @@ public class ChunkPopulator implements Executable {
 		//structures.add(new HouseSmal());
 	}
 	
-	public static LightContainer getInitialLight(int chunkX, int chunkY, int chunkZ)
-	{
-		if(chunkY > -2)
-			return new LightContainer(1f, 0, 0, 0);
-		else
-			return new LightContainer(0f, 0, 0, 0);		
-	}
-	
 	private final int chunkX, chunkY, chunkZ;
-	private final BlockContainer container;
+	private final Chunk chunk;
 	
-	public ChunkPopulator(int chunkX, int chunkY, int chunkZ, BlockContainer container)
+	public ChunkPopulator(int chunkX, int chunkY, int chunkZ, Chunk chunk)
 	{
 		this.chunkX = chunkX;
 		this.chunkY = chunkY;
 		this.chunkZ = chunkZ;
-		this.container = container;
-		container.wip = true;
+		this.chunk = chunk;
+		chunk.isBeingPopulated = true;
 	}
 	
 	public void execute()
@@ -75,11 +66,11 @@ public class ChunkPopulator implements Executable {
 					for(int zp = -1; zp <= 1; zp++)
 						structure.placeExistingOffset(chunkX + xp, chunkY + yp, chunkZ + zp, xp, yp, zp, blocks);
 		
-		container.set(blocks);
+		chunk.setAllBlocks(blocks);
+		chunk.isPopulated = true;
+		chunk.isBeingPopulated = false;
 		
 		Debug.chunkGens++;
-		
-		container.wip = false;
 	}
 	
 	public static Block getBlock(int x, int y, int z)

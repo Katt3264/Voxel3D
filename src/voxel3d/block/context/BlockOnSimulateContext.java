@@ -1,21 +1,19 @@
 package voxel3d.block.context;
 
 import voxel3d.block.Block;
-import voxel3d.level.containers.BlockContainer;
+import voxel3d.level.world.Chunk;
 import voxel3d.utility.MathX;
 
 public class BlockOnSimulateContext {
 	
-	//public boolean destroyed = false;
 	public boolean updateMesh = false;
-	//public boolean updateLight = false;
-	private BlockContainer[][][] blocks;
+	private Chunk[][][] chunks;
 	private double deltaTime;
 	private int x, y, z;
 	
-	public BlockOnSimulateContext(double deltaTime, BlockContainer[][][] blocks)
+	public BlockOnSimulateContext(double deltaTime, Chunk[][][] chunks)
 	{
-		this.blocks = blocks;
+		this.chunks = chunks;
 		this.deltaTime = deltaTime;
 	}
 	
@@ -28,7 +26,7 @@ public class BlockOnSimulateContext {
 	
 	public void replaceSelf(Block newBlock)
 	{
-		blocks[1][1][1].setBlock(x, y, z, newBlock);
+		chunks[1][1][1].setBlock(x, y, z, newBlock);
 	}
 	
 	public Block getLocalBlock(int lx, int ly, int lz)
@@ -41,7 +39,7 @@ public class BlockOnSimulateContext {
 		int yp = MathX.chunkMod(y+ly);
 		int zp = MathX.chunkMod(z+lz);
 
-		return blocks[chunkX][chunkY][chunkZ].getBlock(xp, yp, zp);
+		return chunks[chunkX][chunkY][chunkZ].getBlock(xp, yp, zp);
 	}
 	
 	public void getBlocks(Block[] writeback)

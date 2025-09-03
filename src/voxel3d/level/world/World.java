@@ -1,11 +1,10 @@
-package voxel3d.level.containers;
+package voxel3d.level.world;
 
 import static org.lwjgl.opengl.GL20.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentNavigableMap;
@@ -34,32 +33,33 @@ import voxel3d.physics.AABB;
 import voxel3d.physics.Ray;
 import voxel3d.utility.Color;
 import voxel3d.utility.MathX;
-import voxel3d.utility.PersistentVector3D;
 import voxel3d.utility.Vector3I;
 import voxel3d.utility.Vector3d;
 
+/**
+* This class represents a 3d world of blocks
+*/
 public class World implements DataStreamable {
-	
-	
-	private int ox, oy, oz;
-	private int renderDistance;
-	
-	
-	private final ConcurrentNavigableMap<Vector3I, BlockContainer> allBlockContainers;
-	private final PersistentVector3D<BlockContainer> blockContainers;
-	private final PersistentVector3D<LightContainer> lightContainers;
-	private final PersistentVector3D<MeshContainer> meshContainers;
-	private final ConcurrentLinkedQueue<Entity> entities;
 	
 	public final String name;
 	public final Player player;
 	public long loadProgress = 0;
 	
+	private boolean paused = false;
+	private int ox, oy, oz;
+	private int renderDistance;
+	
+	//TODO: use better data structure for chunks
+	private final ConcurrentNavigableMap<Vector3I, Chunk> chunks;
+	private final ConcurrentLinkedQueue<Entity> entities;
+	private final WorldScheduler worldScheduler;
+	
 	private final Color skyColor = new Color();
 	private final Ambiance ambiance;
 	private long time = 0;
 	private int seed;
-
+	
+	//TODO: fix this
 	private AABB[] aabbBuffer = new AABB[1024];
 
 	public World(int renderDistance, int ox, int oy, int oz, String name)
@@ -72,21 +72,61 @@ public class World implements DataStreamable {
 		seed = new Random().nextInt();
 		
 		this.renderDistance = renderDistance;
-		this.blockContainers = new PersistentVector3D<BlockContainer>(2 * renderDistance + 1);
-		this.lightContainers = new PersistentVector3D<LightContainer>(2 * renderDistance + 1);
-		this.meshContainers = new PersistentVector3D<MeshContainer>(2 * renderDistance + 1);
+		this.chunks = new ConcurrentSkipListMap<Vector3I, Chunk>();
 		
 		entities = new ConcurrentLinkedQueue<Entity>();
 		player = new Player();
 		entities.add(player);
-		//dayNight = new DayNight();
 		ambiance = new Ambiance();
-		allBlockContainers = new ConcurrentSkipListMap<Vector3I, BlockContainer>();
 		
 		for(int i = 0; i < aabbBuffer.length; i++)
 		{
 			aabbBuffer[i] = new AABB();
 		}
+		this.worldScheduler = new WorldScheduler(this);
+	}
+	
+	public void start()
+	{
+		worldScheduler.start();
+	}
+	
+	public void pause()
+	{
+		if(paused)
+			return;
+		
+		paused = true;
+		worldScheduler.pause();
+	}
+	
+	public void resume()
+	{
+		if(!paused)
+			return;
+		
+		worldScheduler.resume();
+		paused = false;
+	}
+	
+	public void stop()
+	{
+		worldScheduler.stop();
+	}
+	
+	public boolean isPaused()
+	{
+		return paused;
+	}
+	
+	public boolean isLoading()
+	{
+		return worldScheduler.loadingInProgress;
+	}
+	
+	public boolean isRunning()
+	{
+		return worldScheduler.isRunning();
 	}
 	
 	public String getClockTime()
@@ -136,27 +176,6 @@ public class World implements DataStreamable {
 		}
 	}
 	
-	public void setBufferedBlockContainer(int x, int y, int z, BlockContainer blockContainer)
-	{
-		synchronized(this)
-		{
-			Vector3I key = new Vector3I();
-			key.set(x, y, z);
-			allBlockContainers.put(key, blockContainer);
-		}
-	}
-	
-	public void setBlockContainer(int x, int y, int z, BlockContainer blockContainer)
-	{
-		synchronized(this)
-		{	
-			blockContainers.set(x - ox, y - oy, z - oz, blockContainer);
-			Vector3I key = new Vector3I();
-			key.set(x, y, z);
-			allBlockContainers.put(key, blockContainer);
-		}
-	}
-	
 	public boolean setBlock(int x, int y, int z, Block block)
 	{
 		synchronized(this)
@@ -169,29 +188,14 @@ public class World implements DataStreamable {
 			int yp = MathX.chunkMod(y);
 			int zp = MathX.chunkMod(z);
 	
-			BlockContainer blockContainer = getPersistentBlockContainer(chunkX, chunkY, chunkZ);
+			Chunk chunk = getChunk(chunkX, chunkY, chunkZ);
 			
-			if(blockContainer == null) {return false;}
+			//TODO: change this event
+			if(chunk == null) {return false;}
 			
-			blockContainer.setBlock(xp, yp, zp, block);
+			chunk.setBlock(xp, yp, zp, block);
 			
 			return true;
-		}
-	}
-	
-	public void setLightContainer(int x, int y, int z, LightContainer lightContainer)
-	{
-		synchronized(this)
-		{
-			lightContainers.set(x - ox, y - oy, z - oz, lightContainer);
-		}
-	}
-	
-	public void setMeshContainer(int x, int y, int z, MeshContainer meshContainer)
-	{
-		synchronized(this)
-		{
-			meshContainers.set(x - ox, y - oy, z - oz, meshContainer);
 		}
 	}
 	
@@ -199,107 +203,17 @@ public class World implements DataStreamable {
 	{
 		synchronized(this)
 		{
-			int xs = ox - (x - newRenderDistance);
-			int ys = oy - (y - newRenderDistance);
-			int zs = oz - (z - newRenderDistance);
-			
 			ox = x - newRenderDistance;
 			oy = y - newRenderDistance;
 			oz = z - newRenderDistance;
 			
 			renderDistance = newRenderDistance;
-			
-			blockContainers.shift(xs, ys, zs, 2 * newRenderDistance + 1);
-			lightContainers.shift(xs, ys, zs, 2 * newRenderDistance + 1); 
-			 meshContainers.shift(xs, ys, zs, 2 * newRenderDistance + 1);
-		}
-	}
-	
-	public MeshContainer getMeshContainer(int x, int y, int z)
-	{
-		synchronized(this)
-		{
-			return meshContainers.get(x - ox, y - oy, z - oz);
-		}
-	}
-	
-	public BlockContainer getPersistentBlockContainer(int x, int y, int z)
-	{
-		synchronized(this)
-		{
-			return blockContainers.get(x - ox, y - oy, z - oz);
-		}
-	}
-	
-	public BlockContainer getBufferedBlockContainer(int x, int y, int z)
-	{
-		synchronized(this)
-		{
-			Vector3I key = new Vector3I();
-			key.set(x, y, z);
-			return allBlockContainers.get(key);
-		}
-	}
-	
-	public Iterable<Entry<Vector3I, BlockContainer>> getAllBlockContainers()
-	{
-		synchronized(this)
-		{
-			return allBlockContainers.entrySet();
-		}
-	}
-	
-	public LightContainer getPersistentLightContainer(int x, int y, int z)
-	{
-		synchronized(this)
-		{
-			return lightContainers.get(x - ox, y - oy, z - oz);
-		}
-	}
-	
-	public boolean getPersistentBlockContainers(int x, int y, int z, BlockContainer[][][] arr)
-	{
-		synchronized(this)
-		{
-			return blockContainers.getNeighbours(x - ox, y - oy, z - oz, arr);
-		}
-	}
-	
-	public boolean getBufferedBlockContainers(int x, int y, int z, BlockContainer[][][] arr)
-	{
-		synchronized(this)
-		{
-			for(int xx = -1; xx <= 1; xx++)
-			{
-				for(int yy = -1; yy <= 1; yy++)
-				{
-					for(int zz = -1; zz <= 1; zz++)
-					{
-						BlockContainer b = getBufferedBlockContainer(x + xx, y + yy, z + zz);
-						arr[xx+1][yy+1][zz+1] = b;
-						if(b == null)
-							return false;
-					}
-				}
-			}
-			return true;
-		}
-	}
-	
-	public boolean getPersistentLightContainers(int x, int y, int z, LightContainer[][][] arr)
-	{
-		synchronized(this)
-		{
-			return lightContainers.getNeighbours(x - ox, y - oy, z - oz, arr);
 		}
 	}
 	
 	public int getRenderDistance()
 	{
-		synchronized(this)
-		{
-			return renderDistance;
-		}
+		return renderDistance;
 	}
 	
 	public void getOffset(Vector3I writeback)
@@ -312,9 +226,31 @@ public class World implements DataStreamable {
 	
 	public Color getSkyColor()
 	{
+		return skyColor;
+	}
+	
+	public Chunk getChunk(int x, int y, int z)
+	{
 		synchronized(this)
 		{
-			return skyColor;
+			Vector3I pos = new Vector3I(x,y,z);
+			Chunk chunk = chunks.get(pos);
+			if(chunk == null)
+			{
+				chunk = new Chunk(x,y,z);
+				chunks.put(new Vector3I(x,y,z), chunk);
+			}
+			return chunk;
+		}
+	}
+	
+	private Mesh getLocalChunkMesh(int x, int y, int z)
+	{
+		synchronized(this)
+		{
+			Chunk chunk = getChunk(x, y, z);
+			if(chunk == null) {return null;}
+			return chunk.getMesh();
 		}
 	}
 	
@@ -330,11 +266,12 @@ public class World implements DataStreamable {
 			int yp = MathX.chunkMod(y);
 			int zp = MathX.chunkMod(z);
 	
-			BlockContainer blockContainer = getPersistentBlockContainer(chunkX, chunkY, chunkZ);
+			Chunk chunk = getChunk(chunkX, chunkY, chunkZ);
 			
-			if(blockContainer == null) {return Block.GetNotYetLoaded();}
+			//TODO: change this event
+			if(chunk == null) {return Block.GetNotYetLoaded();}
 			
-			return blockContainer.getBlock(xp, yp, zp);
+			return chunk.getBlock(xp, yp, zp);
 		}
 	}
 	
@@ -342,31 +279,23 @@ public class World implements DataStreamable {
 	{
 		synchronized(this)
 		{
-			int chunkX = MathX.chunkFloorDiv(x) - ox;
-			int chunkY = MathX.chunkFloorDiv(y) - oy;
-			int chunkZ = MathX.chunkFloorDiv(z) - oz;
+			int chunkX = MathX.chunkFloorDiv(x);
+			int chunkY = MathX.chunkFloorDiv(y);
+			int chunkZ = MathX.chunkFloorDiv(z);
 			
 			int xp = MathX.chunkMod(x);
 			int yp = MathX.chunkMod(y);
 			int zp = MathX.chunkMod(z);
 			
-			if((chunkX < 0 || chunkX >= 2 * renderDistance + 1)
-			|| (chunkY < 0 || chunkY >= 2 * renderDistance + 1)
-			|| (chunkZ < 0 || chunkZ >= 2 * renderDistance + 1)) 
+			Chunk chunk = getChunk(chunkX, chunkY, chunkZ);
+			
+			if(chunk == null) 
 			{
 				writeback.set(0, 0, 0);
 				return;
 			}
 			
-			LightContainer lightContainer = lightContainers.get(chunkX, chunkY, chunkZ);
-			
-			if(lightContainer == null) 
-			{
-				writeback.set(0, 0, 0);
-				return;
-			}
-			
-			lightContainer.getColor(xp, yp, zp, skyColor, writeback);
+			chunk.getColor(xp, yp, zp, skyColor, writeback);
 		}
 	}
 	
@@ -518,6 +447,14 @@ public class World implements DataStreamable {
 	
 	public void update()
 	{
+		//TODO: improve
+		
+		worldScheduler.mainThreadFrameEntry();
+		
+		if(worldScheduler.loadingInProgress || isPaused())
+			return;
+		
+		
 		setCenter(
 				MathX.chunkFloorDiv((int)player.position.x), 
 				MathX.chunkFloorDiv((int)player.position.y), 
@@ -583,7 +520,6 @@ public class World implements DataStreamable {
 	
 	public void render()
 	{
-		Mesh.cleanup();
 		Debug.triangles = 0;
 		float[] perspective = new float[4*4];
 		float[] view = new float[4*4];
@@ -643,12 +579,9 @@ public class World implements DataStreamable {
 			{
 				for(int z = 0; z < size; z++)
 				{
-					MeshContainer builder = meshContainers.get(x, y, z);
-					if(builder == null) {continue;}
-					
-					Mesh mesh = builder.getMesh();
+					Mesh mesh = getLocalChunkMesh(x+ox, y+oy, z+oz);
 					if(mesh == null) {continue;}
-					mesh.notifyUsed();
+					mesh.keepAlive();
 					
 					if(mesh.triangles == 0) {continue;}
 					

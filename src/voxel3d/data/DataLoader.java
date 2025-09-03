@@ -12,8 +12,7 @@ import java.util.Map.Entry;
 import voxel3d.entity.Entity;
 import voxel3d.global.Debug;
 import voxel3d.global.Settings;
-import voxel3d.level.containers.BlockContainer;
-import voxel3d.level.containers.World;
+import voxel3d.level.world.World;
 import voxel3d.utility.Executable;
 import voxel3d.utility.TaskWorker;
 import voxel3d.utility.Vector3I;
@@ -43,8 +42,8 @@ public class DataLoader {
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {e.printStackTrace();}
 		
-		
-		File[] chunks = new File("store/worlds/" + world.name + "/chunks").listFiles();
+		//TODO: 
+		/*File[] chunks = new File("store/worlds/" + world.name + "/chunks").listFiles();
 		if(chunks != null)
 		{
 			TaskWorker loader = new TaskWorker(Settings.IOThreads);
@@ -61,10 +60,11 @@ public class DataLoader {
 			loader.start();
 			loader.completeAllTasks();
 			loader.stop();
-		}
+		}*/
 	}
 	
-	private static class ChunkLoader implements Executable 
+	//TODO: 
+	/*private static class ChunkLoader implements Executable 
 	{
 		private File file;
 		private World world;
@@ -81,17 +81,21 @@ public class DataLoader {
 			try {
 				Vector3I pos = new Vector3I();
 				String name = file.getName();
+				
 				name = name.replaceFirst("chunk", "");
 				String[] cords = name.split(",");
+				
 				pos.set(Integer.parseInt(cords[0]), Integer.parseInt(cords[1]), Integer.parseInt(cords[2]));
+				
 				BlockContainer container = new BlockContainer();
 				container.read(getInPath(file.getPath()));
 				world.setBufferedBlockContainer(pos.x, pos.y, pos.z, container);
+				
 				world.loadProgress++;
 			} catch (IOException e){e.printStackTrace();
 			} catch (NumberFormatException e){e.printStackTrace();}
 		}
-	}
+	}*/
 	
 	
 	private static DataInputStream getInPath(String path) throws IOException
@@ -135,7 +139,8 @@ public class DataLoader {
 		} catch (IOException e) {e.printStackTrace();}
 		
 		
-		TaskWorker loader = new TaskWorker(Settings.IOThreads);
+		//TODO: 
+		/*TaskWorker loader = new TaskWorker(Settings.IOThreads);
 		level.loadProgress = 0;
 		for(Entry<Vector3I,BlockContainer> entry : level.getAllBlockContainers())
 	    {
@@ -144,10 +149,11 @@ public class DataLoader {
 		
 		loader.start();
 		loader.completeAllTasks();
-		loader.stop();
+		loader.stop();*/
 	}
 	
-	private static class ChunkSaver implements Executable 
+	//TODO: 
+	/*private static class ChunkSaver implements Executable 
 	{
 		private Entry<Vector3I,BlockContainer> entry;
 		private World world;
@@ -175,7 +181,7 @@ public class DataLoader {
 				world.loadProgress++;
 			} catch (IOException e){e.printStackTrace();}
 		}
-	}
+	}*/
 	
 	
 	private static void saveFileSmart(String path, DataOutputStream dos) throws IOException

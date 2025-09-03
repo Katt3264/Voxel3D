@@ -1,6 +1,8 @@
 package voxel3d.level;
 
-
+/**
+* This class represents a space where there is a player, one save file, one playthrough
+*/
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
@@ -22,21 +24,20 @@ import voxel3d.global.Debug;
 import voxel3d.global.Input;
 import voxel3d.global.Objects;
 import voxel3d.global.Settings;
+import voxel3d.graphics.Mesh;
 import voxel3d.gui.HUD;
 import voxel3d.gui.HUDRenderContext;
 import voxel3d.gui.HUDUpdateContext;
 import voxel3d.gui.PauseMenu;
-import voxel3d.level.containers.World;
+import voxel3d.level.world.World;
 import voxel3d.utility.GUIUtill;
 
 public class Level {
 	
-	private final WorldScheduler worldScheduler;
 	private final World world;
 	
 	private HUD hud;
 	private PauseMenu pauesMenu;
-	private boolean paused = false;
 	
 	
 	public Level(String name)
@@ -44,21 +45,22 @@ public class Level {
 		hud = new HUD();
 		pauesMenu = new PauseMenu();
 		this.world  = new World(Settings.renderDistance, -Settings.renderDistance, -Settings.renderDistance, -Settings.renderDistance, name);
-		this.worldScheduler = new WorldScheduler(world);
+		world.start();
 	}
 	
 	public void draw() 
 	{
+		Mesh.cleanup();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0, 0, 1, 1.0f);
 		
-		if(!worldScheduler.loadingInProgress)
+		if(!world.isLoading())
 		{
 			world.render();
 			
 			HUDRenderContext hudRenderContext = new HUDRenderContext(world);
 			hud.draw(hudRenderContext);
-			if(paused)
+			if(world.isPaused())
 			{
 				pauesMenu.draw();
 			}
@@ -124,9 +126,8 @@ public class Level {
 
 	public void update() 
 	{
-		if(worldScheduler.loadingInProgress)
+		if(!isRunning())
 			return;
-		
 		
 		if(Input.hud.isButtonPress())
 		{
@@ -145,23 +146,23 @@ public class Level {
 		
 		if(Input.esc.isButtonPress() && !world.player.inventoryOpen)
 		{
-			paused = !paused;
-			if(paused)
+			if(world.isPaused())
 			{
-				Input.showMouse();
-				worldScheduler.pause();
+				Input.hideMouse();
+				world.resume();
 			}
 			else
 			{
-				Input.hideMouse();
-				worldScheduler.resume();
+				Input.showMouse();
+				world.pause();
 			}
 		}
 		
-		if(!paused)
+		world.update();
+		
+		if(!world.isPaused())
 		{
-			worldScheduler.mainThreadFrameEntry();
-			world.update();
+			//TODO: this can move in to world
 			HUDUpdateContext hudUpdateContext = new HUDUpdateContext(world);
 			hud.update(hudUpdateContext);
 		}
@@ -171,24 +172,23 @@ public class Level {
 			
 			if(pauesMenu.exit())
 			{
-				worldScheduler.stop();
+				world.stop();
 			}
 			if(pauesMenu.resume())
 			{
-				paused = false;
 				Input.hideMouse();
-				worldScheduler.resume();
+				world.resume();
 			}
 		}
 	}
 	
-	public boolean isAlive()
+	public boolean isRunning()
 	{
-		return worldScheduler.isAlive();
+		return world.isRunning();
 	}
 	
-	public void destroy()
+	public void stop()
 	{
-		worldScheduler.stop();
+		world.stop();
 	}
 }

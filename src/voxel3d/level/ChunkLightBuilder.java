@@ -4,8 +4,7 @@ import voxel3d.block.Block;
 import voxel3d.global.Debug;
 import voxel3d.global.Settings;
 import voxel3d.global.Time;
-import voxel3d.level.containers.BlockContainer;
-import voxel3d.level.containers.LightContainer;
+import voxel3d.level.world.Chunk;
 import voxel3d.utility.Executable;
 import voxel3d.utility.MathX;
 
@@ -16,29 +15,32 @@ public class ChunkLightBuilder implements Executable {
 	private static final int BLUE = 2;
 	private static final int SKY = 3;
 	
-	private final LightContainer[][][] lights;
-	private final LightContainer lightCenter;
-	private final BlockContainer blocks;
-	private final long ver;
+	private final Chunk[][][] chunks;
+	private final Chunk chunkCenter;
 	
-	public ChunkLightBuilder(LightContainer[][][] lights, BlockContainer blocks, long ver)
+	private final long newVer;
+	
+	public ChunkLightBuilder(Chunk[][][] chunks, long newVer)
 	{
-		this.lights = lights;
-		this.lightCenter = lights[1][1][1];
-		this.blocks = blocks;
-		this.ver = ver;
-		lightCenter.wip = true;
+		this.chunks = chunks;
+		this.chunkCenter = chunks[1][1][1];
+		this.newVer = newVer;
+		chunkCenter.buildingLight = true;
 	}
 
 	private boolean changed = false;
 	public void execute()
 	{
-		byte[] red = lightCenter.getRed();
-		byte[] green = lightCenter.getGreen();
-		byte[] blue = lightCenter.getBlue();
-		byte[] sky = lightCenter.getSky();
+		
+		
+		byte[] red   = chunkCenter.getRed();
+		byte[] green = chunkCenter.getGreen();
+		byte[] blue  = chunkCenter.getBlue();
+		byte[] sky   = chunkCenter.getSky();
 		byte[][] tArr = new byte[][]{red, green, blue, sky};
 		
+		
+		changed = false;
 		for(int type = 0; type <= 3; type++)
 			for(int x = 0; x < Settings.CHUNK_SIZE; x++)
 				for(int y = 0; y < Settings.CHUNK_SIZE; y++)
@@ -52,26 +54,25 @@ public class ChunkLightBuilder implements Executable {
 						for(int z = Settings.CHUNK_SIZE - 1; z >= 0; z--)
 							propagate(x, y, z, tArr[type], type);
 		
-		if(!changed)
+
+		if(changed)
 		{
-			lightCenter.stable = true;
-			lightCenter.setConsistentWith(ver);
+			chunkCenter.lastModified = Time.getAtomTime();
 		}
 		else
 		{
-			lightCenter.stable = false;
-			lightCenter.setLastModified(Time.getAtomTime());
+			chunkCenter.consistentLight = newVer;
 		}
+			
+			
+		chunkCenter.buildingLight = false;
 		Debug.chunkLights++;
-		
-		lightCenter.lastChange = System.currentTimeMillis();
-		lightCenter.wip = false;
 	}
 	
 	private void propagate(int x, int y, int z, byte[] arr, int type)
 	{
 		int oldValue = arr[MathX.getXYZ(x, y, z)];
-		int newValue = getBlockContainerLight(x, y, z, type);
+		int newValue = getBlockLight(x, y, z, type);
 		
 		if(getBlock(x,y,z).isLightTransparent()) 
 		{
@@ -104,35 +105,35 @@ public class ChunkLightBuilder implements Executable {
 		if(chunkX == 0 && chunkY == 0 && chunkZ == 0) 
 			return arr[MathX.getXYZ(xp, yp, zp)];
 		else
-			return getLightContainerLight(xp, yp, zp, type, lights[chunkX + 1][chunkY + 1][chunkZ + 1]);
+			return getLight(xp, yp, zp, type, chunks[chunkX + 1][chunkY + 1][chunkZ + 1]);
 	}
 	
-	private byte getLightContainerLight(int x, int y, int z, int type, LightContainer container)
+	private byte getLight(int x, int y, int z, int type, Chunk chunk)
 	{
 		if(type == RED)
-			return container.getRed()[MathX.getXYZ(x, y, z)];
+			return chunk.getRed()[MathX.getXYZ(x, y, z)];
 		else if(type == GREEN)
-			return container.getGreen()[MathX.getXYZ(x, y, z)];
+			return chunk.getGreen()[MathX.getXYZ(x, y, z)];
 		else if(type == BLUE)
-			return container.getBlue()[MathX.getXYZ(x, y, z)];
+			return chunk.getBlue()[MathX.getXYZ(x, y, z)];
 		else //type == SKY
-			return container.getSky()[MathX.getXYZ(x, y, z)];
+			return chunk.getSky()[MathX.getXYZ(x, y, z)];
 	}
 	
-	private byte getBlockContainerLight(int x, int y, int z, int type)
+	private byte getBlockLight(int x, int y, int z, int type)
 	{
 		if(type == RED)
-			return (byte) (blocks.getBlock(x, y, z).getRedLight() * Settings.lightDistance);
+			return (byte) (getBlock(x, y, z).getRedLight() * Settings.lightDistance);
 		else if(type == GREEN)
-			return (byte) (blocks.getBlock(x, y, z).getGreenLight() * Settings.lightDistance);
+			return (byte) (getBlock(x, y, z).getGreenLight() * Settings.lightDistance);
 		else if(type == BLUE)
-			return (byte) (blocks.getBlock(x, y, z).getBlueLight() * Settings.lightDistance);
+			return (byte) (getBlock(x, y, z).getBlueLight() * Settings.lightDistance);
 		else //type == SKY
-			return (byte) (blocks.getBlock(x, y, z).getSkyLight() * Settings.lightDistance);
+			return (byte) (getBlock(x, y, z).getSkyLight() * Settings.lightDistance);
 	}
 	
 	private Block getBlock(int x, int y, int z)
 	{
-		return blocks.getBlock(x, y, z);
+		return chunkCenter.getBlock(x, y, z);
 	}
 }

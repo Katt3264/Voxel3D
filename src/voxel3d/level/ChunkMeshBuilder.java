@@ -6,9 +6,7 @@ import voxel3d.global.Debug;
 import voxel3d.global.Objects;
 import voxel3d.global.Settings;
 import voxel3d.graphics.Mesh;
-import voxel3d.level.containers.MeshContainer;
-import voxel3d.level.containers.BlockContainer;
-import voxel3d.level.containers.LightContainer;
+import voxel3d.level.world.Chunk;
 import voxel3d.utility.*;
 
 public class ChunkMeshBuilder implements MainThreadExecutable, Executable {
@@ -125,10 +123,8 @@ public class ChunkMeshBuilder implements MainThreadExecutable, Executable {
 				1f, 1f, 1f
 			};*/
 	
-	private final BlockContainer[][][] blocks;
-	private final LightContainer[][][] lights;
-	private final MeshContainer meshContainer;
-	private final long newConsistent;
+	private final Chunk[][][] chunks;
+	private Mesh mesh = null;
 	
 	private FloatList verticesList;
 	private FloatList uvList;
@@ -137,80 +133,46 @@ public class ChunkMeshBuilder implements MainThreadExecutable, Executable {
 	private final Color5 workColor = new Color5(0f, 0f, 0f, 0f);
 	
 	
-	public ChunkMeshBuilder(BlockContainer[][][] blocks, LightContainer[][][] lights, MeshContainer meshContainer, long newConsistent)
+	public ChunkMeshBuilder(Chunk[][][] chunks)
 	{
-		this.blocks = blocks;
-		this.lights = lights;
-		this.meshContainer = meshContainer;
-		this.newConsistent = newConsistent;
-		meshContainer.wip = true;
+		this.chunks = chunks;
+		chunks[1][1][1].buildingMesh = true;
 	}
-	
 	
 	public void executeOnMainThread()
 	{
-		Mesh newMesh = null;
-		
 		if(verticesList != null)
 		{
 			if(verticesList.size() != 0)
 			{
-				newMesh = new Mesh(verticesList, uvList, colorList);
+				mesh = new Mesh(verticesList, uvList, colorList);
 			}
 			verticesList.free();
 			uvList.free();
 			colorList.free();
 		}
-		meshContainer.set(newMesh, newConsistent);
-		meshContainer.lastChange = System.currentTimeMillis();
-		meshContainer.wip = false;
+		chunks[1][1][1].setMesh(mesh);
+		chunks[1][1][1].buildingMesh = false;
 	}
 	
 	public void execute()
 	{
-		boolean allSolid = true;
-		for(int x = 0; x < 3; x++)
+		verticesList = new FloatList();
+		uvList = new FloatList();
+		colorList = new FloatList();
+		
+		for(int x = 0; x < Settings.CHUNK_SIZE; x++)
 		{
-			for(int y = 0; y < 3; y++)
+			for(int y = 0; y < Settings.CHUNK_SIZE; y++)
 			{
-				for(int z = 0; z < 3; z++)
+				for(int z = 0; z < Settings.CHUNK_SIZE; z++)
 				{
-					allSolid = allSolid && blocks[x][y][z].getSolid();
+					getBlock(x, y, z).render(this, x, y, z);
 				}
 			}
 		}
-		
-		
-		if(!blocks[1][1][1].getEmpty() && !allSolid)
-		{	
-			verticesList = new FloatList();
-			uvList = new FloatList();
-			colorList = new FloatList();
-			
-			for(int x = 0; x < Settings.CHUNK_SIZE; x++)
-			{
-				for(int y = 0; y < Settings.CHUNK_SIZE; y++)
-				{
-					for(int z = 0; z < Settings.CHUNK_SIZE; z++)
-					{
-						// Border or not solid
-						if((x == 0 || x == Settings.CHUNK_SIZE - 1)
-						|| (y == 0 || y == Settings.CHUNK_SIZE - 1)
-						|| (z == 0 || z == Settings.CHUNK_SIZE - 1)
-						|| (!blocks[1][1][1].getSolid()))
-						{
-							getBlock(x, y, z).render(this, x, y, z);
-						}
-					}
-				}
-			}
-		}
-		
-		//blocks = null;
-		//lights = null;
 		
 		Debug.chunkBuilds++;
-		
 		Objects.mainQueue.add(this);
 	}
 	
@@ -233,7 +195,6 @@ public class ChunkMeshBuilder implements MainThreadExecutable, Executable {
 			uvList.add(uvs[v+1] * uv[1].y + (1 - uvs[v+1]) * uv[0].y);
 			//uvList.add((float) color.norm);
 			
-			
 			v = (v+2) % uvs.length;
 		}
 	}
@@ -248,7 +209,7 @@ public class ChunkMeshBuilder implements MainThreadExecutable, Executable {
 		int yp = MathX.chunkMod(y);
 		int zp = MathX.chunkMod(z);
 
-		return blocks[chunkX][chunkY][chunkZ].getBlock(xp, yp, zp);
+		return chunks[chunkX][chunkY][chunkZ].getBlock(xp, yp, zp);
 	}
 	
 	public Color5 getColor(int x, int y, int z)
@@ -261,7 +222,7 @@ public class ChunkMeshBuilder implements MainThreadExecutable, Executable {
 		int yp = MathX.chunkMod(y);
 		int zp = MathX.chunkMod(z);
 		
-		lights[chunkX][chunkY][chunkZ].getColor(xp, yp, zp, workColor);
+		chunks[chunkX][chunkY][chunkZ].getColor5(xp, yp, zp, workColor);
 		
 		return workColor;
 	}

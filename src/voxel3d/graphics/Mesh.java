@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL20.*;
 import java.nio.FloatBuffer;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.lwjgl.system.MemoryUtil;
 
@@ -12,11 +13,11 @@ import voxel3d.utility.FloatList;
 
 public class Mesh {
 	
-	private static LinkedList<Mesh> allMeshes = new LinkedList<Mesh>();
+	private static List<Mesh> allMeshes = new LinkedList<Mesh>();
 	private static long globalCall = 0;
+	
 	private long thisCall = 0;
 	private boolean alive = true;
-	
 	private int vbo_vertex;
 	private int vbo_uv;
 	private int vbo_color;
@@ -68,11 +69,6 @@ public class Mesh {
 		allMeshes.add(this);
 	}
 	
-	public void notifyUsed()
-	{
-		thisCall = globalCall;
-	}
-	
 	public void draw()
 	{
 		if(!alive)
@@ -100,23 +96,36 @@ public class Mesh {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	
+	public void keepAlive()
+	{
+		thisCall = globalCall;
+	}
+	
+	public boolean isAlive()
+	{
+		return alive;
+	}
+	
 	private void free()
 	{
+		if(!alive)
+			return;
+		
 		glDeleteBuffers(vbo_vertex);
 		glDeleteBuffers(vbo_color);
 		glDeleteBuffers(vbo_uv);
+		
+		alive = false;
 	}
 	
 	public static void cleanup()
 	{
-		
 		Iterator<Mesh> m = allMeshes.iterator();
 		while(m.hasNext())
 		{
 			Mesh mesh = m.next();
 			if(mesh.thisCall < globalCall - 3)
 			{
-				mesh.alive = false;
 				mesh.free();
 				m.remove();
 			}

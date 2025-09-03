@@ -1,4 +1,4 @@
-package voxel3d.level.containers;
+package voxel3d.level.world;
 
 import java.io.IOException;
 
@@ -18,7 +18,6 @@ public class BlockOctree implements DataStreamable {
 		this.depth = depth;
 		this.value = value;
 	}
-	
 	
 	public void set(int x, int y, int z, Block value)
 	{
