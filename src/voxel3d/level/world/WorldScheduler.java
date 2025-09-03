@@ -1,10 +1,9 @@
-package voxel3d.level;
+package voxel3d.level.world;
 
 import voxel3d.data.DataLoader;
 import voxel3d.global.Debug;
 import voxel3d.global.Objects;
 import voxel3d.global.Settings;
-import voxel3d.level.containers.World;
 import voxel3d.utility.MainThreadExecutable;
 import voxel3d.utility.TaskWorker;
 
@@ -27,21 +26,11 @@ public class WorldScheduler {
 	{
 		scheduler = this;
 		this.world = world;
-		
 		workerChunkGen = new TaskWorker(1);
-		workerChunkGen.start();
-		
 		workerChunkLight = new TaskWorker(1);
-		workerChunkLight.start();
-		
 		workerChunkMesh = new TaskWorker(1);
-		workerChunkMesh.start();
-		
 		workerChunkSimulate = new TaskWorker(1);
-		workerChunkSimulate.start();
-		
 		runner = new Runner();
-		runner.start();
 	}
 	
 	//TODO: potential lagg spikes
@@ -55,6 +44,15 @@ public class WorldScheduler {
 				executable.executeOnMainThread();
 			}
 		}
+	}
+	
+	public void start()
+	{
+		workerChunkGen.start();
+		workerChunkLight.start();
+		workerChunkMesh.start();
+		workerChunkSimulate.start();
+		runner.start();
 	}
 	
 	public void pause()
@@ -73,9 +71,9 @@ public class WorldScheduler {
 		workerChunkSimulate.resume();
 	}
 	
-	public boolean isAlive()
+	public boolean isRunning()
 	{
-		return alive || (!alive && loadingInProgress);
+		return alive;
 	}
 	
 	public void stop()
@@ -86,7 +84,6 @@ public class WorldScheduler {
 		workerChunkLight.stop();
 		workerChunkMesh.stop();
 		workerChunkSimulate.stop();
-		alive = false;
 	}
 	
 	
@@ -126,6 +123,7 @@ public class WorldScheduler {
 		        
 			}
 			loadingInProgress = false;
+			alive = false;
 		}
 		
 		public void terminate()

@@ -4,7 +4,7 @@ import java.util.Random;
 
 import voxel3d.entity.context.EntityUpdateContext;
 import voxel3d.global.Time;
-import voxel3d.level.containers.World;
+import voxel3d.level.world.World;
 import voxel3d.utility.Color;
 import voxel3d.utility.Vector3d;
 

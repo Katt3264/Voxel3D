@@ -1,6 +1,6 @@
 package voxel3d.entity;
 
-import voxel3d.level.containers.World;
+import voxel3d.level.world.World;
 
 public interface Spawnable {
 	

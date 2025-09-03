@@ -5,7 +5,7 @@ public class Settings {
 	public static final float targetFrameDeltaTime = 1f / 60f;
 	public static final float maxFrameDeltaTime = 1f / 30f;
 	
-	public static final int renderDistance = 8;
+	public static final int renderDistance = 4;
 	public static final int lightDistance = 16;
 	
 	public static final int CHUNK_SIZE_LOG = 4;
@@ -15,8 +15,8 @@ public class Settings {
 
 	public static final int spawnableLimit = 5;
 	
-	public static final boolean loadEnable = true;
-	public static final boolean saveEnable = true;
+	public static final boolean loadEnable = false;
+	public static final boolean saveEnable = false;
 	
 	public static final int floatPoolBufferSize = 256;
 	public static final int floatPoolArraySize = 256*256;

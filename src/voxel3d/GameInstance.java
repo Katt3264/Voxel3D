@@ -44,7 +44,7 @@ public class GameInstance {
 		}
 		
 		Objects.destroy();
-		if(level != null) {level.destroy();}
+		if(level != null) {level.stop();}
 	}
 	
 	private static final Timer frameTimer = new Timer(60);
@@ -68,7 +68,7 @@ public class GameInstance {
 			loadTimer.start();
 		
 		updateTimer.start();
-		glfwPollEvents();
+		//glfwPollEvents();
 		update();
 		updateTimer.stop();
 		
@@ -87,6 +87,7 @@ public class GameInstance {
 		Thread.sleep((long) Math.max(0, (Settings.targetFrameDeltaTime * 1000)-((System.nanoTime() - timeStart) / 1E6)-1));
 		
 		waitForSwapTimer.start();
+		glfwPollEvents();
 		glfwSwapBuffers(Objects.window.getID());
 		waitForSwapTimer.stop();
 		
@@ -156,13 +157,10 @@ public class GameInstance {
 		}
 		else if(state == Level_state.LEVEL_PLAY)
 		{
-			if(level.isAlive())
+			level.update();
+			
+			if(!level.isRunning())
 			{
-				level.update();
-			}
-			else
-			{
-				level.destroy();
 				level = null;
 				state = Level_state.MAIN_MENU;
 			}
