@@ -1,7 +1,5 @@
 package voxel3d.level.world;
 
-import static org.lwjgl.opengl.GL20.*;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,6 +24,7 @@ import voxel3d.global.Debug;
 import voxel3d.global.Objects;
 import voxel3d.global.Settings;
 import voxel3d.global.Time;
+import voxel3d.graphics.GraphicsWrapper;
 import voxel3d.graphics.Mesh;
 import voxel3d.item.Item;
 import voxel3d.level.Ambiance;
@@ -521,58 +520,17 @@ public class World implements DataStreamable {
 	public void render()
 	{
 		Debug.triangles = 0;
-		float[] perspective = new float[4*4];
-		float[] view = new float[4*4];
-		
-		//here 4ms
-		
-        // ignore depth buffer and binary alpha test
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_ALPHA_TEST);
-		player.camera.getMatrix(-player.camera.position.x, -player.camera.position.y, -player.camera.position.z, perspective, view);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glMatrixMode(GL_PROJECTION);
-		glLoadMatrixf(perspective);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadMatrixf(view);
-		glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-        
-        //here 5ms
-        
-    	ambiance.draw();
+
+        GraphicsWrapper.setRenderModeSkybox(player.camera);
+    	ambiance.render();
     	
-        //here 6.5ms
-		
-    	// normal 3D
-    	glEnable(GL_DEPTH_TEST);
-    	glDepthRange(0, 1);
-        glDepthFunc(GL_LEQUAL);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    	glEnable(GL_ALPHA_TEST);
-    	glAlphaFunc(GL_GREATER, 0.5f);
-    	glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-		
-        //Here - 7.5ms
-        
-    	player.camera.getMatrix(-ox * Settings.CHUNK_SIZE, -oy * Settings.CHUNK_SIZE, -oz * Settings.CHUNK_SIZE, perspective, view);
-		Objects.shader.bind();
-        glUniformMatrix4fv(glGetUniformLocation(Objects.shader.getProgramId(), "projectionMatrix"), false, perspective);
-        glUniformMatrix4fv(glGetUniformLocation(Objects.shader.getProgramId(), "viewMatrix"), false, view);
-        ambiance.getLight(skyColor);
-        glUniform3f(glGetUniformLocation(Objects.shader.getProgramId(), "skyColor"), skyColor.r, skyColor.g, skyColor.b);
-        glUniform1f(glGetUniformLocation(Objects.shader.getProgramId(), "brightness"), Settings.brightness);
-		
-        float[] transform = new float[4*4];
-        transform[0] = 1;
-        transform[5] = 1;
-        transform[10] = 1;
-        transform[15] = 1;
+    	ambiance.getLight(skyColor);
+    	GraphicsWrapper.setRenderModeVoxelChunk(
+    			player.camera, 
+    			ox * Settings.CHUNK_SIZE, oy * Settings.CHUNK_SIZE, oz * Settings.CHUNK_SIZE, 
+    			skyColor, Objects.chunkAtlas);
+    	
 		int size = 2 * renderDistance + 1;
-		int transformMatrixLocation = glGetUniformLocation(Objects.shader.getProgramId(), "modelMatrix");
-		Objects.chunkAtlas.glBind();
 		for(int x = 0; x < size; x++)
 		{
 			for(int y = 0; y < size; y++)
@@ -585,43 +543,20 @@ public class World implements DataStreamable {
 					
 					if(mesh.triangles == 0) {continue;}
 					
-					transform[12] = (x) * Settings.CHUNK_SIZE;
-					transform[13] = (y) * Settings.CHUNK_SIZE;
-					transform[14] = (z) * Settings.CHUNK_SIZE;
-					if(!inFrustum(transform[12], transform[13], transform[14])) {continue;}
-					
+					if(!inFrustum(x * Settings.CHUNK_SIZE, y * Settings.CHUNK_SIZE, z * Settings.CHUNK_SIZE)) {continue;}
 					Debug.triangles += mesh.triangles;
-					
-					glUniformMatrix4fv(transformMatrixLocation, false, transform);
-					mesh.draw();
+					GraphicsWrapper.RenderVoxelChunk(x * Settings.CHUNK_SIZE, y * Settings.CHUNK_SIZE, z * Settings.CHUNK_SIZE, mesh);
 				}
 			}
 		}
-		Objects.chunkAtlas.glUnbind();
-		transform[12] = 0;
-		transform[13] = 0;
-		transform[14] = 0;
-		Objects.shader.unbind();
-		
-		//here 14ms
-		
-		//TODO: add support for this in shader
-		//player.camera.getMatrix(-player.position.x, -player.position.y, -player.position.z, perspective, view);
-		//glUniformMatrix4fv(glGetUniformLocation(Objects.shader.getProgramId(), "projectionMatrix"), false, perspective);
-        //glUniformMatrix4fv(glGetUniformLocation(Objects.shader.getProgramId(), "viewMatrix"), false, view);
+
         EntityRenderContext entityRenderContext = new EntityRenderContext(this);
         for (Entity entity : entities)
 		{
-        	player.camera.getMatrix(-entity.position.x, -entity.position.y, -entity.position.z, perspective, view);
-    		glMatrixMode(GL_PROJECTION);
-    		glLoadMatrixf(perspective);
-        	glMatrixMode (GL_MODELVIEW);
-        	glLoadMatrixf(view);
-        	glColor4f(1,1,1,1);
-        	//glUniformMatrix4fv(transformMatrixLocation, false, transform);
-        	entity.draw(entityRenderContext);
+        	GraphicsWrapper.SetRenderModeEntity(player.camera, entity);
+        	entity.render(entityRenderContext);
 		}
-        //Objects.shader.unbind();
+        
 	}
 	
 	//TODO: not correct

@@ -44,7 +44,7 @@ public class WheatPlant extends XBlock implements BlockSimulable {
 	}
 	
 	@Override
-	public Block getDataStreamableInstance()
+	public Block getBlockInstance()
 	{
 		return getInstance();
 	}

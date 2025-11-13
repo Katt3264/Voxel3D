@@ -25,7 +25,7 @@ public class FluxConductorBlock extends TransparentCubeBlock implements BlockSim
 	}
 	
 	@Override
-	public Block getDataStreamableInstance()
+	public Block getBlockInstance()
 	{
 		return getInstance();
 	}

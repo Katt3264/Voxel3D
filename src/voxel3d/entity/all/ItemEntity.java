@@ -1,7 +1,5 @@
 package voxel3d.entity.all;
 
-import static org.lwjgl.opengl.GL20.*;
-
 import java.io.IOException;
 
 import voxel3d.data.DataInputStream;
@@ -10,18 +8,16 @@ import voxel3d.entity.Entity;
 import voxel3d.entity.context.EntityRenderContext;
 import voxel3d.entity.context.EntityUpdateContext;
 import voxel3d.global.Time;
+import voxel3d.graphics.GeometryUtility;
 import voxel3d.graphics.Texture;
 import voxel3d.item.Item;
 import voxel3d.item.context.ItemRenderContext;
 import voxel3d.physics.AABB;
-import voxel3d.utility.GeometryUtility;
 import voxel3d.utility.Vector3d;
 
 public class ItemEntity extends Entity{
 	
 	public Item item;
-	
-	private long offset;
 	
 	private int ttl;
 	
@@ -35,7 +31,6 @@ public class ItemEntity extends Entity{
 		position.x += (Math.random() - 0.5) * 2.0 * 0.1;
 		position.y += (Math.random() - 0.5) * 2.0 * 0.1;
 		position.z += (Math.random() - 0.5) * 2.0 * 0.1;
-		offset = (long) (System.currentTimeMillis() + Math.random() * 1000d);
 		ttl = 1000 * 60 * 5;
 	}
 	
@@ -70,22 +65,9 @@ public class ItemEntity extends Entity{
 	}
 	
 	@Override
-	public void draw(EntityRenderContext context)
+	public void render(EntityRenderContext context)
 	{
-		if(this.item == null) {
-			//fail
-		}
-		
-		super.draw(context);
-		
-		double x = 0;
-		double y = 0;
-		double z = 0;
-		
-		glTranslated(x, y, z);
-		glRotated((double)((context.getTimeMilliseconds()-offset) % 3600) * 0.1f, 0, 1, 0);
-		glTranslated(-x, -y, -z);
-		glTranslated(0, Math.sin((double)((context.getTimeMilliseconds()-offset) % 2000) * Math.PI * 0.001f) * 0.1f + 0.35f, 0);
+		super.render(context);
 		
 		double size = 0.5;
 		Vector3d right = new Vector3d();

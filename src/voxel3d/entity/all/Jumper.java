@@ -7,8 +7,8 @@ import voxel3d.entity.context.EntityRenderContext;
 import voxel3d.entity.context.EntityUpdateContext;
 import voxel3d.global.Objects;
 import voxel3d.global.Time;
+import voxel3d.graphics.GeometryUtility;
 import voxel3d.physics.AABB;
-import voxel3d.utility.GeometryUtility;
 import voxel3d.utility.Vector3d;
 
 public class Jumper extends Entity {
@@ -48,9 +48,9 @@ public class Jumper extends Entity {
 	}
 	
 	@Override
-	public void draw(EntityRenderContext context)
+	public void render(EntityRenderContext context)
 	{
-		super.draw(context);
+		super.render(context);
 		double size = 2;
 		Vector3d right = new Vector3d();
 		Vector3d up = new Vector3d();

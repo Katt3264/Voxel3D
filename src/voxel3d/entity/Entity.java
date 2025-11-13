@@ -75,7 +75,7 @@ public abstract class Entity implements DataStreamable {
 		
 	}
 	
-	public void draw(EntityRenderContext context)
+	public void render(EntityRenderContext context)
 	{
 		context.setEntityIlluminationLight(this);
 	}

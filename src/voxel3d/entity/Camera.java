@@ -1,7 +1,7 @@
 package voxel3d.entity;
 
-import voxel3d.global.*;
 import voxel3d.utility.Vector3d;
+import voxel3d.graphics.GraphicsWrapper;
 
 public class Camera {
 	
@@ -18,7 +18,7 @@ public class Camera {
 	{
 		this.fov = fov;
 		forward.set(0, 0, 1);
-		forward.set(0, 1, 0);
+		up.set(0, 1, 0);
 	}
 	
 	public void getMatrix(double offsetX, double offsetY, double offsetZ, float[] projection, float[] view)
@@ -34,7 +34,7 @@ public class Camera {
 		
 		float ymax, xmax;
 	    ymax = (float) (nearClippingPlane * Math.tan(fov * Math.PI / 360.0));
-	    xmax = (float) (ymax * (Objects.window.getAspectRatio()));
+	    xmax = (float) (ymax * (GraphicsWrapper.window.getAspectRatio()));
 	    
 	    float twoZNear, deltaW, deltaH, deltaZ;
 	    twoZNear = (float) (2.0 * nearClippingPlane);

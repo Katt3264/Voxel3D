@@ -2,8 +2,8 @@ package voxel3d.gui;
 
 import voxel3d.block.all.ChestBlock;
 import voxel3d.global.Objects;
+import voxel3d.graphics.GUIUtill;
 import voxel3d.item.Item;
-import voxel3d.utility.GUIUtill;
 
 public class ChestGUI implements HUDInteractable {
 	

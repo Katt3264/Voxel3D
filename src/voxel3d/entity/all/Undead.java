@@ -48,9 +48,9 @@ public class Undead extends BasicHostileEntity {
 	
 	
 	@Override
-	public void draw(EntityRenderContext context)
+	public void render(EntityRenderContext context)
 	{
-		super.draw(context);
+		super.render(context);
 		model.render(Objects.undead);
 	}
 	

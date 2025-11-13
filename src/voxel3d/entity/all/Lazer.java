@@ -7,9 +7,9 @@ import voxel3d.entity.context.EntityRenderContext;
 import voxel3d.entity.context.EntityUpdateContext;
 import voxel3d.global.Objects;
 import voxel3d.global.Time;
+import voxel3d.graphics.GeometryUtility;
 import voxel3d.physics.AABB;
 import voxel3d.physics.Ray;
-import voxel3d.utility.GeometryUtility;
 import voxel3d.utility.Vector3d;
 
 public class Lazer extends Entity {
@@ -65,7 +65,7 @@ public class Lazer extends Entity {
 	}
 	
 	@Override
-	public void draw(EntityRenderContext context)
+	public void render(EntityRenderContext context)
 	{
 		//super.draw(context);
 		double size = 0.2;

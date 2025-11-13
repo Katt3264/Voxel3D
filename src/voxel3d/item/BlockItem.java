@@ -32,7 +32,7 @@ public class BlockItem extends Item {
 	@Override
 	public void onUse(ItemUseContext context)
 	{
-		context.placeBlock(block.getDataStreamableInstance());
+		context.placeBlock(block.getBlockInstance());
 	}
 
 }

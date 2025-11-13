@@ -49,7 +49,7 @@ public abstract class Block implements DataStreamable {
 			System.err.println("Unknown block with ID: " + String.format("0x%08X", legacyBlockID));
 			throw new RuntimeException();
 		}
-		instancer = instancer.getDataStreamableInstance();
+		instancer = instancer.getBlockInstance();
 		instancer.read(stream);
 		return instancer;
 	}
@@ -59,7 +59,7 @@ public abstract class Block implements DataStreamable {
 		return Item.GetInstanceFromName(getName());
 	}
 	
-	public Block getDataStreamableInstance()
+	public Block getBlockInstance()
 	{
 		return this;
 	}
@@ -111,6 +111,7 @@ public abstract class Block implements DataStreamable {
 		return 0;
 	}
 	
+	//TODO: change to a render context parameter
 	public void render(ChunkMeshBuilder mb, int x, int y, int z)
 	{
 		

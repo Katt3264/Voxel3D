@@ -21,7 +21,7 @@ public class FluxSinkBlock extends TransparentCubeBlock implements FluxTransferB
 	}
 	
 	@Override
-	public Block getDataStreamableInstance()
+	public Block getBlockInstance()
 	{
 		return getInstance();
 	}

@@ -22,7 +22,7 @@ public class HouseSmal extends Structure {
 			for(int zz = -size; zz <= size; zz++)
 			{
 				placeBlock(x + xx, y, z + zz, StoneBricksSmallBlock.getInstance(), blocks);
-				placeBlock(x + xx, y + 4, z + zz, top.getDataStreamableInstance(), blocks);
+				placeBlock(x + xx, y + 4, z + zz, top.getBlockInstance(), blocks);
 				
 				if((xx == size || xx == -size) || (zz == size || zz == -size))
 				{
@@ -34,7 +34,7 @@ public class HouseSmal extends Structure {
 						}
 						else
 						{
-							placeBlock(x + xx, y + yy, z + zz, side.getDataStreamableInstance(), blocks);
+							placeBlock(x + xx, y + yy, z + zz, side.getBlockInstance(), blocks);
 						}
 					}
 				}

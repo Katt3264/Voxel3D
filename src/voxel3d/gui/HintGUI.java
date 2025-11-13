@@ -2,7 +2,7 @@ package voxel3d.gui;
 
 import voxel3d.global.Input;
 import voxel3d.global.Objects;
-import voxel3d.utility.GUIUtill;
+import voxel3d.graphics.GUIUtill;
 
 public class HintGUI {
 	

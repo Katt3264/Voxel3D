@@ -60,7 +60,7 @@ public class DirtBlock extends SolidCubeBlock {
 		Block lBlock = context.getLocalBlock(rx, ry, rz);
 		
 		if(lBlock instanceof DirtSpreadable)
-			context.replaceSelf(lBlock.getDataStreamableInstance());
+			context.replaceSelf(lBlock.getBlockInstance());
 	}
 
 }

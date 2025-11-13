@@ -13,7 +13,6 @@ public class Debug {
 	public static long updateTime;
 	public static long drawDispatchTime;
 	public static long waitForDrawTime;
-	public static long waitForSwapTime;
 	
 	public static long chunkGens = 0;
 	public static long chunkBuilds = 0;

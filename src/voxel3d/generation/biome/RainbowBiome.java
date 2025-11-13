@@ -1,60 +1,60 @@
 package voxel3d.generation.biome;
 
 import voxel3d.block.Block;
-import voxel3d.block.all.AirBlock;
-import voxel3d.generation.SimplexNoise;
+import voxel3d.block.all.*;
+import voxel3d.generation.Fields;
 
 public class RainbowBiome extends Biome {
 	
-	private static String[] stones = new String[] {
-			"Red stone",
-			"Magenta stone",
-			"Blue stone",
-			"Cyan stone",
-			"Green stone",
-			"Yellow stone"
+	private static Block[] stones = new Block[] {
+		RedStoneBlock.getInstance(),
+		MagentaStoneBlock.getInstance(),
+		BlueStoneBlock.getInstance(),
+		CyanStoneBlock.getInstance(),
+		GreenStoneBlock.getInstance(),
+		YellowStoneBlock.getInstance(),
 	};
+	
+	private double size;
+	public RainbowBiome(double size)
+	{
+		this.size = size;
+	}
 	
 	public Block getBlock(int x, int y, int z)
 	{
-		/*double in = (Math.min(inland, 32))/32d;
-		int h = y;
-		y -= Biome.getHeightOverworld(x, z) * (1-in) + getHeight(x, z) * in;
+		//double in = (Math.min(inland, 32))/32d;
+		int height = (int) Math.floor(getHeight(x, z));
 		
-		if(y > 0)
+		if(y > height)
 		{
-			return Block.getByName("Air");
+			return AirBlock.getInstance();
 		}
 		else
 		{
-			if(h >= 0)
+			if(y >= 0)
 			{
-				return Block.getByName(stones[h%stones.length]);
+				return stones[y % stones.length].getBlockInstance();
 			}
 			else
 			{
-				return Block.getByName("Stone");
+				return StoneBlock.getInstance();
 			}
-		}*/
-		
-		return AirBlock.getInstance();
+		}
 	}
 
-	private static int getHeight(int x, int z)
+	private static double getHeight(int x, int z)
 	{
-		double h =(
-				SimplexNoise.noise(x / 128d, z / 128d) * 16 +
-				SimplexNoise.noise(x / 32d, z / 32d) * 2 +
-				18
-				);
-		
-		return (int) (h*h/16);
+		double val = Fields.OctaveMap2D(x, z, 128);
+		val = Math.pow(val, 2.0)*0.5;
+		//val = val*val;
+		return val * 512;
 	}
 
 	@Override
-	public double getSize() {
-		// TODO Auto-generated method stub
-		return 0;
+	public double getSize() 
+	{
+		return size;
 	}
 
 }

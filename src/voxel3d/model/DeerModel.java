@@ -1,7 +1,7 @@
 package voxel3d.model;
 
+import voxel3d.graphics.GeometryUtility;
 import voxel3d.graphics.Texture;
-import voxel3d.utility.GeometryUtility;
 import voxel3d.utility.Transform3d;
 import voxel3d.utility.Vector3d;
 

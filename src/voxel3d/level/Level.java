@@ -1,37 +1,24 @@
 package voxel3d.level;
 
-/**
-* This class represents a space where there is a player, one save file, one playthrough
-*/
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
-import static org.lwjgl.opengl.GL11.GL_PROJECTION;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glLoadIdentity;
-import static org.lwjgl.opengl.GL11.glLoadMatrixd;
-import static org.lwjgl.opengl.GL11.glMatrixMode;
 
 import java.text.NumberFormat;
 import java.util.Locale;
 
 import voxel3d.global.Debug;
 import voxel3d.global.Input;
-import voxel3d.global.Objects;
 import voxel3d.global.Settings;
+import voxel3d.graphics.GUIUtill;
 import voxel3d.graphics.Mesh;
+import voxel3d.graphics.GraphicsWrapper;
 import voxel3d.gui.HUD;
 import voxel3d.gui.HUDRenderContext;
 import voxel3d.gui.HUDUpdateContext;
 import voxel3d.gui.PauseMenu;
 import voxel3d.level.world.World;
-import voxel3d.utility.GUIUtill;
 
+/**
+* This class represents a space where there is a player, one save file, one playthrough
+*/
 public class Level {
 	
 	private final World world;
@@ -51,20 +38,18 @@ public class Level {
 	public void draw() 
 	{
 		Mesh.cleanup();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0, 0, 1, 1.0f);
 		
 		if(!world.isLoading())
 		{
 			world.render();
 			
+			GraphicsWrapper.setRenderModeGUI();
 			HUDRenderContext hudRenderContext = new HUDRenderContext(world);
 			hud.draw(hudRenderContext);
 			if(world.isPaused())
 			{
 				pauesMenu.draw();
 			}
-			//glDisable(GL_ALPHA_TEST);
 			
 			if(Settings.debugScreen)
 			{	
@@ -75,7 +60,6 @@ public class Level {
 				GUIUtill.drawString("update          " + String.format("%.4G ", (Debug.updateTime / 1E6)) 		+ " ms", 	0f, 0.75f, 0.05f);
 				GUIUtill.drawString("render disbatch " + String.format("%.4G ", (Debug.drawDispatchTime / 1E6)) + " ms", 	0f, 0.70f, 0.05f);
 				GUIUtill.drawString("wait for render " + String.format("%.4G ", (Debug.waitForDrawTime /  1E6)) + " ms", 	0f, 0.65f, 0.05f);
-				GUIUtill.drawString("wait for swap   " + String.format("%.4G ", (Debug.waitForSwapTime /  1E6)) + " ms", 	0f, 0.60f, 0.05f);
 				GUIUtill.drawString("load            " + String.format("%.4G ", (Debug.load)) + " %", 	0f, 0.50f, 0.05f);
 				
 				GUIUtill.drawString("gens       " + (Debug.chunkGens), 		-1f, 0.75f, 0.05f);
@@ -105,19 +89,8 @@ public class Level {
 		}
 		else
 		{
-			glDisable(GL_CULL_FACE);
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-			glLoadMatrixd(Objects.window.getNormalMatrix());
-			
-			glDisable(GL_DEPTH_TEST);
-			glMatrixMode(GL_MODELVIEW);
-			glLoadIdentity();
-			
-			glClearColor(0, 0, 0, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			
-			glColor3f(1f, 1f, 1f);
+			//TODO: add background here, use custom loading view
+			GraphicsWrapper.setRenderModeGUI();
 			
 			GUIUtill.drawString("loading", -1.0f, 0.0f, 0.4f);
 			GUIUtill.drawString("chunks " + world.loadProgress, -1.0f, -0.2f, 0.2f);

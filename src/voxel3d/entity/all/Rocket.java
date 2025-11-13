@@ -7,9 +7,9 @@ import voxel3d.entity.context.EntityRenderContext;
 import voxel3d.entity.context.EntityUpdateContext;
 import voxel3d.global.Objects;
 import voxel3d.global.Time;
+import voxel3d.graphics.GeometryUtility;
 import voxel3d.physics.AABB;
 import voxel3d.physics.Ray;
-import voxel3d.utility.GeometryUtility;
 import voxel3d.utility.Vector3d;
 
 public class Rocket extends Entity {
@@ -75,9 +75,9 @@ public class Rocket extends Entity {
 	}
 	
 	@Override
-	public void draw(EntityRenderContext context)
+	public void render(EntityRenderContext context)
 	{
-		super.draw(context);
+		super.render(context);
 		double size = 0.2;
 		GeometryUtility.drawBox(new Vector3d(0, 0, 0), new Vector3d(size, 0, 0), new Vector3d(0, size, 0), new Vector3d(0, 0, size), Objects.slime);
 	}

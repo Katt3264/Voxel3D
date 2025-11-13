@@ -1,10 +1,9 @@
 package voxel3d.gui;
 
-import static org.lwjgl.opengl.GL11.*;
-
 import voxel3d.block.Block;
 import voxel3d.global.Objects;
 import voxel3d.global.Settings;
+import voxel3d.graphics.GUIUtill;
 
 public class HUD {
 	
@@ -42,25 +41,9 @@ public class HUD {
 	
 	public void draw(HUDRenderContext context)
 	{
-		glDisable(GL_CULL_FACE);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glLoadMatrixd(Objects.window.getNormalMatrix());
-		
-		glDisable(GL_DEPTH_TEST);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		
-		
 		if(Settings.showHud)
 		{
-			glColor3f(1.0f, 1.0f, 1.0f);
-			glBegin(GL_QUADS);
-			glVertex2d(-0.025, -0.025);
-			glVertex2d(-0.025, 0.025);
-			glVertex2d(0.025, 0.025);
-			glVertex2d(0.025, -0.025);
-			glEnd();
+			GUIUtill.drawSquare(-0.025f, -0.025f, 0.05f, Objects.crosshair);
 		
 			hotbar.draw(context);
 			healthBar.draw(context);

@@ -1,11 +1,11 @@
-package voxel3d.utility;
+package voxel3d.graphics;
 
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL20.*;
 
 import voxel3d.global.Objects;
-import voxel3d.graphics.Texture;
 import voxel3d.gui.Glyph;
+
 public class GUIUtill {
 	
 	public static void drawString(String s, float xx, float yy, float height)

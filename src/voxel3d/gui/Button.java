@@ -1,8 +1,8 @@
 package voxel3d.gui;
 
 import voxel3d.global.Input;
+import voxel3d.graphics.GUIUtill;
 import voxel3d.graphics.Texture;
-import voxel3d.utility.GUIUtill;
 
 public class Button {
 	

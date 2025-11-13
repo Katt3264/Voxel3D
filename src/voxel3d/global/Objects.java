@@ -4,9 +4,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import voxel3d.audio.AudioClip;
 import voxel3d.audio.AudioManager;
-import voxel3d.graphics.Shader;
+import voxel3d.graphics.GraphicsWrapper;
 import voxel3d.graphics.Texture;
-import voxel3d.graphics.Window;
 import voxel3d.gui.ChestGUI;
 import voxel3d.gui.CraftingGUI;
 import voxel3d.gui.HUDInteractable;
@@ -15,7 +14,6 @@ import voxel3d.utility.MainThreadExecutable;
 
 public class Objects {
 	
-	public static Window window;
 	public static AudioManager audioManager;
 	public static Texture chunkAtlas;
 	public static Texture itemAtlas;
@@ -31,6 +29,7 @@ public class Objects {
 	public static Texture leftButtonSelected;
 	public static Texture rightButton;
 	public static Texture rightButtonSelected;
+	public static Texture crosshair;
 	
 	public static Texture inventoryGUI;
 	public static Texture craftingGUI;
@@ -84,13 +83,10 @@ public class Objects {
 	
 	public static FloatArrayPool floatArrayPool;
 	
-	public static Shader shader;
-	
 	public static ConcurrentLinkedQueue<MainThreadExecutable> mainQueue;
 
 	public static void create()
 	{
-		window = new Window("Game", 1080, 720);
 		audioManager = new AudioManager();
 		
 		AssetLoader.LoadAllTextures();
@@ -122,6 +118,7 @@ public class Objects {
 		leftButtonSelected = AssetLoader.loadGUITexture("left button selected");
 		rightButton = AssetLoader.loadGUITexture("right button");
 		rightButtonSelected = AssetLoader.loadGUITexture("right button selected");
+		crosshair = AssetLoader.loadGUITexture("crosshair");
 		
 		health = AssetLoader.loadGUITexture("health");
 		healthGold = AssetLoader.loadGUITexture("health gold");
@@ -163,8 +160,6 @@ public class Objects {
 		craftingHUD = new CraftingGUI();
 		chestHUD = new ChestGUI();
 		
-		shader = new Shader("resources/shaders/vertex.txt", "resources/shaders/fragment.txt");
-		
 		floatArrayPool = new FloatArrayPool();
 		
 		Input.init();
@@ -176,7 +171,7 @@ public class Objects {
 	
 	public static void destroy()
 	{
-		window.destroy();
+		GraphicsWrapper.window.destroy();
 		audioManager.destroy();
 	}
 	

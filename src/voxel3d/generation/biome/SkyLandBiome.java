@@ -7,6 +7,12 @@ import voxel3d.generation.Fields;
 
 public class SkyLandBiome extends Biome{
 	
+	private double size;
+	public SkyLandBiome(double size)
+	{
+		this.size = size;
+	}
+	
 	@Override
 	public Block getBlock(int x, int y, int z)
 	{
@@ -37,7 +43,7 @@ public class SkyLandBiome extends Biome{
 	
 	private static int getHeight(int x, int z)
 	{
-		return (int) (Fields.OctaveMap2D(x, z, 128) * 8d);
+		return (int) (Fields.OctaveMap2D(x, z, 128) * 16d);
 	}
 	
 	private static int getStoneHeight(int x, int z)
@@ -46,8 +52,8 @@ public class SkyLandBiome extends Biome{
 	}
 
 	@Override
-	public double getSize() {
-		// TODO Auto-generated method stub
-		return 0;
+	public double getSize() 
+	{
+		return size;
 	}
 }

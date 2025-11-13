@@ -2,6 +2,8 @@ package voxel3d.global;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import voxel3d.graphics.GraphicsWrapper;
+
 public class Input {
 	
 	public static boolean mouseVisible = true;
@@ -47,35 +49,35 @@ public class Input {
 		mouseV = mouseY - lastY;
 		lastY = mouseY;
 		
-		forward.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_W) == GLFW_PRESS);
-		back.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_S) == GLFW_PRESS);
-		right.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_D) == GLFW_PRESS);
-		left.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_A) == GLFW_PRESS);
-		jump.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_SPACE) == GLFW_PRESS);
-		inventory.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_E) == GLFW_PRESS);
-		sprint.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_Q) == GLFW_PRESS);
+		forward.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_W) == GLFW_PRESS);
+		back.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_S) == GLFW_PRESS);
+		right.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_D) == GLFW_PRESS);
+		left.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_A) == GLFW_PRESS);
+		jump.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_SPACE) == GLFW_PRESS);
+		inventory.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_E) == GLFW_PRESS);
+		sprint.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_Q) == GLFW_PRESS);
 		
-		drop.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_C) == GLFW_PRESS);
+		drop.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_C) == GLFW_PRESS);
 		
-		hit.updateState(glfwGetMouseButton(Objects.window.getID(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS);
-		place.updateState(glfwGetMouseButton(Objects.window.getID(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS);
+		hit.updateState(glfwGetMouseButton(GraphicsWrapper.window.getID(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS);
+		place.updateState(glfwGetMouseButton(GraphicsWrapper.window.getID(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS);
 		
-		hud.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_H) == GLFW_PRESS);
-		log.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_L) == GLFW_PRESS);
-		god.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_G) == GLFW_PRESS);
+		hud.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_H) == GLFW_PRESS);
+		log.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_L) == GLFW_PRESS);
+		god.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_G) == GLFW_PRESS);
 		
-		esc.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_ESCAPE) == GLFW_PRESS);
+		esc.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_ESCAPE) == GLFW_PRESS);
 		
-		num1.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_1) == GLFW_PRESS);
-		num2.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_2) == GLFW_PRESS);
-		num3.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_3) == GLFW_PRESS);
-		num4.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_4) == GLFW_PRESS);
-		num5.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_5) == GLFW_PRESS);
-		num6.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_6) == GLFW_PRESS);
-		num7.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_7) == GLFW_PRESS);
-		num8.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_8) == GLFW_PRESS);
-		num9.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_9) == GLFW_PRESS);
-		num0.updateState(glfwGetKey(Objects.window.getID(), GLFW_KEY_0) == GLFW_PRESS);
+		num1.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_1) == GLFW_PRESS);
+		num2.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_2) == GLFW_PRESS);
+		num3.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_3) == GLFW_PRESS);
+		num4.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_4) == GLFW_PRESS);
+		num5.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_5) == GLFW_PRESS);
+		num6.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_6) == GLFW_PRESS);
+		num7.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_7) == GLFW_PRESS);
+		num8.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_8) == GLFW_PRESS);
+		num9.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_9) == GLFW_PRESS);
+		num0.updateState(glfwGetKey(GraphicsWrapper.window.getID(), GLFW_KEY_0) == GLFW_PRESS);
 	}
 	
 	
@@ -90,12 +92,12 @@ public class Input {
 	
 	public static float getNormalMouseX()
 	{
-		return (mouseX*2 - Objects.window.width) / Objects.window.height;
+		return (mouseX*2 - GraphicsWrapper.window.width) / GraphicsWrapper.window.height;
 	}
 	
 	public static float getNormalMouseY()
 	{
-		return -(mouseY*2 - Objects.window.height) / Objects.window.height;
+		return -(mouseY*2 - GraphicsWrapper.window.height) / GraphicsWrapper.window.height;
 	}
 	
 	private static float mouseX, mouseY, lastX, lastY, mouseH, mouseV;
@@ -103,7 +105,7 @@ public class Input {
 	private static boolean firstMouseMovement = true;
 	private static void addCallback()
 	{
-		glfwSetCursorPosCallback(Objects.window.getID(), (_window, xpos, ypos) -> {
+		glfwSetCursorPosCallback(GraphicsWrapper.window.getID(), (_window, xpos, ypos) -> {
 			
 			mouseX = (float) xpos;
         	mouseY = (float) ypos;
@@ -122,10 +124,10 @@ public class Input {
 	{
 		mouseVisible = false;
 		
-		glfwSetInputMode(Objects.window.getID(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		glfwSetCursorPos(Objects.window.getID(), Objects.window.width / 2, Objects.window.height / 2);
-		mouseX = Objects.window.width / 2;
-		mouseY = Objects.window.height / 2;
+		glfwSetInputMode(GraphicsWrapper.window.getID(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetCursorPos(GraphicsWrapper.window.getID(), GraphicsWrapper.window.width / 2, GraphicsWrapper.window.height / 2);
+		mouseX = GraphicsWrapper.window.width / 2;
+		mouseY = GraphicsWrapper.window.height / 2;
 		
 		lastX = mouseX;
 		lastY = mouseY;
@@ -135,10 +137,10 @@ public class Input {
 	{
 		mouseVisible = true;
 		
-		glfwSetInputMode(Objects.window.getID(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		glfwSetCursorPos(Objects.window.getID(), Objects.window.width / 2, Objects.window.height / 2);
-		mouseX = Objects.window.width / 2;
-		mouseY = Objects.window.height / 2;
+		glfwSetInputMode(GraphicsWrapper.window.getID(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		glfwSetCursorPos(GraphicsWrapper.window.getID(), GraphicsWrapper.window.width / 2, GraphicsWrapper.window.height / 2);
+		mouseX = GraphicsWrapper.window.width / 2;
+		mouseY = GraphicsWrapper.window.height / 2;
 	}
 
 }

@@ -55,8 +55,6 @@ public class Vector3d {
 		return Math.sqrt(sqrMagnitude());
 	}
 	
-	//public Vector3d
-	
 	public void add(Vector3d v)
 	{
 		x += v.x;

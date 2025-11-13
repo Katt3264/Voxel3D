@@ -1,8 +1,8 @@
-package voxel3d.utility;
+package voxel3d.graphics;
 
 import static org.lwjgl.opengl.GL20.*;
 
-import voxel3d.graphics.Texture;
+import voxel3d.utility.Vector3d;
 
 public class GeometryUtility {
 	
@@ -21,10 +21,6 @@ public class GeometryUtility {
 		forward.set(0, 0, 1);
 		back.set(0, 0, -1);
 	}
-	
-	
-	
-	
 	
 	public static final float[][] uv = new float[][]
 	{

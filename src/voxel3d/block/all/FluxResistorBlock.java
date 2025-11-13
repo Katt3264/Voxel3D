@@ -25,7 +25,7 @@ public class FluxResistorBlock extends TransparentCubeBlock implements BlockSimu
 	}
 	
 	@Override
-	public Block getDataStreamableInstance()
+	public Block getBlockInstance()
 	{
 		return getInstance();
 	}

@@ -26,7 +26,7 @@ public class RedLampBlock extends SolidCubeBlock {
 	}
 	
 	@Override
-	public Block getDataStreamableInstance()
+	public Block getBlockInstance()
 	{
 		return getInstance();
 	}

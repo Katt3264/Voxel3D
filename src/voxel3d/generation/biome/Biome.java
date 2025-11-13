@@ -7,9 +7,11 @@ public abstract class Biome {
 	
 	private static final Biome[] biomes = new Biome[] {
 			
-			new StartBiome(256),
+			new StartBiome(32),
 			new DesertBiome(16),
+			new SkyLandBiome(256),
 			new MysticBiome(256),
+			new RainbowBiome(256),
 	};
 	
 	private static final Biome endBiome = new DesertBiome(0);

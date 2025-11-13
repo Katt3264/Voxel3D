@@ -10,6 +10,7 @@ import voxel3d.entity.*;
 import voxel3d.entity.context.EntityRenderContext;
 import voxel3d.entity.context.EntityUpdateContext;
 import voxel3d.global.*;
+import voxel3d.graphics.GeometryUtility;
 import voxel3d.item.Item;
 import voxel3d.item.context.ItemUseContext;
 import voxel3d.physics.*;
@@ -44,7 +45,7 @@ public class Player extends Entity {
 	public Player()
 	{
 		camera = new Camera(90);
-		position.set(0, 64, 0);
+		position.set(0, 100, 0);
 		inventory = new Inventory();
 	}
 	
@@ -312,7 +313,7 @@ public class Player extends Entity {
 	}
 	
 	@Override
-	public void draw(EntityRenderContext context)
+	public void render(EntityRenderContext context)
 	{
 		//super.draw(world);
 		if(blockBreakProgress == 0)

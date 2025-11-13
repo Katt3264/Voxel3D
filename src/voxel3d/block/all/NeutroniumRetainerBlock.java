@@ -20,7 +20,7 @@ public class NeutroniumRetainerBlock extends SolidCubeBlock implements Neutroniu
 	}
 	
 	@Override
-	public Block getDataStreamableInstance()
+	public Block getBlockInstance()
 	{
 		return getInstance();
 	}

@@ -14,9 +14,9 @@ public class Shader {
     private int fragId;
     private InputStream vertexPath;
     private InputStream fragPath;
-    private boolean linked = false;
+    //private boolean linked = false;
     
-    public Shader(String vertexPath, String fragPath){
+    protected Shader(String vertexPath, String fragPath){
         //this.vertexPath = getClass().getClassLoader().getResourceAsStream(vertexPath);
         //this.fragPath = getClass().getClassLoader().getResourceAsStream(fragPath);
         try {
@@ -30,7 +30,7 @@ public class Shader {
     }
     
     private void link() throws Exception {
-        linked = true;
+        //linked = true;
         programId = glCreateProgram();
         if (programId == 0) {
             throw new Exception("Unable to create shader program!");
@@ -63,15 +63,15 @@ public class Shader {
         }
     }
 
-    public void bind() {
+    protected void bind() {
         glUseProgram(programId);
     }
 
-    public void unbind() {
+    protected void unbind() {
         glUseProgram(0);
     }
 
-    public void destroy() {
+    protected void destroy() {
         unbind();
         if (programId != 0) {
             glDeleteProgram(programId);
@@ -108,15 +108,11 @@ public class Shader {
         return sb.toString();
     }
 
-    public boolean isLinked() {
-        return linked;
-    }
-
-    public int getProgramId() {
+    protected int getProgramId() {
         return programId;
     }
 
-    public int getLocation(String name) {
+    protected int getLocation(String name) {
         return glGetUniformLocation(programId, name);
     }
 

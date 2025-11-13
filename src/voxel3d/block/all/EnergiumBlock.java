@@ -26,7 +26,7 @@ public class EnergiumBlock extends SolidCubeBlock implements BlockSimulable, Flu
 	}
 	
 	@Override
-	public Block getDataStreamableInstance()
+	public Block getBlockInstance()
 	{
 		return getInstance();
 	}
