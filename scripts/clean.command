@@ -6,6 +6,6 @@ cd ..
 
 echo ">> cleaning..."
 
-rm -rf "$BIN_DIR" "$JAR_FILE" "$FATJAR_FILE" "$TEMP_DIR"
+rm -rf "$BIN_DIR" "$JAR_FILE" "$FATJAR_FILE" "$TEMP_DIR" dist
 
 echo "Clean complete."

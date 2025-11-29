@@ -1,7 +1,8 @@
 .DS_Store
-/store/worlds
+/store
 /GameData/Minecraft
 /GameData/Core/textures/unused
 /screenshots
 /text
-/bin/
+/bin
+/dist
