@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import voxel3d.audio.AudioClip;
 import voxel3d.audio.AudioManager;
 import voxel3d.graphics.GraphicsWrapper;
+import voxel3d.graphics.Shader;
 import voxel3d.graphics.Texture;
 import voxel3d.gui.ChestGUI;
 import voxel3d.gui.CraftingGUI;
@@ -72,6 +73,7 @@ public class Objects {
 	public static Texture skyBoxDay1Day;
 	public static Texture skyBoxDay1Night;
 	
+	public static Shader voxelTerrainShader;
 
 	public static AudioClip testSound;
 	public static AudioClip rocketLaunch;
@@ -130,14 +132,14 @@ public class Objects {
 		missingTexture = AssetLoader.loadGUITexture("missing");
 		
 		blockBreak = new Texture[] {
-				Texture.get("resources/textures/break0.png"),
-				Texture.get("resources/textures/break1.png"),
-				Texture.get("resources/textures/break2.png"),
-				Texture.get("resources/textures/break3.png"),
-				Texture.get("resources/textures/break4.png"),
-				Texture.get("resources/textures/break5.png"),
-				Texture.get("resources/textures/break6.png"),
-				Texture.get("resources/textures/break7.png")
+				AssetLoader.loadTexture("block_break_0"),
+				AssetLoader.loadTexture("block_break_1"),
+				AssetLoader.loadTexture("block_break_2"),
+				AssetLoader.loadTexture("block_break_3"),
+				AssetLoader.loadTexture("block_break_4"),
+				AssetLoader.loadTexture("block_break_5"),
+				AssetLoader.loadTexture("block_break_6"),
+				AssetLoader.loadTexture("block_break_7")
 		};
 		
 		slime = AssetLoader.loadEntityTexture("Slime");
@@ -152,6 +154,8 @@ public class Objects {
 		skyBoxSun = AssetLoader.loadTexture("skybox_sun");
 		skyBoxMoon = AssetLoader.loadTexture("skybox_moon");
 		skyBoxHorizon = AssetLoader.loadTexture("skybox_horizon");
+		
+		voxelTerrainShader = AssetLoader.loadShader("voxel_terrain");
 		
 		testSound = AssetLoader.loadAudio("test");
 		rocketLaunch = AssetLoader.loadAudio("rocket launch");

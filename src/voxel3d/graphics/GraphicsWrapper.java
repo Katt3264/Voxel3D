@@ -2,6 +2,7 @@ package voxel3d.graphics;
 
 import voxel3d.entity.Camera;
 import voxel3d.entity.Entity;
+import voxel3d.global.Objects;
 import voxel3d.global.Settings;
 import voxel3d.utility.Color;
 import voxel3d.utility.Vector3d;
@@ -14,12 +15,9 @@ public class GraphicsWrapper {
 	
 	public static Window window;
 	
-	private static Shader voxelShader;
-	
 	public static void init()
 	{
 		window = new Window("Game", 1080, 720);
-		voxelShader = new Shader("resources/shaders/vertex.txt", "resources/shaders/fragment.txt");
 	}
 	
 	public static void startFrame()
@@ -86,6 +84,8 @@ public class GraphicsWrapper {
 	
 	public static void setRenderModeVoxelChunk(Camera camera, int ox, int oy, int oz, Color skyColor, Texture atlas)
 	{
+		Shader shader = Objects.voxelTerrainShader;
+		
 		glEnable(GL_DEPTH_TEST);
     	glDepthRange(0, 1);
         glDepthFunc(GL_LEQUAL);
@@ -100,19 +100,21 @@ public class GraphicsWrapper {
 		float[] view = new float[4*4];
         
     	camera.getMatrix(-ox, -oy, -oz, perspective, view);
-    	voxelShader.bind();
-        glUniformMatrix4fv(glGetUniformLocation(voxelShader.getProgramId(), "projectionMatrix"), false, perspective);
-        glUniformMatrix4fv(glGetUniformLocation(voxelShader.getProgramId(), "viewMatrix"), false, view);
+    	shader.bind();
+        glUniformMatrix4fv(glGetUniformLocation(shader.getProgramId(), "projectionMatrix"), false, perspective);
+        glUniformMatrix4fv(glGetUniformLocation(shader.getProgramId(), "viewMatrix"), false, view);
         
-        glUniform3f(glGetUniformLocation(voxelShader.getProgramId(), "skyColor"), skyColor.r, skyColor.g, skyColor.b);
-        glUniform1f(glGetUniformLocation(voxelShader.getProgramId(), "brightness"), Settings.brightness);
+        glUniform3f(glGetUniformLocation(shader.getProgramId(), "skyColor"), skyColor.r, skyColor.g, skyColor.b);
+        glUniform1f(glGetUniformLocation(shader.getProgramId(), "brightness"), Settings.brightness);
 		
 		atlas.glBind();
 	}
 	
 	public static void RenderVoxelChunk(int x, int y, int z, Mesh mesh)
 	{
-		int transformMatrixLocation = glGetUniformLocation(voxelShader.getProgramId(), "modelMatrix");
+		Shader shader = Objects.voxelTerrainShader;
+		
+		int transformMatrixLocation = glGetUniformLocation(shader.getProgramId(), "modelMatrix");
     	float[] transform = new float[4*4];
         transform[0] = 1;
         transform[5] = 1;
@@ -125,7 +127,6 @@ public class GraphicsWrapper {
 		
 		glUniformMatrix4fv(transformMatrixLocation, false, transform);
 		mesh.draw();
-		
 	}
 	
 	//TODO: use custom shader, positions relative to entity position

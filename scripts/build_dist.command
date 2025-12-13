@@ -15,7 +15,3 @@ cp -r library dist/
 cp -r run.command dist/
 
 cp -r GameData dist/
-
-cp -r resources dist/
-
-

@@ -16,9 +16,7 @@ public class Shader {
     private InputStream fragPath;
     //private boolean linked = false;
     
-    protected Shader(String vertexPath, String fragPath){
-        //this.vertexPath = getClass().getClassLoader().getResourceAsStream(vertexPath);
-        //this.fragPath = getClass().getClassLoader().getResourceAsStream(fragPath);
+    public Shader(String vertexPath, String fragPath){
         try {
         	this.vertexPath = new FileInputStream(new File(vertexPath));
         	this.fragPath = new FileInputStream(new File(fragPath));
@@ -39,8 +37,7 @@ public class Shader {
         vertexId = createShader(vertexPath, GL_VERTEX_SHADER);
         fragId = createShader(fragPath, GL_FRAGMENT_SHADER);
 
-        //IMPORTANT! 
-        
+        //IMPORTANT!
         glBindAttribLocation(programId, 0, "position");
         glBindAttribLocation(programId, 1, "color");
         glBindAttribLocation(programId, 2, "uv");

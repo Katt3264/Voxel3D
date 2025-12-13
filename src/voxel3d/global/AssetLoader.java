@@ -17,6 +17,7 @@ import voxel3d.audio.AudioClip;
 import voxel3d.data.Crafting;
 import voxel3d.data.KeyValuePair;
 import voxel3d.graphics.AtlasBuilder;
+import voxel3d.graphics.Shader;
 import voxel3d.graphics.Texture;
 import voxel3d.utility.Vector2f;
 
@@ -185,6 +186,11 @@ public class AssetLoader {
 	protected static AudioClip loadAudio(String name)
 	{
 		return AudioClip.get(LoadFile("sounds", name + ".ogg").getPath());
+	}
+	
+	protected static Shader loadShader(String name)
+	{
+		return new Shader(LoadFile("shaders", name + "_vertex.glsl").getPath(), LoadFile("shaders", name + "_fragment.glsl").getPath());
 	}
 	
 	/*
