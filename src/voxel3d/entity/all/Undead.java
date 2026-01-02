@@ -8,7 +8,6 @@ import voxel3d.global.Objects;
 import voxel3d.global.Time;
 import voxel3d.model.BasicCharacterModel;
 import voxel3d.physics.AABB;
-import voxel3d.utility.Vector3d;
 
 public class Undead extends BasicHostileEntity {
 	
@@ -29,13 +28,7 @@ public class Undead extends BasicHostileEntity {
 	{
 		super.update(context);
 		
-		if(xzVelocity.magnitude() > 0.1)
-		{
-			Vector3d xzvn = new Vector3d();
-			xzvn.set(xzVelocity);
-			xzvn.normalize();
-			model.forward = xzvn;
-		}
+		model.forward.set(faceDirction);;
 		
 		if(idle)
 			model.t = 0;

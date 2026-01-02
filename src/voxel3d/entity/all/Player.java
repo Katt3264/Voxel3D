@@ -16,7 +16,7 @@ import voxel3d.item.context.ItemUseContext;
 import voxel3d.physics.*;
 import voxel3d.utility.*;
 
-public class Player extends Entity {
+public class Player extends Entity implements Strikeable {
 	
 	private static final double acceleration = 5;
 
@@ -28,11 +28,13 @@ public class Player extends Entity {
 	private double yaw = 0;
 	private double pitch = 0;
 	
+	Vector3d respawnPoint = new Vector3d(0, 100, 0);
+	public boolean alive = true;
 	public int health = 100;
 	public int hunger = 100;
 	
-	private float hungerTimer = 0;
 	private final float maxHungerTimer = 1f;
+	private float hungerTimer = maxHungerTimer;
 	
 	private Vector3I blockBreakTarget = new Vector3I();
 	private float blockBreakProgress = 0;
@@ -45,7 +47,7 @@ public class Player extends Entity {
 	public Player()
 	{
 		camera = new Camera(90);
-		position.set(0, 100, 0);
+		position.set(respawnPoint);
 		inventory = new Inventory();
 	}
 	
@@ -61,6 +63,9 @@ public class Player extends Entity {
 	@Override
 	public void update(EntityUpdateContext context)
 	{
+		if(!alive)
+			return;
+		
 		camera.fov = Settings.fov;
 		Objects.audioManager.setListener(this);
 		
@@ -158,7 +163,7 @@ public class Player extends Entity {
 				Iterable<Entity> hits = context.entityRaycast(new Ray(camera.position, camera.forward, 3.0));
 				for(Entity entity : hits)
 				{
-					if(entity instanceof Strikeable)
+					if(entity instanceof Strikeable && entity != this)
 					{
 						((Strikeable) entity).strike(camera.forward, 10.0);
 					}
@@ -294,12 +299,28 @@ public class Player extends Entity {
 		camera.position.set(position);
 		camera.position.add(0, 1.75d, 0);
 		
+		hunger = Math.max(hunger, 0);
+		health = Math.max(health, 0);
 		
-		if(hungerTimer >= maxHungerTimer)
+		hungerTimer -= Time.deltaTime;
+		if(hungerTimer <= 0)
 		{
-			hungerTimer = 0;
+			hungerTimer = maxHungerTimer;
 			
-			if(hunger > 0 && health < 100)
+			// consume hunger TODO: balance
+			/*if(hunger > 0)
+			{
+				hunger--;
+			}*/
+			
+			// consume health
+			if(hunger <= 0 && health > 10)
+			{
+				health--;
+			}
+			
+			// use hunger to regenerate health
+			if(hunger > 50 && health < 100)
 			{
 				hunger--;
 				health++;
@@ -310,6 +331,46 @@ public class Player extends Entity {
 				health++;
 			}
 		}
+		
+		if(health <= 0)
+			die();
+	}
+	
+	private void die()
+	{
+		//TODO: play sound
+		
+		inventoryOpen = false;
+		alive = false;
+	}
+	
+	public void respawn()
+	{
+		//TODO: play sound
+		
+		health = 100;
+		hunger = 100;
+		position.set(respawnPoint);
+		yaw = 0;
+		pitch = 0;
+		alive = true;
+	}
+	
+	@Override
+	public void strike(Vector3d direction, double damage)
+	{
+		//TODO: play sound
+		
+		Vector3d dirxz = new Vector3d();
+		dirxz.set(direction);
+		dirxz.y = 0;
+		//dirxz.normalize();
+		dirxz.multiply(10.0);
+		
+		velocity.add(dirxz);
+		velocity.y += 5.0 * direction.magnitude();
+		
+		health -= damage;
 	}
 	
 	@Override

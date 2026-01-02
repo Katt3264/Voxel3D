@@ -1,5 +1,7 @@
 package voxel3d.block.context;
 
+import java.util.Random;
+
 import voxel3d.block.Block;
 import voxel3d.level.world.Chunk;
 import voxel3d.utility.MathX;
@@ -8,13 +10,12 @@ public class BlockOnSimulateContext {
 	
 	public boolean updateMesh = false;
 	private Chunk[][][] chunks;
-	private double deltaTime;
 	private int x, y, z;
+	private Random random = new Random();
 	
-	public BlockOnSimulateContext(double deltaTime, Chunk[][][] chunks)
+	public BlockOnSimulateContext(Chunk[][][] chunks)
 	{
 		this.chunks = chunks;
-		this.deltaTime = deltaTime;
 	}
 	
 	public void setLocalPos(int x, int y, int z)
@@ -22,6 +23,11 @@ public class BlockOnSimulateContext {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+	
+	public Random getRandom()
+	{
+		return random;
 	}
 	
 	public void replaceSelf(Block newBlock)
@@ -56,16 +62,5 @@ public class BlockOnSimulateContext {
 	public void internalStateChange()
 	{
 		updateMesh = true;
-	}
-
-	
-	public double getDeltaTime()
-	{
-		return deltaTime;
-	}
-	
-	public double getFixedTime()
-	{
-		return 0.01;
 	}
 }

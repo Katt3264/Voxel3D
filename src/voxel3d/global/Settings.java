@@ -12,8 +12,13 @@ public class Settings {
 	public static final int CHUNK_SIZE = 1 << CHUNK_SIZE_LOG;
 	public static final int CHUNK_SIZE2 = CHUNK_SIZE*CHUNK_SIZE;
 	public static final int CHUNK_SIZE3 = CHUNK_SIZE*CHUNK_SIZE*CHUNK_SIZE;
+	
+	public static final double randomUpdateInterval = 1;
+	public static final int randomUpdatesPerChunk = 10;
 
 	public static final int spawnableLimit = 5;
+	public static final double minSpawnRadius = 32;
+	public static final double maxSpawnRadius = 64;
 	
 	public static final boolean loadEnable = false;
 	public static final boolean saveEnable = false;

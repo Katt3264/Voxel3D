@@ -122,6 +122,9 @@ public class Input {
 	
 	public static void hideMouse()
 	{
+		if(!mouseVisible)
+			return;
+		
 		mouseVisible = false;
 		
 		glfwSetInputMode(GraphicsWrapper.window.getID(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -135,6 +138,9 @@ public class Input {
 	
 	public static void showMouse()
 	{
+		if(mouseVisible)
+			return;
+		
 		mouseVisible = true;
 		
 		glfwSetInputMode(GraphicsWrapper.window.getID(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);

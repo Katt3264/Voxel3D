@@ -1,7 +1,5 @@
 package voxel3d.block.all;
 
-import java.util.Random;
-
 import voxel3d.block.Block;
 import voxel3d.block.DirtSpreadable;
 import voxel3d.block.SolidCubeBlock;
@@ -48,17 +46,19 @@ public class DirtBlock extends SolidCubeBlock {
 		return BlockBreakTimeUtility.getBreakTimeSoil(tool);
 	}
 	
+	@Override
 	public void onRandomUpdate(BlockOnSimulateContext context)
 	{
 		if(context.getLocalBlock(0, 1, 0).isSolidBlock())
 			return;
 		
-		Random random = new Random();
-		int rx = random.nextInt(3) - 1;
-		int ry = random.nextInt(3) - 1;
-		int rz = random.nextInt(3) - 1;
+		// pick a random block
+		int rx = context.getRandom().nextInt(3) - 1;
+		int ry = context.getRandom().nextInt(3) - 1;
+		int rz = context.getRandom().nextInt(3) - 1;
 		Block lBlock = context.getLocalBlock(rx, ry, rz);
 		
+		// check if that block can replace dirt
 		if(lBlock instanceof DirtSpreadable)
 			context.replaceSelf(lBlock.getBlockInstance());
 	}

@@ -4,6 +4,7 @@ import voxel3d.global.Settings;
 import voxel3d.level.ChunkLightBuilder;
 import voxel3d.level.ChunkMeshBuilder;
 import voxel3d.level.ChunkPopulator;
+import voxel3d.level.ChunkUpdater;
 import voxel3d.utility.Vector3I;
 
 public class WorldTask {
@@ -67,34 +68,40 @@ public class WorldTask {
 		
 	}
 	
-	//TODO: support this
+	private double prevTimeSimulation = 0;
 	private void performSimulation() 
 	{
-		/*if(worldScheduler.workerChunkSimulate.getTaskCount() != 0)
+		if((world.getTime() - prevTimeSimulation) / 1E9d < Settings.randomUpdateInterval)
+			return;
+		
+		if(worldScheduler.workerChunkSimulate.getTaskCount() != 0)
 			return;
 		
 		long nowTime = world.getTime();
-		double elapse = (double)(nowTime - prevTimeSimulation) / (1E9d);
+		//double elapse = (double)(nowTime - prevTimeSimulation) / (1E9d);
 		prevTimeSimulation = nowTime;
 		
 		
-		Iterable<Entry<Vector3I, Chunk>> allBlocks = world.getAllBlockContainers();
-		
-		for(Entry<Vector3I, Chunk> entry : allBlocks)
+		for(Vector3I pos : world.getAllChunkPositions())
 		{
-			//has neibours check
+			Chunk chunk = world.tryGetChunk(pos.x, pos.y, pos.z);
+			if(chunk == null)
+				continue;
 			
-			ChunkUpdater updater = new ChunkUpdater(entry.getKey(), entry.getValue().neibours, elapse);
+			Chunk[][][] chunkN = chunk.tryGetNeibours(world);
+			if(chunkN == null)
+				continue;
+			
+			ChunkUpdater updater = new ChunkUpdater(chunkN);
 			worldScheduler.workerChunkSimulate.addTask(updater);
 		}
 		
-		return;*/
+		return;
 	}
 	
-	//TODO: priority check
 	private boolean checkGen(int x, int y, int z)
 	{
-		Chunk chunk = world.getChunk(x,y,z);
+		Chunk chunk = world.forceGetChunk(x,y,z);
 		
 		if(!chunk.isPopulated && !chunk.isBeingPopulated)
 		{
@@ -105,10 +112,12 @@ public class WorldTask {
 		return false;
 	}
 	
-	//TODO: implement
 	private boolean checkLight(int x, int y, int z, long minElapsedMillis, boolean priority)
 	{
-		Chunk chunk = world.getChunk(x,y,z);
+		Chunk chunk = world.tryGetChunk(x,y,z);
+		if(chunk == null)
+			return false;
+		
 		
 		Chunk[][][] chunkN = chunk.tryGetNeibours(world);
 		if(chunkN == null)
@@ -154,7 +163,9 @@ public class WorldTask {
 	
 	private boolean checkMesh(int x, int y, int z, long minElapsedMillis, boolean priority)
 	{
-		Chunk chunk = world.getChunk(x,y,z);
+		Chunk chunk = world.tryGetChunk(x,y,z);
+		if(chunk == null)
+			return false;
 		
 		Chunk[][][] chunkN = chunk.tryGetNeibours(world);
 		if(chunkN == null)

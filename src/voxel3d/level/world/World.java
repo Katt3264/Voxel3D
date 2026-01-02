@@ -43,8 +43,8 @@ public class World implements DataStreamable {
 	public final String name;
 	public final Player player;
 	public long loadProgress = 0;
-	
 	private boolean paused = false;
+	
 	private int ox, oy, oz;
 	private int renderDistance;
 	
@@ -113,9 +113,14 @@ public class World implements DataStreamable {
 		worldScheduler.stop();
 	}
 	
-	public boolean isPaused()
+	private boolean isPaused()
 	{
 		return paused;
+	}
+	
+	public boolean isPlayerAlive()
+	{
+		return player.alive;
 	}
 	
 	public boolean isLoading()
@@ -187,7 +192,7 @@ public class World implements DataStreamable {
 			int yp = MathX.chunkMod(y);
 			int zp = MathX.chunkMod(z);
 	
-			Chunk chunk = getChunk(chunkX, chunkY, chunkZ);
+			Chunk chunk = tryGetChunk(chunkX, chunkY, chunkZ);
 			
 			//TODO: change this event
 			if(chunk == null) {return false;}
@@ -228,12 +233,21 @@ public class World implements DataStreamable {
 		return skyColor;
 	}
 	
-	public Chunk getChunk(int x, int y, int z)
+	public Chunk tryGetChunk(int x, int y, int z)
 	{
 		synchronized(this)
 		{
 			Vector3I pos = new Vector3I(x,y,z);
 			Chunk chunk = chunks.get(pos);
+			return chunk;
+		}
+	}
+	
+	public Chunk forceGetChunk(int x, int y, int z)
+	{
+		synchronized(this)
+		{
+			Chunk chunk = tryGetChunk(x,y,z);
 			if(chunk == null)
 			{
 				chunk = new Chunk(x,y,z);
@@ -243,11 +257,16 @@ public class World implements DataStreamable {
 		}
 	}
 	
+	public Iterable<Vector3I> getAllChunkPositions()
+	{
+		return chunks.navigableKeySet();
+	}
+	
 	private Mesh getLocalChunkMesh(int x, int y, int z)
 	{
 		synchronized(this)
 		{
-			Chunk chunk = getChunk(x, y, z);
+			Chunk chunk = tryGetChunk(x, y, z);
 			if(chunk == null) {return null;}
 			return chunk.getMesh();
 		}
@@ -265,7 +284,7 @@ public class World implements DataStreamable {
 			int yp = MathX.chunkMod(y);
 			int zp = MathX.chunkMod(z);
 	
-			Chunk chunk = getChunk(chunkX, chunkY, chunkZ);
+			Chunk chunk = tryGetChunk(chunkX, chunkY, chunkZ);
 			
 			//TODO: change this event
 			if(chunk == null) {return Block.GetNotYetLoaded();}
@@ -286,7 +305,7 @@ public class World implements DataStreamable {
 			int yp = MathX.chunkMod(y);
 			int zp = MathX.chunkMod(z);
 			
-			Chunk chunk = getChunk(chunkX, chunkY, chunkZ);
+			Chunk chunk = tryGetChunk(chunkX, chunkY, chunkZ);
 			
 			if(chunk == null) 
 			{
@@ -431,13 +450,19 @@ public class World implements DataStreamable {
 			if(spawnableCount >= Settings.spawnableLimit)
 				continue;
 			
-			//TODO: dont spawn too close to player
 			for(int i = 0; i < 64; i++)
 			{
-				double spawnRadius = 64;
-				int x = (int)(player.position.x + (random.nextDouble() * 2.0 - 1.0)*spawnRadius);
-				int y = (int)(player.position.y + (random.nextDouble() * 2.0 - 1.0)*spawnRadius);
-				int z = (int)(player.position.z + (random.nextDouble() * 2.0 - 1.0)*spawnRadius);
+				double dx = ((random.nextDouble() * 2.0 - 1.0)*Settings.maxSpawnRadius);
+				double dy = ((random.nextDouble() * 2.0 - 1.0)*Settings.maxSpawnRadius);
+				double dz = ((random.nextDouble() * 2.0 - 1.0)*Settings.maxSpawnRadius);
+				
+				if(Math.sqrt(dx*dx + dy*dy + dz*dz) < Settings.minSpawnRadius)
+					continue;
+				
+				int x = (int)(player.position.x + dx);
+				int y = (int)(player.position.y + dy);
+				int z = (int)(player.position.z + dz);
+				
 				if (spawnable.trySpawn(x, y, z, this))
 					break;
 			}

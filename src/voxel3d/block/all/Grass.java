@@ -5,7 +5,7 @@ import voxel3d.block.XBlock;
 import voxel3d.block.context.BlockOnBreakContext;
 import voxel3d.block.utility.BlockBreakTimeUtility;
 import voxel3d.item.Item;
-import voxel3d.item.all.WheatSeedItem;
+import voxel3d.item.all.PlantSeedItem;
 import voxel3d.utility.Vector2f;
 
 public class Grass extends XBlock {
@@ -37,7 +37,7 @@ public class Grass extends XBlock {
 	@Override
 	public void onBreak(BlockOnBreakContext context)
 	{
-		context.dropItem(WheatSeedItem.getInstance());
+		context.dropItem(PlantSeedItem.getInstance());
 	}
 	
 	@Override

@@ -2,6 +2,7 @@ package voxel3d.entity;
 
 import java.util.Random;
 
+import voxel3d.entity.all.Player;
 import voxel3d.entity.context.EntityUpdateContext;
 import voxel3d.global.Time;
 import voxel3d.level.world.World;
@@ -12,8 +13,12 @@ public abstract class BasicHostileEntity extends Entity implements Spawnable, St
 	
 	private double health = 100;
 	
-	private double stunTime = 2;
+	private double stunTime = 0.5;
 	private double stunTimer = 0;
+	
+	public double damage = 5;
+	public double damageTime = 2;
+	public double damageTimer = 0;
 	
 	private double aliveTime = 60 * 5;
 	
@@ -24,6 +29,7 @@ public abstract class BasicHostileEntity extends Entity implements Spawnable, St
 	public Vector3d xzVelocity = new Vector3d();
 	private Vector3d nextPosition = new Vector3d();
 	private Vector3d target = new Vector3d();
+	public Vector3d faceDirction = new Vector3d(0, 0, 1);
 	
 	private boolean seePlayer = false;
 	public boolean idle = false;
@@ -42,6 +48,8 @@ public abstract class BasicHostileEntity extends Entity implements Spawnable, St
 		moveTimer -= Time.deltaTime;
 		idleTimer -= Time.deltaTime;
 		walkTimer -= Time.deltaTime;
+		stunTimer -= Time.deltaTime;
+		damageTimer -= Time.deltaTime;
 		
 		Vector3d dirToPlayer = new Vector3d();
 		dirToPlayer.add(context.getPlayerPosition());
@@ -99,7 +107,7 @@ public abstract class BasicHostileEntity extends Entity implements Spawnable, St
 		xzVelocity.set(velocity);
 		xzVelocity.y = 0;
 		
-		if(!idle) // move to a target
+		if(!idle && stunTimer <= 0) // move to a target
 		{
 			if(nextPosition.y - position.y > 0.1 && grounded)
 			{
@@ -114,6 +122,12 @@ public abstract class BasicHostileEntity extends Entity implements Spawnable, St
 			
 			velocity.x += targetVelocity.x * moveSpeed * acceleration * Time.deltaTime;
 			velocity.z += targetVelocity.z * moveSpeed * acceleration * Time.deltaTime;
+		}
+		
+		if(xzVelocity.magnitude() > 0.1 && stunTimer <= 0)
+		{
+			faceDirction.set(xzVelocity);
+			faceDirction.normalize();
 		}
 		
 		velocity.x -= velocity.x*Time.deltaTime*acceleration;
@@ -187,6 +201,8 @@ public abstract class BasicHostileEntity extends Entity implements Spawnable, St
 	@Override
 	public void strike(Vector3d direction, double damage)
 	{
+		//TODO: play sound
+		
 		Vector3d dirxz = new Vector3d();
 		dirxz.set(direction);
 		dirxz.y = 0;
@@ -218,6 +234,24 @@ public abstract class BasicHostileEntity extends Entity implements Spawnable, St
 		spawn.position.set(x + 0.5, y, z+0.5);
 		world.addEntity(spawn);
 		return true;
+	}
+	
+	@Override
+	public void onOverlap(Entity other)
+	{
+		super.onOverlap(other);
+		
+		if(other instanceof Player && damageTimer <= 0) {
+			Player player = (Player) other;
+			Vector3d dir = new Vector3d();
+			dir.set(player.position);
+			dir.subtract(position);
+			dir.normalize();
+			
+			player.strike(dir, damage);
+			
+			damageTimer = damageTime;
+		}
 	}
 	
 	@Override

@@ -1,10 +1,8 @@
 package voxel3d.block.all;
 
 import java.io.IOException;
-import java.util.Random;
 
 import voxel3d.block.Block;
-import voxel3d.block.BlockSimulable;
 import voxel3d.block.XBlock;
 import voxel3d.block.context.BlockOnBreakContext;
 import voxel3d.block.context.BlockOnSimulateContext;
@@ -16,7 +14,7 @@ import voxel3d.item.all.CarrotItem;
 import voxel3d.item.all.PlantSeedItem;
 import voxel3d.utility.Vector2f;
 
-public class Plant extends XBlock implements BlockSimulable {
+public class Plant extends XBlock {
 	
 	private static Vector2f[][] uv = new Vector2f[][] {
 		XBlock.getUVFromName("Plant 0"),
@@ -30,10 +28,7 @@ public class Plant extends XBlock implements BlockSimulable {
 		Block.setBlockDeserializerForLegacyID(new Plant());
 	}
 	
-	private static double halfLife = 30;
-	
 	private int stage = 0;
-	private Random random = new Random();
 	
 	public static Plant getInstance()
 	{
@@ -102,10 +97,9 @@ public class Plant extends XBlock implements BlockSimulable {
 	}
 	
 	@Override
-	public void onSimulate(BlockOnSimulateContext context) 
+	public void onRandomUpdate(BlockOnSimulateContext context) 
 	{
-		
-		if(stage != uv.length - 1 && random.nextDouble() > Math.pow(0.5, context.getDeltaTime() / halfLife))
+		if(stage != uv.length - 1)
 		{
 			stage++;
 			context.internalStateChange();

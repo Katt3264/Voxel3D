@@ -1,18 +1,12 @@
 package voxel3d.level.world;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map.Entry;
-
 import voxel3d.block.Block;
-import voxel3d.block.BlockSimulable;
 import voxel3d.global.Settings;
 import voxel3d.global.Time;
 import voxel3d.graphics.Mesh;
 import voxel3d.utility.Color;
 import voxel3d.utility.Color5;
 import voxel3d.utility.MathX;
-import voxel3d.utility.Vector3I;
 
 public class Chunk {
 	
@@ -27,7 +21,7 @@ public class Chunk {
 	
 	private final int cx, cy, cz;
 	private final BlockOctree blocks;
-	private Collection<Entry<Vector3I, BlockSimulable>> simulableBlocks = Collections.<Entry<Vector3I, BlockSimulable>>emptyList();
+	//private Collection<Entry<Vector3I, BlockSimulable>> simulableBlocks = Collections.<Entry<Vector3I, BlockSimulable>>emptyList();
 	private final byte[] red;
 	private final byte[] green;
 	private final byte[] blue;
@@ -68,7 +62,9 @@ public class Chunk {
 			{
 				for(int z = -1; z <= 1; z++)
 				{
-					neibours[x+1][y+1][z+1] = world.getChunk(cx + x, cy + y, cz + z);
+					Chunk chunk = world.tryGetChunk(cx + x, cy + y, cz + z);
+					if(chunk == null) {return null;}
+					neibours[x+1][y+1][z+1] = chunk;
 				}
 			}
 		}
@@ -185,6 +181,11 @@ public class Chunk {
 		
 		lastModified = Time.getAtomTime();
 		blocks.set(bx, by, bz, block);
+	}
+	
+	public void setRebuildMeshFlag()
+	{
+		lastModified = Time.getAtomTime();
 	}
 	
 	/*

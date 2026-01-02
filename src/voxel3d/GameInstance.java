@@ -13,7 +13,7 @@ import voxel3d.level.Level;
 
 public class GameInstance {
 	
-	private static Level_state state = Level_state.MAIN_MENU;
+	private static Game_state state = Game_state.MAIN_MENU;
 	private static Level level;
 	private static MainMenu mainMenu;
 	private static WorldSelectMenu worldSelectMenu;
@@ -29,7 +29,7 @@ public class GameInstance {
 			
 			Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 			
-			while(GraphicsWrapper.window.isOpen() && state != Level_state.QUIT)
+			while(GraphicsWrapper.window.isOpen() && state != Game_state.QUIT)
 			{
 				frameTimer.start();
 				loop();
@@ -102,17 +102,17 @@ public class GameInstance {
 	
 	private static void draw()
 	{
-		if(state == Level_state.MAIN_MENU)
+		if(state == Game_state.MAIN_MENU)
 		{
 			GraphicsWrapper.setRenderModeGUI();
 			mainMenu.draw();
 		}
-		else if(state == Level_state.WORLD_SELECT)
+		else if(state == Game_state.WORLD_SELECT)
 		{
 			GraphicsWrapper.setRenderModeGUI();
 			worldSelectMenu.draw();
 		}
-		else if(state == Level_state.LEVEL_PLAY)
+		else if(state == Game_state.LEVEL_PLAY)
 		{
 			level.draw();
 		}
@@ -122,46 +122,46 @@ public class GameInstance {
 	{
 		Input.update();
 		
-		if(state == Level_state.MAIN_MENU)
+		if(state == Game_state.MAIN_MENU)
 		{
 			mainMenu.update();
 			
 			if(mainMenu.play())
 			{
-				state = Level_state.WORLD_SELECT;
+				state = Game_state.WORLD_SELECT;
 			}
 			else if(mainMenu.exit())
 			{
-				state = Level_state.QUIT;
+				state = Game_state.QUIT;
 			}
 		}
-		else if(state == Level_state.WORLD_SELECT)
+		else if(state == Game_state.WORLD_SELECT)
 		{
 			worldSelectMenu.update();
 			if(worldSelectMenu.worldSelect() != -1)
 			{
 				level = new Level("world " + worldSelectMenu.worldSelect());
-				state = Level_state.LEVEL_PLAY;
+				state = Game_state.LEVEL_PLAY;
 			}
 			else if(worldSelectMenu.exit())
 			{
-				state = Level_state.MAIN_MENU;
+				state = Game_state.MAIN_MENU;
 			}
 			
 		}
-		else if(state == Level_state.LEVEL_PLAY)
+		else if(state == Game_state.LEVEL_PLAY)
 		{
 			level.update();
 			
 			if(!level.isRunning())
 			{
 				level = null;
-				state = Level_state.MAIN_MENU;
+				state = Game_state.MAIN_MENU;
 			}
 		}
 	}
 
-	private enum Level_state 
+	private enum Game_state 
 	{
 		MAIN_MENU,
 		WORLD_SELECT,
