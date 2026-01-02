@@ -1,7 +1,10 @@
 package voxel3d.entity;
 
+import java.io.IOException;
 import java.util.Random;
 
+import voxel3d.data.DataInputStream;
+import voxel3d.data.DataOutputStream;
 import voxel3d.entity.context.EntityUpdateContext;
 import voxel3d.global.Time;
 import voxel3d.level.world.World;
@@ -9,7 +12,7 @@ import voxel3d.utility.Vector3d;
 
 public abstract class BasicPassiveEntity extends Entity implements Spawnable, Strikeable{
 	
-	private double health = 100;
+	private int health = 100;
 	
 	private double strikeTime = 5;
 	private double strikeTimer = 0;
@@ -73,7 +76,7 @@ public abstract class BasicPassiveEntity extends Entity implements Spawnable, St
 		dirToNextPosition.add(nextPosition);
 		dirToNextPosition.subtract(position);
 		dirToNextPosition.y = 0;
-		double distanceToNextPosition = dirToNextPosition.magnitude();
+		//double distanceToNextPosition = dirToNextPosition.magnitude();
 		dirToNextPosition.normalize();
 		
 		xzVelocity.set(velocity);
@@ -196,5 +199,18 @@ public abstract class BasicPassiveEntity extends Entity implements Spawnable, St
 	{
 		return super.getType();
 	}
+	
+	@Override
+	public void read(DataInputStream stream) throws IOException 
+	{
+		super.read(stream);
+		health = (int)stream.readKeyValueDouble("health");
+	}
 
+	@Override
+	public void write(DataOutputStream stream) 
+	{
+		super.write(stream);
+		stream.writeKeyValueDouble("health", health);
+	}
 }

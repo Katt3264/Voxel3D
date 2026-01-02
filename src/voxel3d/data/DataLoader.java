@@ -5,45 +5,31 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map.Entry;
 
-import voxel3d.entity.Entity;
 import voxel3d.global.Debug;
 import voxel3d.global.Settings;
+import voxel3d.level.world.Chunk;
 import voxel3d.level.world.World;
 import voxel3d.utility.Executable;
 import voxel3d.utility.TaskWorker;
 import voxel3d.utility.Vector3I;
 
-public class DataLoader {
+public class DataLoader{
 	
 	
 	public static void loadLevel(World world)
 	{
 		try {
-			world.player.inventory.read(getInPath("store/worlds/" + world.name + "/player/inventory"));
+			world.player.read(getInPath("store/worlds/" + world.name + "/player_data"));
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {e.printStackTrace();}
 		
 		try {
-			world.player.read(getInPath("store/worlds/" + world.name + "/player/player data"));
+			world.read(getInPath("store/worlds/" + world.name + "/world_data"));
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {e.printStackTrace();}
 		
-		try {
-			world.addEntities(getInPath("store/worlds/" + world.name + "/entities/entity data").readEntities());
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {e.printStackTrace();}
-		
-		try {
-			world.read(getInPath("store/worlds/" + world.name + "/world/world data"));
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {e.printStackTrace();}
-		
-		//TODO: 
-		/*File[] chunks = new File("store/worlds/" + world.name + "/chunks").listFiles();
+		File[] chunks = new File("store/worlds/" + world.name + "/chunks").listFiles();
 		if(chunks != null)
 		{
 			TaskWorker loader = new TaskWorker(Settings.IOThreads);
@@ -60,18 +46,17 @@ public class DataLoader {
 			loader.start();
 			loader.completeAllTasks();
 			loader.stop();
-		}*/
+		}
 	}
 	
-	//TODO: 
-	/*private static class ChunkLoader implements Executable 
+	private static class ChunkLoader implements Executable 
 	{
-		private File file;
+		private File chunkFile;
 		private World world;
 		
 		public ChunkLoader(File file, World world)
 		{
-			this.file = file;
+			this.chunkFile = file;
 			this.world = world;
 		}
 		
@@ -80,22 +65,21 @@ public class DataLoader {
 		{
 			try {
 				Vector3I pos = new Vector3I();
-				String name = file.getName();
+				String name = chunkFile.getName();
 				
 				name = name.replaceFirst("chunk", "");
 				String[] cords = name.split(",");
 				
 				pos.set(Integer.parseInt(cords[0]), Integer.parseInt(cords[1]), Integer.parseInt(cords[2]));
 				
-				BlockContainer container = new BlockContainer();
-				container.read(getInPath(file.getPath()));
-				world.setBufferedBlockContainer(pos.x, pos.y, pos.z, container);
+				Chunk chunk = world.forceGetChunk(pos.x, pos.y, pos.z);
+				chunk.read(getInPath(chunkFile.getPath()));
 				
 				world.loadProgress++;
 			} catch (IOException e){e.printStackTrace();
 			} catch (NumberFormatException e){e.printStackTrace();}
 		}
-	}*/
+	}
 	
 	
 	private static DataInputStream getInPath(String path) throws IOException
@@ -109,58 +93,45 @@ public class DataLoader {
 		return new DataInputStream(data);
 	}
 	
-	public static void saveLevel(World level)
+	public static void saveLevel(World world)
 	{
 		try {
 			DataOutputStream dos = new DataOutputStream();
-			level.player.inventory.write(dos);
-			saveFileSmart("store/worlds/" + level.name + "/player/inventory", dos);
+			world.player.write(dos);
+			saveFileSmart("store/worlds/" + world.name + "/player_data", dos);
 		} catch (IOException e) {e.printStackTrace();}
 		
 		try {
 			DataOutputStream dos = new DataOutputStream();
-			level.player.write(dos);
-			saveFileSmart("store/worlds/" + level.name + "/player/player data", dos);
-		} catch (IOException e) {e.printStackTrace();}
-		
-		try {
-			Collection<Entity> entities = new ArrayList<Entity>();
-			level.getEntities().forEach(entities::add);
-			entities.remove(level.player);
-			DataOutputStream dos = new DataOutputStream();
-			dos.writeEntities(entities);
-			saveFileSmart("store/worlds/" + level.name + "/entities/entity data", dos);
-		} catch (IOException e) {e.printStackTrace();}
-		
-		try {
-			DataOutputStream dos = new DataOutputStream();
-			level.write(dos);
-			saveFileSmart("store/worlds/" + level.name + "/world/world data", dos);
+			world.write(dos);
+			saveFileSmart("store/worlds/" + world.name + "/world_data", dos);
 		} catch (IOException e) {e.printStackTrace();}
 		
 		
-		//TODO: 
-		/*TaskWorker loader = new TaskWorker(Settings.IOThreads);
-		level.loadProgress = 0;
-		for(Entry<Vector3I,BlockContainer> entry : level.getAllBlockContainers())
+		TaskWorker loader = new TaskWorker(Settings.IOThreads);
+		world.loadProgress = 0;
+		for(Vector3I pos : world.getAllChunkPositions())
 	    {
-			loader.addTask(new ChunkSaver(entry, level));
+			Chunk chunk = world.tryGetChunk(pos.x, pos.y, pos.z);
+			if(chunk == null)
+				continue;
+			
+			loader.addTask(new ChunkSaver(chunk, world));
 	    }
 		
 		loader.start();
 		loader.completeAllTasks();
-		loader.stop();*/
+		loader.stop();
 	}
 	
-	//TODO: 
-	/*private static class ChunkSaver implements Executable 
+	private static class ChunkSaver implements Executable 
 	{
-		private Entry<Vector3I,BlockContainer> entry;
+		private Chunk chunk;
 		private World world;
 		
-		public ChunkSaver(Entry<Vector3I,BlockContainer> entry, World world)
+		public ChunkSaver(Chunk chunk, World world)
 		{
-			this.entry = entry;
+			this.chunk = chunk;
 			this.world = world;
 		}
 		
@@ -168,21 +139,17 @@ public class DataLoader {
 		public void execute() 
 		{
 			try {
-				Vector3I position = entry.getKey();
-				BlockContainer container = entry.getValue();
-				
-				if(!container.isGenerated())
+				if(!chunk.isPopulated)
 					return;
 				
-				String path = "store/worlds/" + world.name + "/chunks/chunk" + position.x + "," + position.y + "," + position.z + "";
+				String path = "store/worlds/" + world.name + "/chunks/chunk" + chunk.cx + "," + chunk.cy + "," + chunk.cz + "";
 				DataOutputStream dos = new DataOutputStream();
-				container.write(dos);
+				chunk.write(dos);
 				saveFileSmart(path, dos);
 				world.loadProgress++;
 			} catch (IOException e){e.printStackTrace();}
 		}
-	}*/
-	
+	}
 	
 	private static void saveFileSmart(String path, DataOutputStream dos) throws IOException
 	{

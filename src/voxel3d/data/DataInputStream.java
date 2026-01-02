@@ -1,7 +1,6 @@
 package voxel3d.data;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -45,21 +44,37 @@ public class DataInputStream {
 		return v;
 	}
 	
-	public double readDouble() throws IOException
+	public double readKeyValueDouble(String key) throws IOException
 	{
-		String str = readString();
-		return Double.parseDouble(str);
+		String line = readLine();
+		String[] kv = line.split("=");
+		if(kv[0].equals(key))
+			return Double.parseDouble(kv[1]);
+		
+		throw new RuntimeException("key missmatch: " + key + " " + kv[0]);
 	}
 	
-	public String readString() throws IOException
+	public String readKeyValue(String key) throws IOException
 	{
-		int length = readInt();
-		byte[] b = new byte[length];
-		for(int i = 0; i < b.length; i++)
+		String line = readLine();
+		String[] kv = line.split("=");
+		if(kv[0].equals(key))
+			return kv[1];
+		
+		throw new RuntimeException("key missmatch: " + key + " " + kv[0]);
+	}
+	
+	public String readLine() throws IOException
+	{
+		String ret = "";
+		while(true)
 		{
-			b[i] = readByte();
+			char c = (char)readByte();
+			if(c == '\n')
+				return ret;
+				
+			ret = ret + c;
 		}
-		return new String(b, StandardCharsets.UTF_8);
 	}
 	
 	public Block readBlock() throws IOException
@@ -80,7 +95,7 @@ public class DataInputStream {
 	
 	public Collection<Entity> readEntities() throws IOException
 	{
-		int length = readInt();
+		int length = (int)readKeyValueDouble("entity_size");
 		List<Entity> entities = new ArrayList<Entity>(length);
 		for(int i = 0; i < length; i++)
 		{
@@ -96,5 +111,4 @@ public class DataInputStream {
 			throw new IOException("Unconsumed bytes: " + ptr + " consumed, " + data.length + " in stream");
 		}
 	}
-
 }

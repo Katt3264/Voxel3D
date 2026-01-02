@@ -63,19 +63,24 @@ public class DataOutputStream {
 		}
 	}
 	
-	public void writeDouble(double d)
+	public void writeKeyValueDouble(String key, double value)
 	{
-		writeString("" + d);
+		writeLine(key + "=" + value);
 	}
 	
-	public void writeString(String string)
+	public void writeKeyValue(String key, String value)
+	{
+		writeLine(key + "=" + value);
+	}
+	
+	public void writeLine(String string)
 	{
 		byte[] b = string.getBytes(StandardCharsets.UTF_8);
-		writeInt(b.length);
 		for(int i = 0; i < b.length; i++)
 		{
 			writeByte(b[i]);
 		}
+		writeByte((byte)'\n');
 	}
 	
 	public void writeBlock(Block block)
@@ -88,23 +93,23 @@ public class DataOutputStream {
 	{
 		if(item == null)
 		{
-			writeString("null");
+			writeKeyValue("name","null");
 			return;
 		}
 		
-		writeString(item.getName());
+		writeKeyValue("name",item.getName());
 		item.write(this);
 	}
 	
 	public void writeEntity(Entity entity)
 	{
-		writeString(entity.getType());
+		writeKeyValue("type", entity.getType());
 		entity.write(this);
 	}
 	
 	public void writeEntities(Collection<Entity> entities)
 	{
-		writeInt(entities.size());
+		writeKeyValue("entity_size", ""+entities.size());
 		for(Entity entity : entities)
 		{
 			writeEntity(entity);

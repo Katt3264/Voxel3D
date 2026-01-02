@@ -1,6 +1,11 @@
 package voxel3d.level.world;
 
+import java.io.IOException;
+
 import voxel3d.block.Block;
+import voxel3d.data.DataInputStream;
+import voxel3d.data.DataOutputStream;
+import voxel3d.data.DataStreamable;
 import voxel3d.global.Settings;
 import voxel3d.global.Time;
 import voxel3d.graphics.Mesh;
@@ -8,7 +13,7 @@ import voxel3d.utility.Color;
 import voxel3d.utility.Color5;
 import voxel3d.utility.MathX;
 
-public class Chunk {
+public class Chunk implements DataStreamable {
 	
 	//TODO: make one single state: empty,working,done
 	public boolean isPopulated = false;
@@ -19,7 +24,8 @@ public class Chunk {
 	public boolean buildingLight = false;
 	public long consistentLight = -1;
 	
-	private final int cx, cy, cz;
+	public final int cx, cy, cz;
+	
 	private final BlockOctree blocks;
 	//private Collection<Entry<Vector3I, BlockSimulable>> simulableBlocks = Collections.<Entry<Vector3I, BlockSimulable>>emptyList();
 	private final byte[] red;
@@ -188,12 +194,18 @@ public class Chunk {
 		lastModified = Time.getAtomTime();
 	}
 	
-	/*
-	 * Save to disk
-	 */
+	@Override
+	public void write(DataOutputStream dos)
+	{
+		blocks.write(dos);
+	}
 	
-	/*
-	 * Load from disk
-	 */
+	@Override
+	public void read(DataInputStream dis) throws IOException
+	{
+		blocks.read(dis);
+		lastModified = Time.getAtomTime();
+		isPopulated = true;
+	}
 	
 }

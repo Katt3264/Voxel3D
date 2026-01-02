@@ -402,20 +402,22 @@ public class Player extends Entity implements Strikeable {
 	public void read(DataInputStream stream) throws IOException 
 	{
 		super.read(stream);
-		pitch = stream.readDouble();
-		yaw = stream.readDouble();
-		hunger = stream.readInt();
-		health = stream.readInt();
+		pitch = stream.readKeyValueDouble("pitch");
+		yaw = stream.readKeyValueDouble("yaw");
+		hunger = (int) stream.readKeyValueDouble("hunger");
+		health = (int) stream.readKeyValueDouble("health");
+		inventory.read(stream);
 	}
 
 	@Override
 	public void write(DataOutputStream stream) 
 	{
 		super.write(stream);
-		stream.writeDouble(pitch);
-		stream.writeDouble(yaw);
-		stream.writeInt(hunger);
-		stream.writeInt(health);
+		stream.writeKeyValueDouble("pitch", pitch);
+		stream.writeKeyValueDouble("yaw", yaw);
+		stream.writeKeyValueDouble("hunger", hunger);
+		stream.writeKeyValueDouble("health", health);
+		inventory.write(stream);
 	}
 
 	@Override

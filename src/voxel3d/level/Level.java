@@ -24,7 +24,7 @@ public class Level {
 	
 	private final World world;
 	
-	private Level_state state = Level_state.PLAYING;
+	private Level_state state = Level_state.LOADING;
 	private HUD hud;
 	private PauseMenu pauesMenu;
 	private DeathMenu deathMenu;
@@ -42,59 +42,74 @@ public class Level {
 	{
 		Mesh.cleanup();
 		
-		if(state == Level_state.PLAYING)
+		if (state == Level_state.LOADING)
 		{
+			//TODO: add background here, use custom loading view
+			GraphicsWrapper.setRenderModeGUI();
+			GUIUtill.drawString("loading", -1.0f, 0.0f, 0.4f);
+			GUIUtill.drawString("chunks " + world.loadProgress, -1.0f, -0.2f, 0.2f);
+			
 			if(!world.isLoading())
 			{
-				world.render();
+				Input.hideMouse();
+				state = Level_state.PLAYING;
+			}
+		} 
+		else if (state == Level_state.UNLOADING)
+		{
+			//TODO: add background here, use custom loading view
+			GraphicsWrapper.setRenderModeGUI();
+			GUIUtill.drawString("saving", -1.0f, 0.0f, 0.4f);
+			GUIUtill.drawString("chunks " + world.loadProgress, -1.0f, -0.2f, 0.2f);
+			
+			if(!world.isLoading())
+			{
+				// exited
+			}
+		}
+		else if(state == Level_state.PLAYING)
+		{
+			world.render();
+			
+			GraphicsWrapper.setRenderModeGUI();
+			HUDRenderContext hudRenderContext = new HUDRenderContext(world);
+			hud.draw(hudRenderContext);
+			
+			// TODO: make this a menu
+			if(Settings.debugScreen)
+			{	
+				GUIUtill.drawString("Memory use:" + NumberFormat.getNumberInstance(Locale.US).format(Debug.memory) + " B", 	-1f, 0.90f, 0.05f);
+				GUIUtill.drawString("fps        " + ((int)(Debug.fps*10f))/10f, 			-1f, 0.85f, 0.05f);
+				GUIUtill.drawString("fps low    " + ((int)(Debug.worstfps*10f))/10f, 			-1f, 0.80f, 0.05f);
 				
-				GraphicsWrapper.setRenderModeGUI();
-				HUDRenderContext hudRenderContext = new HUDRenderContext(world);
-				hud.draw(hudRenderContext);
+				GUIUtill.drawString("update          " + String.format("%.4G ", (Debug.updateTime / 1E6)) 		+ " ms", 	0f, 0.75f, 0.05f);
+				GUIUtill.drawString("render disbatch " + String.format("%.4G ", (Debug.drawDispatchTime / 1E6)) + " ms", 	0f, 0.70f, 0.05f);
+				GUIUtill.drawString("wait for render " + String.format("%.4G ", (Debug.waitForDrawTime /  1E6)) + " ms", 	0f, 0.65f, 0.05f);
+				GUIUtill.drawString("load            " + String.format("%.4G ", (Debug.load)) + " %", 	0f, 0.50f, 0.05f);
 				
-				// TODO: make this a menu
-				if(Settings.debugScreen)
-				{	
-					GUIUtill.drawString("Memory use:" + NumberFormat.getNumberInstance(Locale.US).format(Debug.memory) + " B", 	-1f, 0.90f, 0.05f);
-					GUIUtill.drawString("fps        " + ((int)(Debug.fps*10f))/10f, 			-1f, 0.85f, 0.05f);
-					GUIUtill.drawString("fps low    " + ((int)(Debug.worstfps*10f))/10f, 			-1f, 0.80f, 0.05f);
+				GUIUtill.drawString("gens       " + (Debug.chunkGens), 		-1f, 0.75f, 0.05f);
+				GUIUtill.drawString("light      " + (Debug.chunkLights), 	-1f, 0.70f, 0.05f);
+				GUIUtill.drawString("build      " + (Debug.chunkBuilds), 	-1f, 0.65f, 0.05f);
+				GUIUtill.drawString("ticks      " + (Debug.chunkTicks), 	-1f, 0.60f, 0.05f);
+				GUIUtill.drawString("triangles  " + (Debug.triangles), 		-1f, 0.55f, 0.05f);
+				
+				GUIUtill.drawString("x          " + ((int)world.player.position.x), -1f, 0.50f, 0.05f);
+				GUIUtill.drawString("y          " + ((int)world.player.position.y), -1f, 0.45f, 0.05f);
+				GUIUtill.drawString("z          " + ((int)world.player.position.z), -1f, 0.40f, 0.05f);
+				GUIUtill.drawString("time       " +(world.getClockTime()), -1f, 0.35f, 0.05f);
+				
+				if(world.player.facing != null)
+				{
+					float start = 0.30f;
+					float step = 0.05f;
+					String[] lines = ("Facing:" + world.player.facing.getInfo()).split("\n");
 					
-					GUIUtill.drawString("update          " + String.format("%.4G ", (Debug.updateTime / 1E6)) 		+ " ms", 	0f, 0.75f, 0.05f);
-					GUIUtill.drawString("render disbatch " + String.format("%.4G ", (Debug.drawDispatchTime / 1E6)) + " ms", 	0f, 0.70f, 0.05f);
-					GUIUtill.drawString("wait for render " + String.format("%.4G ", (Debug.waitForDrawTime /  1E6)) + " ms", 	0f, 0.65f, 0.05f);
-					GUIUtill.drawString("load            " + String.format("%.4G ", (Debug.load)) + " %", 	0f, 0.50f, 0.05f);
-					
-					GUIUtill.drawString("gens       " + (Debug.chunkGens), 		-1f, 0.75f, 0.05f);
-					GUIUtill.drawString("light      " + (Debug.chunkLights), 	-1f, 0.70f, 0.05f);
-					GUIUtill.drawString("build      " + (Debug.chunkBuilds), 	-1f, 0.65f, 0.05f);
-					GUIUtill.drawString("ticks      " + (Debug.chunkTicks), 	-1f, 0.60f, 0.05f);
-					GUIUtill.drawString("triangles  " + (Debug.triangles), 		-1f, 0.55f, 0.05f);
-					
-					GUIUtill.drawString("x          " + ((int)world.player.position.x), -1f, 0.50f, 0.05f);
-					GUIUtill.drawString("y          " + ((int)world.player.position.y), -1f, 0.45f, 0.05f);
-					GUIUtill.drawString("z          " + ((int)world.player.position.z), -1f, 0.40f, 0.05f);
-					GUIUtill.drawString("time       " +(world.getClockTime()), -1f, 0.35f, 0.05f);
-					
-					if(world.player.facing != null)
+					for(int i = 0; i < lines.length; i++)
 					{
-						float start = 0.30f;
-						float step = 0.05f;
-						String[] lines = ("Facing:" + world.player.facing.getInfo()).split("\n");
-						
-						for(int i = 0; i < lines.length; i++)
-						{
-							GUIUtill.drawString(lines[i], -1f, start, step);
-							start -= step;
-						}
+						GUIUtill.drawString(lines[i], -1f, start, step);
+						start -= step;
 					}
 				}
-			}
-			else
-			{
-				//TODO: add background here, use custom loading view
-				GraphicsWrapper.setRenderModeGUI();
-				GUIUtill.drawString("loading", -1.0f, 0.0f, 0.4f);
-				GUIUtill.drawString("chunks " + world.loadProgress, -1.0f, -0.2f, 0.2f);
 			}
 		}
 		else if (state == Level_state.PAUSED)
@@ -102,7 +117,7 @@ public class Level {
 			world.render();
 			pauesMenu.draw();
 		} 
-		else if (state == Level_state.DEAD)
+		else if (state == Level_state.PLAYER_DEAD)
 		{
 			world.render();
 			deathMenu.draw();
@@ -114,7 +129,22 @@ public class Level {
 		if(!isRunning())
 			return;
 		
-		if(state == Level_state.PLAYING)
+		if (state == Level_state.LOADING)
+		{
+			if(!world.isLoading())
+			{
+				Input.hideMouse();
+				state = Level_state.PLAYING;
+			}
+		} 
+		else if (state == Level_state.UNLOADING)
+		{
+			if(!world.isLoading())
+			{
+				//exit
+			}
+		}
+		else if(state == Level_state.PLAYING)
 		{
 			world.update();
 			HUDUpdateContext hudUpdateContext = new HUDUpdateContext(world);
@@ -139,7 +169,7 @@ public class Level {
 			{
 				Input.showMouse();
 				world.pause();
-				state = Level_state.DEAD;
+				state = Level_state.PLAYER_DEAD;
 			}
 			
 			if(Input.esc.isButtonPress() && !world.player.inventoryOpen)
@@ -155,7 +185,9 @@ public class Level {
 			
 			if(pauesMenu.exit())
 			{
+				Input.showMouse();
 				world.stop();
+				state = Level_state.UNLOADING;
 			}
 			if(pauesMenu.resume() || Input.esc.isButtonPress())
 			{
@@ -164,7 +196,7 @@ public class Level {
 				state = Level_state.PLAYING;
 			}
 		} 
-		else if (state == Level_state.DEAD)
+		else if (state == Level_state.PLAYER_DEAD)
 		{
 			deathMenu.update(world);
 			
@@ -189,13 +221,16 @@ public class Level {
 	
 	public void stop()
 	{
+		System.out.println("Stopped ");
 		world.stop();
 	}
 	
 	private enum Level_state 
 	{
+		LOADING,
+		UNLOADING,
 		PLAYING,
 		PAUSED,
-		DEAD,
+		PLAYER_DEAD,
 	}
 }

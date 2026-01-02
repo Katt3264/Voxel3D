@@ -107,10 +107,10 @@ public class Inventory implements DataStreamable{
 		for(int i = 0; i < items.length; i++)
 		{
 			items[i].item = stream.readItem();
-			items[i].value = stream.readInt();
+			items[i].value = (int)stream.readKeyValueDouble("value");
 		}
 		mouseItem.item = stream.readItem();
-		mouseItem.value = stream.readInt();
+		mouseItem.value = (int)stream.readKeyValueDouble("value");
 		
 		stream.close();
 	}
@@ -121,10 +121,10 @@ public class Inventory implements DataStreamable{
 		for(int i = 0; i < items.length; i++)
 		{
 			stream.writeItem(items[i].item);
-			stream.writeInt(items[i].value);
+			stream.writeKeyValue("value", ""+items[i].value);
 		}
 		stream.writeItem(mouseItem.item);
-		stream.writeInt(mouseItem.value);
+		stream.writeKeyValue("value", ""+mouseItem.value);
 	}
 
 }

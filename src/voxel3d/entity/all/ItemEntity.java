@@ -103,7 +103,7 @@ public class ItemEntity extends Entity{
 	{
 		super.read(stream);
 		item = stream.readItem();
-		ttl = stream.readInt();
+		ttl = (int)stream.readKeyValueDouble("ttl");
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class ItemEntity extends Entity{
 	{
 		super.write(stream);
 		stream.writeItem(item);
-		stream.writeInt(ttl);
+		stream.writeKeyValue("ttl", ""+ttl);
 	}
 
 	@Override

@@ -36,7 +36,7 @@ public abstract class Item implements DataStreamable {
 	
 	public static Item GetInstanceFromData(DataInputStream stream) throws IOException
 	{
-		String itemName = stream.readString();
+		String itemName = stream.readKeyValue("name");
 		Item instancer = nameInstanceMap.get(itemName);
 		if(instancer == null)
 		{

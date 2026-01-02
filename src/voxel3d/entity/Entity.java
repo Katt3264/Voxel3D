@@ -49,7 +49,7 @@ public abstract class Entity implements DataStreamable {
 	
 	public static Entity GetInstanceFromData(DataInputStream stream) throws IOException
 	{
-		String entityType = stream.readString();
+		String entityType = stream.readKeyValue("type");
 		Entity instancer = typeInstanceMap.get(entityType);
 		if(instancer == null)
 		{
@@ -147,25 +147,25 @@ public abstract class Entity implements DataStreamable {
 	@Override
 	public void read(DataInputStream stream) throws IOException 
 	{
-		position.x = stream.readDouble();
-		position.y = stream.readDouble();
-		position.z = stream.readDouble();
+		position.x = stream.readKeyValueDouble("x");
+		position.y = stream.readKeyValueDouble("y");
+		position.z = stream.readKeyValueDouble("z");
 		
-		velocity.x = stream.readDouble();
-		velocity.y = stream.readDouble();
-		velocity.z = stream.readDouble();
+		velocity.x = stream.readKeyValueDouble("vx");
+		velocity.y = stream.readKeyValueDouble("vy");
+		velocity.z = stream.readKeyValueDouble("vz");
 	}
 
 	@Override
 	public void write(DataOutputStream stream) 
 	{
-		stream.writeDouble(position.x);
-		stream.writeDouble(position.y);
-		stream.writeDouble(position.z);
+		stream.writeKeyValueDouble("x", position.x);
+		stream.writeKeyValueDouble("y", position.y);
+		stream.writeKeyValueDouble("z", position.z);
 		
-		stream.writeDouble(velocity.x);
-		stream.writeDouble(velocity.y);
-		stream.writeDouble(velocity.z);
+		stream.writeKeyValueDouble("vx", velocity.x);
+		stream.writeKeyValueDouble("vy", velocity.y);
+		stream.writeKeyValueDouble("vz", velocity.z);
 	}
 
 }

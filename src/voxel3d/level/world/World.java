@@ -148,22 +148,6 @@ public class World implements DataStreamable {
 		time += nano;
 	}
 	
-	public Iterable<Entity> getEntities()
-	{
-		synchronized(entities)
-		{
-			return entities;
-		}
-	}
-	
-	public void addEntities(Collection<Entity> en)
-	{
-		synchronized(entities)
-		{
-			entities.addAll(en);
-		}
-	}
-	
 	public void addEntity(Entity en)
 	{
 		synchronized(entities)
@@ -324,7 +308,7 @@ public class World implements DataStreamable {
 			AABB blockAABB = new AABB();
 			block.getCollisionBox(x, y, z, blockAABB);
 			AABB entityAABB = new AABB();
-			for(Entity entity : getEntities())
+			for(Entity entity : entities)
 			{
 				entity.getAABB(entityAABB);
 				if(blockAABB.intersects(entityAABB)) {return false;}
@@ -384,7 +368,7 @@ public class World implements DataStreamable {
 	{
 		Collection<Entity> results = new ArrayList<Entity>();
 		
-		for(Entity entity : getEntities())
+		for(Entity entity : entities)
 		{
 			AABB aabb = new AABB();
 			entity.getAABB(aabb);
@@ -441,7 +425,7 @@ public class World implements DataStreamable {
 		for(Spawnable spawnable : Entity.getSpawnables())
 		{
 			int spawnableCount = 0;
-			for(Entity entity : getEntities())
+			for(Entity entity : entities)
 			{
 				if(entity.getType().equals(((Entity)spawnable).getType()))
 					spawnableCount++;
@@ -494,13 +478,13 @@ public class World implements DataStreamable {
 		
 		AABB entityAABB = new AABB();
 		EntityUpdateContext entityUpdateContext = new EntityUpdateContext(this);
-		for(Entity entity : getEntities())
+		for(Entity entity : entities)
 		{
 			entity.update(entityUpdateContext);
 			entity.getAABB(entityAABB);
 			
 			AABB entityOtherAABB = new AABB();
-			for(Entity other : getEntities())
+			for(Entity other : entities)
 			{
 				other.getAABB(entityOtherAABB);
 				if(entityAABB.intersects(entityOtherAABB) && entity != other)
@@ -517,7 +501,7 @@ public class World implements DataStreamable {
 		
 		AABB playerAABB = new AABB();
 		player.getAABB(playerAABB);
-		for(Entity entity : getEntities())
+		for(Entity entity : entities)
 		{
 			if(entity instanceof ItemEntity)
 			{
@@ -611,15 +595,20 @@ public class World implements DataStreamable {
 	@Override
 	public void read(DataInputStream stream) throws IOException 
 	{
-		ambiance.setTime(stream.readDouble());
-		stream.readInt();
+		ambiance.setTime(stream.readKeyValueDouble("time"));
+		seed = (int)stream.readKeyValueDouble("seed");
+		entities.addAll(stream.readEntities());
 	}
 
 	@Override
 	public void write(DataOutputStream stream) 
 	{
-		stream.writeDouble(ambiance.time);
-		stream.writeInt(seed);
+		stream.writeKeyValue("time", ""+ambiance.time);
+		stream.writeKeyValue("seed", ""+seed);
+		Collection<Entity> es = new ArrayList<Entity>();
+		es.addAll(entities);
+		es.remove(player);
+		stream.writeEntities(es);
 	}
 	
 }
