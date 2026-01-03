@@ -18,5 +18,12 @@ public class MathX {
 	{
 		return x * Settings.CHUNK_SIZE * Settings.CHUNK_SIZE + y * Settings.CHUNK_SIZE + z;
 	}
+	
+	public static double clamp(double val, double min, double max)
+	{
+		if(val > max) {return max;}
+		if(val < min) {return min;}
+		return val;
+	}
 
 }

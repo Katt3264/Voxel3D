@@ -7,8 +7,8 @@ import voxel3d.block.all.*;
 import voxel3d.level.ChunkPopulator;
 import voxel3d.global.Settings;
 
-public class HouseSmal extends Structure {
-
+public class HouseSmal /*extends Structure*/ {
+/*
 	@Override
 	public void placeBlocks(int x, int y, int z, Block[] blocks)
 	{
@@ -68,5 +68,5 @@ public class HouseSmal extends Structure {
 			}
 		}
 	}
-
+*/
 }

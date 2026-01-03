@@ -7,8 +7,8 @@ import voxel3d.block.all.*;
 import voxel3d.level.ChunkPopulator;
 import voxel3d.global.Settings;
 
-public class EtherealTree extends Structure {
-	
+public class EtherealTree /*extends Structure*/ {
+	/*
 	@Override
 	public void placeBlocks(int x, int y, int z, Block[] blocks)
 	{	
@@ -57,5 +57,5 @@ public class EtherealTree extends Structure {
 			}
 		}
 	}
-	
+	*/
 }

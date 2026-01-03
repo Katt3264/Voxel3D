@@ -14,18 +14,21 @@ public abstract class Biome {
 			new RainbowBiome(256),
 	};
 	
+	//private static final Biome biome = new OverworldBiome(0);
+	
 	private static final Biome endBiome = new DesertBiome(0);
 	
 	public abstract Block getBlock(int x, int y, int z);
 	public abstract double getSize();
 	
-	public static Block staticGetBlock(int x, int y, int z)
+	/*public static Block staticGetBlock(int x, int y, int z)
 	{
-		Biome biome = staticGetBiome(x, y, z);
-		return biome.getBlock(x, y, z);
-	}
+		//Biome biome = staticGetBiome(x, y, z);
+		//return biome.getBlock(x, y, z);
+		//return biome.getBlock(x, y, z);
+	}*/
 	
-	public static Biome staticGetBiome(int x, int y, int z)
+	/*public static Biome staticGetBiome(int x, int y, int z)
 	{
 		double distance = Math.sqrt(x*x + z*z);
 		double accL = 0;
@@ -39,7 +42,7 @@ public abstract class Biome {
 			
 		}
 		return endBiome;
-	}
+	}*/
 	
 	
 	protected static int getRandom(int x, int y, int z, int l)

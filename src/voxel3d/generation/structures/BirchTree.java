@@ -7,8 +7,8 @@ import voxel3d.block.all.*;
 import voxel3d.level.ChunkPopulator;
 import voxel3d.global.Settings;
 
-public class BirchTree extends Structure{
-
+public class BirchTree /*extends Structure*/{
+/*
 	@Override
 	public void placeBlocks(int x, int y, int z, Block[] blocks)
 	{
@@ -67,5 +67,5 @@ public class BirchTree extends Structure{
 			}
 		}
 	}
-	
+	*/
 }
