@@ -1,12 +1,13 @@
 package voxel3d.utility;
 
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import voxel3d.global.Settings;
 
 public class TaskWorker {
 	
-	private final LinkedList<Executable> taskList = new LinkedList<Executable>();
+	private final Deque<Executable> taskList = new ArrayDeque<Executable>();
 	private final Runner[] runners;
 	
 	private boolean paused = false;
