@@ -71,7 +71,10 @@ public class HUD {
 		}
 		else
 		{
-			return Objects.craftingHUD;
+			if(Settings.godMode)
+				return Objects.infinityChestHUD;
+			else
+				return Objects.craftingHUD;
 		}
 	}
 }

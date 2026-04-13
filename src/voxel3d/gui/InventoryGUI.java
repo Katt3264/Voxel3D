@@ -113,6 +113,23 @@ public class InventoryGUI {
 		return false;
 	}
 	
+	public static void interactInfinity(ItemValue slot, ItemValue mouse)
+	{
+		if(slot.value == 0) {slot.item = null;}
+		if(mouse.value == 0) {mouse.item = null;}
+		
+		if(Input.hit.isButtonPress())
+		{
+			if(mouse.item == slot.item)
+				mouse.value = Math.min(mouse.value + 1, 99);
+			else
+				mouse.value = 1;
+			
+			mouse.item = slot.item;
+		}
+		if(mouse.item == null) {mouse.value = 0;}
+	}
+	
 	public void draw(HUDRenderContext context)
 	{
 		GUIUtill.drawRect(x, y, xSize, ySize, Objects.inventoryGUI);

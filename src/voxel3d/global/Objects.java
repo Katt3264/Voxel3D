@@ -7,9 +7,7 @@ import voxel3d.audio.AudioManager;
 import voxel3d.graphics.GraphicsWrapper;
 import voxel3d.graphics.Shader;
 import voxel3d.graphics.Texture;
-import voxel3d.gui.ChestGUI;
-import voxel3d.gui.CraftingGUI;
-import voxel3d.gui.HUDInteractable;
+import voxel3d.gui.*;
 import voxel3d.utility.FloatArrayPool;
 import voxel3d.utility.MainThreadExecutable;
 
@@ -36,6 +34,7 @@ public class Objects {
 	public static Texture craftingGUI;
 	public static Texture maceratorGUI;
 	public static Texture chestGUI;
+	public static Texture infinityChestGUI;
 	public static Texture hintGUI;
 	
 	public static Texture glyphAtlas;
@@ -81,7 +80,7 @@ public class Objects {
 	
 	public static HUDInteractable craftingHUD;
 	public static HUDInteractable chestHUD;
-	
+	public static HUDInteractable infinityChestHUD;
 	
 	public static FloatArrayPool floatArrayPool;
 	
@@ -104,6 +103,7 @@ public class Objects {
 		inventoryGUI = AssetLoader.loadGUITexture("inventory");
 		craftingGUI = AssetLoader.loadGUITexture("crafting");
 		chestGUI = AssetLoader.loadGUITexture("chest");
+		infinityChestGUI = AssetLoader.loadGUITexture("infinity chest");
 		maceratorGUI = AssetLoader.loadGUITexture("macerator");
 		hintGUI = AssetLoader.loadGUITexture("hint");
 		
@@ -163,6 +163,7 @@ public class Objects {
 		
 		craftingHUD = new CraftingGUI();
 		chestHUD = new ChestGUI();
+		infinityChestHUD = new InfinityChestGUI();
 		
 		floatArrayPool = new FloatArrayPool();
 		

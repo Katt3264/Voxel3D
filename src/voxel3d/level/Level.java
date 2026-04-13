@@ -146,10 +146,6 @@ public class Level {
 		}
 		else if(state == Level_state.PLAYING)
 		{
-			world.update();
-			HUDUpdateContext hudUpdateContext = new HUDUpdateContext(world);
-			hud.update(hudUpdateContext);
-			
 			if(Input.hud.isButtonPress())
 			{
 				Settings.showHud = !Settings.showHud;
@@ -178,6 +174,10 @@ public class Level {
 				world.pause();
 				state = Level_state.PAUSED;
 			}
+			
+			world.update();
+			HUDUpdateContext hudUpdateContext = new HUDUpdateContext(world);
+			hud.update(hudUpdateContext);
 		}
 		else if (state == Level_state.PAUSED)
 		{

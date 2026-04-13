@@ -17,6 +17,10 @@ public abstract class Item implements DataStreamable {
 	
 	private static TreeMap<String, Item> nameInstanceMap = new TreeMap<String, Item>();
 	
+	public static Iterable<Item> getAllItems()
+	{
+		return nameInstanceMap.values();
+	}
 	
 	public static void setItemDeserializerForName(Item item)
 	{
