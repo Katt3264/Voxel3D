@@ -47,25 +47,12 @@ public class Level {
 			//TODO: add background here, use custom loading view
 			GraphicsWrapper.setRenderModeGUI();
 			GUIUtill.drawString("loading", -1.0f, 0.0f, 0.4f);
-			GUIUtill.drawString("chunks " + world.loadProgress, -1.0f, -0.2f, 0.2f);
-			
-			if(!world.isLoading())
-			{
-				Input.hideMouse();
-				state = Level_state.PLAYING;
-			}
 		} 
 		else if (state == Level_state.UNLOADING)
 		{
 			//TODO: add background here, use custom loading view
 			GraphicsWrapper.setRenderModeGUI();
 			GUIUtill.drawString("saving", -1.0f, 0.0f, 0.4f);
-			GUIUtill.drawString("chunks " + world.loadProgress, -1.0f, -0.2f, 0.2f);
-			
-			if(!world.isLoading())
-			{
-				// exited
-			}
 		}
 		else if(state == Level_state.PLAYING)
 		{
@@ -131,7 +118,7 @@ public class Level {
 		
 		if (state == Level_state.LOADING)
 		{
-			if(!world.isLoading())
+			if(world.isLoaded())
 			{
 				Input.hideMouse();
 				state = Level_state.PLAYING;
@@ -139,9 +126,10 @@ public class Level {
 		} 
 		else if (state == Level_state.UNLOADING)
 		{
-			if(!world.isLoading())
+			if(world.isUnloaded())
 			{
-				//exit
+				Input.showMouse();
+				state = Level_state.EXITED;
 			}
 		}
 		else if(state == Level_state.PLAYING)
@@ -202,7 +190,9 @@ public class Level {
 			
 			if(deathMenu.exit())
 			{
+				Input.showMouse();
 				world.stop();
+				state = Level_state.UNLOADING;
 			}
 			if(deathMenu.resume())
 			{
@@ -216,7 +206,7 @@ public class Level {
 	
 	public boolean isRunning()
 	{
-		return world.isRunning();
+		return !(state == Level_state.EXITED);
 	}
 	
 	public void stop()
@@ -232,5 +222,6 @@ public class Level {
 		PLAYING,
 		PAUSED,
 		PLAYER_DEAD,
+		EXITED,
 	}
 }

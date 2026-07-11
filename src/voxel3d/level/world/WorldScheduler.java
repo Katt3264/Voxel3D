@@ -14,19 +14,22 @@ public class WorldScheduler {
 	private final WorldScheduler scheduler;
 	private final Runner runner;
 	
+	private boolean isWorldLoaded = false;
+	private boolean isWorldUnloaded = false;
+	
+	//TODO: make private
 	public final TaskWorker workerChunkGen;
+	public final TaskWorker workerChunkUnload;
 	public final TaskWorker workerChunkLight;
 	public final TaskWorker workerChunkMesh;
 	public final TaskWorker workerChunkSimulate;
-	
-	public boolean loadingInProgress = true;
-	private boolean alive = true;
 	
 	public WorldScheduler(World world)
 	{
 		scheduler = this;
 		this.world = world;
 		workerChunkGen = new TaskWorker(1);
+		workerChunkUnload = new TaskWorker(1);
 		workerChunkLight = new TaskWorker(1);
 		workerChunkMesh = new TaskWorker(1);
 		workerChunkSimulate = new TaskWorker(1);
@@ -49,6 +52,7 @@ public class WorldScheduler {
 	public void start()
 	{
 		workerChunkGen.start();
+		workerChunkUnload.start();
 		workerChunkLight.start();
 		workerChunkMesh.start();
 		workerChunkSimulate.start();
@@ -58,6 +62,7 @@ public class WorldScheduler {
 	public void pause()
 	{
 		workerChunkGen.pause();
+		workerChunkUnload.pause();
 		workerChunkLight.pause();
 		workerChunkMesh.pause();
 		workerChunkSimulate.pause();
@@ -66,21 +71,28 @@ public class WorldScheduler {
 	public void resume()
 	{
 		workerChunkGen.resume();
+		workerChunkUnload.resume();
 		workerChunkLight.resume();
 		workerChunkMesh.resume();
 		workerChunkSimulate.resume();
 	}
 	
-	public boolean isRunning()
+	public boolean isWorldLoaded()
 	{
-		return alive;
+		//check chunk gen
+		return isWorldLoaded;
+	}
+	
+	public boolean isWorldUnloaded()
+	{
+		return isWorldUnloaded;
 	}
 	
 	public void stop()
 	{
-		loadingInProgress = true;
 		runner.terminate();
 		workerChunkGen.stop();
+		workerChunkUnload.stop();
 		workerChunkLight.stop();
 		workerChunkMesh.stop();
 		workerChunkSimulate.stop();
@@ -99,7 +111,7 @@ public class WorldScheduler {
 			{
 				DataLoader.loadLevel(world);
 			}
-			loadingInProgress = false;
+			isWorldLoaded = true;
 			
 			while(running) 
 			{
@@ -118,12 +130,12 @@ public class WorldScheduler {
 			if(Settings.saveEnable)
 			{
 				Debug.log("saving level");
+				task.unloadCleanup(true);
 				DataLoader.saveLevel(world);
 		        Debug.log("saving complete");
 		        
 			}
-			loadingInProgress = false;
-			alive = false;
+			isWorldUnloaded = true;
 		}
 		
 		public void terminate()

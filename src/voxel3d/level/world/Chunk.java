@@ -19,6 +19,8 @@ public class Chunk implements DataStreamable {
 	public boolean isPopulated = false;
 	public boolean isBeingPopulated = false;
 	public long lastModified = -1;
+	public boolean isSaving = false;
+	public long lastSaved = -1;
 	public boolean buildingMesh = false;
 	public long consistentMesh = -1;
 	public boolean buildingLight = false;
@@ -33,8 +35,8 @@ public class Chunk implements DataStreamable {
 	private final byte[] blue;
 	private final byte[] sky;
 	private Mesh mesh = null;
-	private final Chunk[][][] neibours = new Chunk[3][3][3];
-	private boolean hasNeibours = false;
+	//private final Chunk[][][] neibours = new Chunk[3][3][3];
+	//private boolean hasNeibours = false;
 	
 	public Chunk(int cx, int cy, int cz)
 	{
@@ -57,10 +59,10 @@ public class Chunk implements DataStreamable {
 		}
 	}
 	
-	public Chunk[][][] tryGetNeibours(World world)
+	public Chunk[][][] tryGetNeibours(World world, Chunk[][][] neibours)
 	{
-		if(hasNeibours)
-			return neibours;
+		//if(hasNeibours)
+		//	return neibours;
 		
 		for(int x = -1; x <= 1; x++)
 		{
@@ -75,7 +77,7 @@ public class Chunk implements DataStreamable {
 			}
 		}
 		
-		hasNeibours = true;
+		//hasNeibours = true;
 		return neibours;
 	}
 	
@@ -102,6 +104,11 @@ public class Chunk implements DataStreamable {
 			return Block.GetNotYetLoaded();
 		
 		return blocks.get(bx, by, bz);
+	}
+	
+	public boolean shouldSave()
+	{
+		return(lastSaved < lastModified);
 	}
 	
 	public byte[] getRed() 

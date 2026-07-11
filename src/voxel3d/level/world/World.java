@@ -42,7 +42,6 @@ public class World implements DataStreamable {
 	
 	public final String name;
 	public final Player player;
-	public long loadProgress = 0;
 	private boolean paused = false;
 	
 	private int ox, oy, oz;
@@ -123,14 +122,14 @@ public class World implements DataStreamable {
 		return player.alive;
 	}
 	
-	public boolean isLoading()
+	public boolean isLoaded()
 	{
-		return worldScheduler.loadingInProgress;
+		return worldScheduler.isWorldLoaded();
 	}
 	
-	public boolean isRunning()
+	public boolean isUnloaded()
 	{
-		return worldScheduler.isRunning();
+		return worldScheduler.isWorldUnloaded();
 	}
 	
 	public String getClockTime()
@@ -224,6 +223,15 @@ public class World implements DataStreamable {
 			Vector3I pos = new Vector3I(x,y,z);
 			Chunk chunk = chunks.get(pos);
 			return chunk;
+		}
+	}
+	
+	public void removeChunk(int x, int y, int z)
+	{
+		synchronized(this)
+		{
+			Vector3I pos = new Vector3I(x,y,z);
+			chunks.remove(pos);
 		}
 	}
 	
@@ -459,7 +467,7 @@ public class World implements DataStreamable {
 		
 		worldScheduler.mainThreadFrameEntry();
 		
-		if(worldScheduler.loadingInProgress || isPaused())
+		if(isPaused())
 			return;
 		
 		
@@ -539,12 +547,12 @@ public class World implements DataStreamable {
     			ox * Settings.CHUNK_SIZE, oy * Settings.CHUNK_SIZE, oz * Settings.CHUNK_SIZE, 
     			skyColor, Objects.chunkAtlas);
     	
-		int size = 2 * renderDistance + 1;
-		for(int x = 0; x < size; x++)
+		int size = 2 * renderDistance + 0;
+		for(int x = 1; x < size; x++)
 		{
-			for(int y = 0; y < size; y++)
+			for(int y = 1; y < size; y++)
 			{
-				for(int z = 0; z < size; z++)
+				for(int z = 1; z < size; z++)
 				{
 					Mesh mesh = getLocalChunkMesh(x+ox, y+oy, z+oz);
 					if(mesh == null) {continue;}

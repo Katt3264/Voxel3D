@@ -4,12 +4,13 @@ import voxel3d.global.Settings;
 import voxel3d.level.ChunkLightBuilder;
 import voxel3d.level.ChunkMeshBuilder;
 import voxel3d.level.ChunkPopulator;
+import voxel3d.level.ChunkUnloader;
 import voxel3d.level.ChunkUpdater;
 import voxel3d.utility.Vector3I;
 
 public class WorldTask {
 	
-	private Vector3I offset = new Vector3I();
+	//TODO: remove
 	private World world;
 	private WorldScheduler worldScheduler;
 	
@@ -20,12 +21,14 @@ public class WorldTask {
 		
 	public void performAction(World world, WorldScheduler worldScheduler) 
 	{
-		
 		int halfSize = world.getRenderDistance();
 		int size = 2 * halfSize + 1;
+		Vector3I offset = new Vector3I();
 		world.getOffset(offset);
 		this.world = world;
 		this.worldScheduler = worldScheduler;
+		
+		unloadCleanup(false);
 		
 		performSimulation();
 		
@@ -65,7 +68,47 @@ public class WorldTask {
 				}
 			}
 		}
+	}
+	
+	public void unloadCleanup(boolean force) 
+	{
+		Vector3I offset = new Vector3I();
+		world.getOffset(offset);
+		Vector3I center = new Vector3I();
+		center.set(offset.x, offset.y, offset.z);
+		center.x += world.getRenderDistance();
+		center.y += world.getRenderDistance();
+		center.z += world.getRenderDistance();
 		
+		if(worldScheduler.workerChunkUnload.getTaskCount() != 0)
+			return;
+		
+		for(Vector3I pos : world.getAllChunkPositions())
+		{
+			Chunk chunk = world.tryGetChunk(pos.x, pos.y, pos.z);
+			if(chunk == null)
+				continue;
+			
+			int r = Math.max(Math.abs(pos.x - center.x), Math.max(Math.abs(pos.y - center.y), Math.abs(pos.z - center.z)));
+			if(r <= world.getRenderDistance() + 0 && !force)
+				continue;
+			
+			if(chunk.shouldSave() && !chunk.isSaving) 
+			{
+				//TODO: repsect settings.saveEnable
+				ChunkUnloader unloader = new ChunkUnloader(chunk, world.name);
+				if(force)
+					unloader.execute();
+				else
+					worldScheduler.workerChunkUnload.addTask(unloader);
+			}
+			else if (!chunk.shouldSave()) 
+			{
+				world.removeChunk(pos.x, pos.y, pos.z);
+			}
+			
+		}
+		return;
 	}
 	
 	private double prevTimeSimulation = 0;
@@ -88,7 +131,7 @@ public class WorldTask {
 			if(chunk == null)
 				continue;
 			
-			Chunk[][][] chunkN = chunk.tryGetNeibours(world);
+			Chunk[][][] chunkN = chunk.tryGetNeibours(world, new Chunk[3][3][3]);
 			if(chunkN == null)
 				continue;
 			
@@ -105,7 +148,7 @@ public class WorldTask {
 		
 		if(!chunk.isPopulated && !chunk.isBeingPopulated)
 		{
-			ChunkPopulator populator = new ChunkPopulator(x, y, z, chunk);
+			ChunkPopulator populator = new ChunkPopulator(x, y, z, world.name, chunk);
 			worldScheduler.workerChunkGen.addTask(populator);
 			return true;
 		}
@@ -119,7 +162,7 @@ public class WorldTask {
 			return false;
 		
 		
-		Chunk[][][] chunkN = chunk.tryGetNeibours(world);
+		Chunk[][][] chunkN = chunk.tryGetNeibours(world, new Chunk[3][3][3]);
 		if(chunkN == null)
 			return false;
 		
@@ -167,7 +210,7 @@ public class WorldTask {
 		if(chunk == null)
 			return false;
 		
-		Chunk[][][] chunkN = chunk.tryGetNeibours(world);
+		Chunk[][][] chunkN = chunk.tryGetNeibours(world, new Chunk[3][3][3]);
 		if(chunkN == null)
 			return false;
 		
