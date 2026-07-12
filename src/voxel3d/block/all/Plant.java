@@ -17,7 +17,7 @@ import voxel3d.utility.Vector2f;
 public class Plant extends XBlock {
 	
 	private static Vector2f[][] uv = new Vector2f[][] {
-		XBlock.getUVFromName("Plant 0"),
+		XBlock.getUVFromName("Plant"),
 		XBlock.getUVFromName("Plant 1"),
 		XBlock.getUVFromName("Plant 2"),
 		XBlock.getUVFromName("Plant 3"),
