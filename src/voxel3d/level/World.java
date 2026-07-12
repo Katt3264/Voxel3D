@@ -387,6 +387,7 @@ public class World implements DataStreamable {
 		return results;
 	}
 	
+	//TODO: fix going through corners
 	public boolean terrainRaycast(Ray ray, Vector3I point, Vector3I normal)
 	{
 		double dx = ray.start.x;
@@ -510,12 +511,16 @@ public class World implements DataStreamable {
 		player.getAABB(playerAABB);
 		for(Entity entity : entities)
 		{
+			//TODO: this should not be handeled here
 			if(entity instanceof ItemEntity)
 			{
 				entity.getAABB(entityAABB);
-				if(playerAABB.intersects(entityAABB) && player.inventory.addItem(((ItemEntity)entity).item))
+				if(playerAABB.intersects(entityAABB))
 				{
-					removeEntity(entity);
+					if(player.inventory.tryAddItem(((ItemEntity)entity).item))
+					{
+						removeEntity(entity);
+					}
 				}
 			}
 			if(!entity.alive)

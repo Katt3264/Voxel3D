@@ -137,7 +137,7 @@ public class CraftingGUI implements HUDInteractable{
 		{
 			if(context.getInventory().canCraft(selectedRecipe))
 			{
-				context.getInventory().craft(selectedRecipe);
+				context.getInventory().craft(selectedRecipe, context);
 			}
 		}
 

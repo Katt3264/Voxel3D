@@ -2,7 +2,7 @@ package voxel3d.data;
 
 import java.io.IOException;
 
-import voxel3d.global.Debug;
+import voxel3d.gui.HUDUpdateContext;
 import voxel3d.item.Item;
 
 public class Inventory implements DataStreamable{
@@ -22,7 +22,7 @@ public class Inventory implements DataStreamable{
 		}
 	}
 	
-	public boolean addItem(Item item)
+	public boolean tryAddItem(Item item)
 	{
 		for(int i = 0; i < items.length; i++)
 		{
@@ -66,7 +66,7 @@ public class Inventory implements DataStreamable{
 		return true;
 	}
 	
-	public void craft(Recipe recipe)
+	public void craft(Recipe recipe, HUDUpdateContext context)
 	{
 		for(int c = 0; c < recipe.inItems.length; c++)
 		{
@@ -92,11 +92,7 @@ public class Inventory implements DataStreamable{
 		{
 			for(int i = 0; i < recipe.outValues[c]; i++)
 			{
-				boolean b = addItem(recipe.outItems[c]);
-				if(!b)
-				{
-					Debug.err("inventory full, item discarded");
-				}
+				context.droppItem(recipe.outItems[c]);
 			}
 		}
 	}

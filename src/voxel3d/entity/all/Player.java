@@ -107,7 +107,7 @@ public class Player extends Entity implements Strikeable {
 							camera.position.z + camera.forward.z);
 					ie.velocity.set(camera.forward);
 					ie.velocity.multiply(4);
-					context.createItemEntity(ie);;
+					context.createItemEntity(ie);
 				}
 			}
 		
@@ -176,7 +176,7 @@ public class Player extends Entity implements Strikeable {
 				
 				if(hit)
 				{
-					Block block = context.getBlock(hitPoint.x, hitPoint.y, hitPoint.z);
+					Block hitBlock = context.getBlock(hitPoint.x, hitPoint.y, hitPoint.z);
 					
 					if(hitPoint.x != blockBreakTarget.x || hitPoint.y != blockBreakTarget.y || hitPoint.z != blockBreakTarget.z)
 					{
@@ -184,7 +184,7 @@ public class Player extends Entity implements Strikeable {
 						blockBreakTarget.set(hitPoint.x, hitPoint.y, hitPoint.z);
 					}
 					
-					blockBreakProgress += (1d / block.getBreakTime(inventory.items[inventory.selectedHotbar].item)) * Time.deltaTime;
+					blockBreakProgress += (1d / hitBlock.getBreakTime(inventory.items[inventory.selectedHotbar].item)) * Time.deltaTime;
 					
 					if(blockBreakProgress >= 1)
 					{
@@ -213,13 +213,18 @@ public class Player extends Entity implements Strikeable {
 				boolean hit = context.terrainRaycast(new Ray(camera.position, camera.forward, 5), hitPoint, hitNormal);
 				if(hit)
 				{
-					Block block = context.getBlock(
+					Block hitBlock = context.getBlock(
 							hitPoint.x, 
 							hitPoint.y, 
 							hitPoint.z);
 					
+					Block replaceBlock = context.getBlock(
+							hitPoint.x + hitNormal.x, 
+							hitPoint.y + hitNormal.y, 
+							hitPoint.z + hitNormal.z);
+					
 					BlockOnUseContext blockContext = new BlockOnUseContext();
-					block.onUse(blockContext);
+					hitBlock.onUse(blockContext);
 					
 					// force hard update
 					if(blockContext.dataModified)
@@ -228,16 +233,15 @@ public class Player extends Entity implements Strikeable {
 								hitPoint.x, 
 								hitPoint.y, 
 								hitPoint.z, 
-								block, camera.forward);
+								hitBlock, camera.forward);
 					}
 					
-					/*if(block.getHUD() != null)
+					if(blockContext.interactionPreventsPlaceBlock)
 					{
-						Input.showMouse();
-		        		inventoryOpen = true;
-					}*/
+						preventPlacementOfBlock = true;
+					}
 					
-					if(blockContext.interactionPreventsPlaceBlock/* || block.getHUD() != null*/)
+					if(!(replaceBlock instanceof AirBlock))
 					{
 						preventPlacementOfBlock = true;
 					}
@@ -349,6 +353,7 @@ public class Player extends Entity implements Strikeable {
 		health = 100;
 		hunger = 100;
 		position.set(respawnPoint);
+		velocity.set(0, 0, 0);
 		yaw = 0;
 		pitch = 0;
 		alive = true;
