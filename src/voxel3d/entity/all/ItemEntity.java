@@ -5,13 +5,13 @@ import java.io.IOException;
 import voxel3d.data.DataInputStream;
 import voxel3d.data.DataOutputStream;
 import voxel3d.entity.Entity;
-import voxel3d.entity.context.EntityRenderContext;
-import voxel3d.entity.context.EntityUpdateContext;
+import voxel3d.entity.EntityRenderContext;
+import voxel3d.entity.EntityUpdateContext;
 import voxel3d.global.Time;
 import voxel3d.graphics.GeometryUtility;
 import voxel3d.graphics.Texture;
 import voxel3d.item.Item;
-import voxel3d.item.context.ItemRenderContext;
+import voxel3d.item.ItemRenderContext;
 import voxel3d.physics.AABB;
 import voxel3d.utility.Vector3d;
 

@@ -1,9 +1,8 @@
-package voxel3d.block.context;
+package voxel3d.block;
 
 import java.util.Random;
 
-import voxel3d.block.Block;
-import voxel3d.level.world.Chunk;
+import voxel3d.level.Chunk;
 import voxel3d.utility.MathX;
 
 public class BlockOnSimulateContext {

@@ -1,8 +1,8 @@
 package voxel3d.block.all;
 
 import voxel3d.block.Block;
+import voxel3d.block.BlockBreakTimeUtility;
 import voxel3d.block.SolidCubeBlock;
-import voxel3d.block.utility.BlockBreakTimeUtility;
 import voxel3d.global.Objects;
 import voxel3d.gui.HUDInteractable;
 import voxel3d.item.Item;

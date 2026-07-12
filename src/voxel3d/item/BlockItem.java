@@ -3,8 +3,6 @@ package voxel3d.item;
 import voxel3d.block.Block;
 import voxel3d.global.AssetLoader;
 import voxel3d.graphics.Texture;
-import voxel3d.item.context.ItemRenderContext;
-import voxel3d.item.context.ItemUseContext;
 
 public class BlockItem extends Item {
 

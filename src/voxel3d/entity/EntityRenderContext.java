@@ -1,8 +1,7 @@
-package voxel3d.entity.context;
+package voxel3d.entity;
 
-import voxel3d.entity.Entity;
 import voxel3d.graphics.GraphicsWrapper;
-import voxel3d.level.world.World;
+import voxel3d.level.World;
 import voxel3d.utility.Color;
 
 public class EntityRenderContext {

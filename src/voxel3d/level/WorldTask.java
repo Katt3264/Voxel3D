@@ -1,11 +1,6 @@
-package voxel3d.level.world;
+package voxel3d.level;
 
 import voxel3d.global.Settings;
-import voxel3d.level.ChunkLightBuilder;
-import voxel3d.level.ChunkMeshBuilder;
-import voxel3d.level.ChunkPopulator;
-import voxel3d.level.ChunkUnloader;
-import voxel3d.level.ChunkUpdater;
 import voxel3d.utility.Vector3I;
 
 public class WorldTask {

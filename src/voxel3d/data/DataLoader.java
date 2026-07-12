@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import voxel3d.global.Debug;
 import voxel3d.global.Settings;
-import voxel3d.level.world.World;
+import voxel3d.level.World;
 
 public class DataLoader{
 	

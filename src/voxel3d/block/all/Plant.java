@@ -3,10 +3,10 @@ package voxel3d.block.all;
 import java.io.IOException;
 
 import voxel3d.block.Block;
+import voxel3d.block.BlockBreakTimeUtility;
+import voxel3d.block.BlockOnBreakContext;
+import voxel3d.block.BlockOnSimulateContext;
 import voxel3d.block.XBlock;
-import voxel3d.block.context.BlockOnBreakContext;
-import voxel3d.block.context.BlockOnSimulateContext;
-import voxel3d.block.utility.BlockBreakTimeUtility;
 import voxel3d.data.DataInputStream;
 import voxel3d.data.DataOutputStream;
 import voxel3d.item.Item;

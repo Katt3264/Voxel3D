@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.TreeMap;
 
 import voxel3d.block.all.*;
-import voxel3d.block.context.*;
 import voxel3d.data.DataInputStream;
 import voxel3d.data.DataOutputStream;
 import voxel3d.data.DataStreamable;

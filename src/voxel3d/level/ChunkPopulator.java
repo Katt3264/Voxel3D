@@ -10,7 +10,6 @@ import voxel3d.generation.biome.OverworldTerrainGenerator;
 import voxel3d.generation.structures.*;
 import voxel3d.global.Debug;
 import voxel3d.global.Settings;
-import voxel3d.level.world.Chunk;
 import voxel3d.utility.Executable;
 import voxel3d.utility.MathX;
 

@@ -6,9 +6,8 @@ import java.util.Random;
 import voxel3d.data.DataInputStream;
 import voxel3d.data.DataOutputStream;
 import voxel3d.entity.all.Player;
-import voxel3d.entity.context.EntityUpdateContext;
 import voxel3d.global.Time;
-import voxel3d.level.world.World;
+import voxel3d.level.World;
 import voxel3d.utility.Color;
 import voxel3d.utility.Vector3d;
 

@@ -1,4 +1,4 @@
-package voxel3d.block.context;
+package voxel3d.block;
 
 public class BlockOnUseContext {
 	

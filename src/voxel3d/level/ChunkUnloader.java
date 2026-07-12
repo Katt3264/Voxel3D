@@ -4,7 +4,6 @@ package voxel3d.level;
 import voxel3d.data.DataLoader;
 import voxel3d.data.DataOutputStream;
 import voxel3d.global.Settings;
-import voxel3d.level.world.Chunk;
 import voxel3d.utility.Executable;
 
 public class ChunkUnloader implements Executable {

@@ -3,7 +3,7 @@ package voxel3d.gui;
 import voxel3d.block.Block;
 import voxel3d.data.Inventory;
 import voxel3d.entity.all.Player;
-import voxel3d.level.world.World;
+import voxel3d.level.World;
 
 public class HUDRenderContext {
 	

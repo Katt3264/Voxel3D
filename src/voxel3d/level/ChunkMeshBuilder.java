@@ -6,7 +6,6 @@ import voxel3d.global.Debug;
 import voxel3d.global.Objects;
 import voxel3d.global.Settings;
 import voxel3d.graphics.Mesh;
-import voxel3d.level.world.Chunk;
 import voxel3d.utility.*;
 
 public class ChunkMeshBuilder implements MainThreadExecutable, Executable {

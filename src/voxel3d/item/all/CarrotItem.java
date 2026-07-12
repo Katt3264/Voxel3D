@@ -3,8 +3,8 @@ package voxel3d.item.all;
 import voxel3d.global.AssetLoader;
 import voxel3d.graphics.Texture;
 import voxel3d.item.Item;
-import voxel3d.item.context.ItemRenderContext;
-import voxel3d.item.context.ItemUseContext;
+import voxel3d.item.ItemRenderContext;
+import voxel3d.item.ItemUseContext;
 
 public class CarrotItem extends Item {
 

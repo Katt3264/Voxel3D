@@ -1,13 +1,12 @@
-package voxel3d.entity.context;
+package voxel3d.entity;
 
 import java.util.Collection;
 
 import voxel3d.block.Block;
-import voxel3d.entity.Entity;
 import voxel3d.entity.all.ItemEntity;
 import voxel3d.entity.all.Player;
 import voxel3d.item.Item;
-import voxel3d.level.world.World;
+import voxel3d.level.World;
 import voxel3d.physics.Ray;
 import voxel3d.utility.Color;
 import voxel3d.utility.Vector3I;

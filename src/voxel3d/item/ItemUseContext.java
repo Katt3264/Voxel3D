@@ -1,9 +1,9 @@
-package voxel3d.item.context;
+package voxel3d.item;
 
 import voxel3d.block.Block;
 import voxel3d.entity.Entity;
+import voxel3d.entity.EntityUpdateContext;
 import voxel3d.entity.all.Player;
-import voxel3d.entity.context.EntityUpdateContext;
 
 public class ItemUseContext {
 	

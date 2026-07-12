@@ -4,7 +4,7 @@ import voxel3d.global.Input;
 import voxel3d.global.Objects;
 import voxel3d.graphics.GUIUtill;
 import voxel3d.graphics.GraphicsWrapper;
-import voxel3d.level.world.World;
+import voxel3d.level.World;
 
 public class DeathMenu {
 	

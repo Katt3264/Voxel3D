@@ -1,4 +1,4 @@
-package voxel3d.item.context;
+package voxel3d.item;
 
 import voxel3d.global.Objects;
 import voxel3d.graphics.Texture;

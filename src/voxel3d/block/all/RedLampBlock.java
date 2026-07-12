@@ -3,8 +3,8 @@ package voxel3d.block.all;
 import java.io.IOException;
 
 import voxel3d.block.Block;
+import voxel3d.block.BlockOnUseContext;
 import voxel3d.block.SolidCubeBlock;
-import voxel3d.block.context.BlockOnUseContext;
 import voxel3d.data.DataInputStream;
 import voxel3d.data.DataOutputStream;
 import voxel3d.utility.Vector2f;

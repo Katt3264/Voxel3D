@@ -1,4 +1,4 @@
-package voxel3d.level.world;
+package voxel3d.level;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,17 +9,17 @@ import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import voxel3d.block.Block;
+import voxel3d.block.BlockOnBreakContext;
 import voxel3d.block.all.AirBlock;
-import voxel3d.block.context.BlockOnBreakContext;
 import voxel3d.data.DataInputStream;
 import voxel3d.data.DataOutputStream;
 import voxel3d.data.DataStreamable;
 import voxel3d.entity.Entity;
+import voxel3d.entity.EntityRenderContext;
+import voxel3d.entity.EntityUpdateContext;
 import voxel3d.entity.Spawnable;
 import voxel3d.entity.all.ItemEntity;
 import voxel3d.entity.all.Player;
-import voxel3d.entity.context.EntityRenderContext;
-import voxel3d.entity.context.EntityUpdateContext;
 import voxel3d.global.Debug;
 import voxel3d.global.Objects;
 import voxel3d.global.Settings;
@@ -27,7 +27,6 @@ import voxel3d.global.Time;
 import voxel3d.graphics.GraphicsWrapper;
 import voxel3d.graphics.Mesh;
 import voxel3d.item.Item;
-import voxel3d.level.Ambiance;
 import voxel3d.physics.AABB;
 import voxel3d.physics.Ray;
 import voxel3d.utility.Color;

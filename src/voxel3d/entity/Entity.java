@@ -8,8 +8,6 @@ import java.util.TreeMap;
 import voxel3d.data.DataInputStream;
 import voxel3d.data.DataOutputStream;
 import voxel3d.data.DataStreamable;
-import voxel3d.entity.context.EntityRenderContext;
-import voxel3d.entity.context.EntityUpdateContext;
 import voxel3d.global.Debug;
 import voxel3d.global.Time;
 import voxel3d.physics.*;

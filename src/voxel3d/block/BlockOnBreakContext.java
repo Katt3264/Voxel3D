@@ -1,4 +1,4 @@
-package voxel3d.block.context;
+package voxel3d.block;
 
 import java.util.ArrayList;
 import java.util.Collection;

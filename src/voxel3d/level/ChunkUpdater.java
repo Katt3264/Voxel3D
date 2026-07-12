@@ -2,9 +2,8 @@ package voxel3d.level;
 
 import java.util.Random;
 
-import voxel3d.block.context.BlockOnSimulateContext;
+import voxel3d.block.BlockOnSimulateContext;
 import voxel3d.global.Settings;
-import voxel3d.level.world.Chunk;
 import voxel3d.utility.Executable;
 
 public class ChunkUpdater implements Executable {

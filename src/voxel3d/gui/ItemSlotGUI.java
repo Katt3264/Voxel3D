@@ -5,7 +5,7 @@ import voxel3d.global.Input;
 import voxel3d.global.Objects;
 import voxel3d.graphics.GUIUtill;
 import voxel3d.graphics.Texture;
-import voxel3d.item.context.ItemRenderContext;
+import voxel3d.item.ItemRenderContext;
 
 public class ItemSlotGUI {
 	

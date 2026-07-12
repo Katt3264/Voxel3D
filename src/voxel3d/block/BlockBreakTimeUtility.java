@@ -1,4 +1,4 @@
-package voxel3d.block.utility;
+package voxel3d.block;
 
 import voxel3d.item.Item;
 import voxel3d.item.all.*;

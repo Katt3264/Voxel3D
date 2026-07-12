@@ -1,4 +1,4 @@
-package voxel3d.level.world;
+package voxel3d.level;
 
 import java.io.IOException;
 

@@ -15,7 +15,6 @@ import voxel3d.gui.HUD;
 import voxel3d.gui.HUDRenderContext;
 import voxel3d.gui.HUDUpdateContext;
 import voxel3d.gui.PauseMenu;
-import voxel3d.level.world.World;
 
 /**
 * This class represents a space where there is a player, one save file, one playthrough

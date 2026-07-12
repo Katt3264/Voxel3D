@@ -1,4 +1,4 @@
-package voxel3d.level.world;
+package voxel3d.level;
 
 import voxel3d.data.DataLoader;
 import voxel3d.global.Debug;

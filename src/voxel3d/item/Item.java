@@ -9,8 +9,6 @@ import voxel3d.data.DataStreamable;
 import voxel3d.global.Debug;
 import voxel3d.global.Objects;
 import voxel3d.item.all.*;
-import voxel3d.item.context.ItemRenderContext;
-import voxel3d.item.context.ItemUseContext;
 
 
 public abstract class Item implements DataStreamable {

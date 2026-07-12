@@ -3,16 +3,14 @@ package voxel3d.entity.all;
 import java.io.IOException;
 
 import voxel3d.block.Block;
+import voxel3d.block.BlockOnUseContext;
 import voxel3d.block.all.AirBlock;
-import voxel3d.block.context.BlockOnUseContext;
 import voxel3d.data.*;
 import voxel3d.entity.*;
-import voxel3d.entity.context.EntityRenderContext;
-import voxel3d.entity.context.EntityUpdateContext;
 import voxel3d.global.*;
 import voxel3d.graphics.GeometryUtility;
 import voxel3d.item.Item;
-import voxel3d.item.context.ItemUseContext;
+import voxel3d.item.ItemUseContext;
 import voxel3d.physics.*;
 import voxel3d.utility.*;
 
