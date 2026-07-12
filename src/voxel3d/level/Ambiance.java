@@ -65,11 +65,11 @@ public class Ambiance {
 		
 		getLight(skyColor);
 		
-		// stars
-		GraphicsWrapper.renderSkybox(upX, upY, z, new Color(1,1,1), 1, Objects.skyBoxStars);
-		
 		// sky
-		GraphicsWrapper.renderSkybox(x, y, z, new Color(1,1,1), skyFadeIn, Objects.skyBoxDay);
+		GraphicsWrapper.renderSkybox(x, y, z, new Color(1 * skyFadeIn,1 * skyFadeIn,1 * skyFadeIn), 1, Objects.skyBoxDay);
+		
+		// stars
+		GraphicsWrapper.renderSkybox(upX, upY, z, new Color(1,1,1), 1-skyFadeIn, Objects.skyBoxStars);
 
 		// sun
 		GraphicsWrapper.renderSkybox(upX, upY, z, new Color(1,1,1), 1, Objects.skyBoxSun);
