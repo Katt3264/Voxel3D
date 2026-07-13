@@ -5,6 +5,7 @@
 - LMB - Break block / attack
 - RMB - Blace block / use item
 - C - Drop item
+- Q - Sprint
 - E - Toggle inventory/Interact
 - ESC Toggle pause
 - G - Toggle g-mode
