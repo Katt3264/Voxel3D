@@ -11,7 +11,7 @@ import voxel3d.utility.Vector2f;
 public class BlackStoneFurnaceBlock extends SolidCubeBlock {
 
 	private static BlackStoneFurnaceBlock sharedInstance = new BlackStoneFurnaceBlock();
-	private static Vector2f[][] uvs = SolidCubeBlock.getUVsFromTopSideBottom("Smooth black stone", "Black stone furnace", "Smooth black stone");
+	private static Vector2f[][] uvs = SolidCubeBlock.getUVsFromTopSideBottom("Black stone furnace top", "Black stone furnace", "Smooth black stone");
 	
 	static {
 		Block.setBlockDeserializerForLegacyID(sharedInstance);
