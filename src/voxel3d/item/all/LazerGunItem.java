@@ -50,7 +50,7 @@ public class LazerGunItem extends Item {
 		right.subtract(player.camera.up);
 		right.multiply(0.1);
 		p.set(player.camera.forward);
-		p.multiply(0.1);
+		p.multiply(1);
 		p.add(right);
 		lazer.position.set(player.camera.position);
 		lazer.position.add(p);

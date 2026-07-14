@@ -51,7 +51,7 @@ public class RocketLauncherItem extends Item {
 		right.subtract(player.camera.up);
 		right.multiply(0.1);
 		p.set(player.camera.forward);
-		p.multiply(0.1);
+		p.multiply(1);
 		p.add(right);
 		rocket.position.set(player.camera.position);
 		rocket.position.add(p);
