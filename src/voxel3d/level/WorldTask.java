@@ -27,7 +27,7 @@ public class WorldTask {
 		
 		performSimulation();
 		
-		int chunkGens = Settings.taskSaturation*4 - worldScheduler.workerChunkGen.getTaskCount();
+		int chunkGens = Settings.taskSaturation - worldScheduler.workerChunkGen.getTaskCount();
 		int chunkLights = Settings.taskSaturation - worldScheduler.workerChunkLight.getTaskCount();
 		int chunkBuilds = Settings.taskSaturation - worldScheduler.workerChunkMesh.getTaskCount();
 		

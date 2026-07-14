@@ -7,46 +7,39 @@ import voxel3d.block.all.*;
 import voxel3d.generation.biome.OverworldTerrainGenerator;
 import voxel3d.global.Settings;
 
-public class HouseSmal extends Structure {
+public class LargeTower extends Structure {
 
-	private static final int gridSize = 64;
+	private static final int gridSize = 128;
 	private static final int gridSizeHalf = gridSize / 2;
-	private static final int spreadSize = 48;
+	private static final int spreadSize = 32;
 	private static final int spreadSizeHalf = spreadSize / 2;
+	
+	private static final int height = 64;
+	private static final int radius = 16;
 	
 	@Override
 	public void placeStructure(int x, int y, int z, Block[] blocks)
 	{
-		Block top = OakLogBlock.getInstance();
-		Block side = OakPlanksBlock.getInstance();
-		Block wall = StoneBricksSmallBlock.getInstance();
+		Block block = StoneBricksBlock.getInstance();
+		Block base = StoneBlock.getInstance();
 		
-		int size = 3;
+		int size = radius;
 		
-		for(int xx = -size; xx <= size; xx++)
+		for(int yy = -5; yy < height; yy++)
 		{
-			for(int zz = -size; zz <= size; zz++)
+			int r = radius;
+			
+			for(int xx = -size; xx <= size; xx++)
 			{
-				placeBlock(x + xx, y, z + zz, StoneBricksSmallBlock.getInstance(), blocks);
-				placeBlock(x + xx, y + 4, z + zz, top.getBlockInstance(), blocks);
-				
-				if((xx == size || xx == -size) || (zz == size || zz == -size))
+				for(int zz = -size; zz <= size; zz++)
 				{
-					for(int yy = 1; yy <= 3; yy++)
+					if(xx*xx + zz*zz < r*r)
 					{
-						if((xx == size || xx == -size) && (zz == size || zz == -size))
-						{
-							placeBlock(x + xx, y + yy, z + zz, StoneBricksSmallBlock.getInstance(), blocks);
-						}
+						if(yy > 0)
+							placeBlock(x + xx, y + yy, z + zz, block, blocks);
 						else
-						{
-							placeBlock(x + xx, y + yy, z + zz, side.getBlockInstance(), blocks);
-						}
+							placeBlock(x + xx, y + yy, z + zz, base, blocks);
 					}
-				}
-				else
-				{
-					//placeBlock(x + xx, y + yy, z + zz, side.getBlockInstance(), blocks);
 				}
 			}
 		}

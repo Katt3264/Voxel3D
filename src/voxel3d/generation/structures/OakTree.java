@@ -83,40 +83,8 @@ public class OakTree extends Structure {
 							placeStructure(px, py, pz, blocks);
 						}
 					}
-					
-					
 				}
 			}
 		}
 	}
-	
-	/*@Override
-	public void placeExistingOffset(int cx, int cy, int cz, int ox, int oy, int oz, Block[] blocks)
-	{
-		Random random = new Random();
-		random.setSeed(cx * 2137 + cy * 212231 + cz * 736125);
-		
-		int tests = (Settings.CHUNK_SIZE * Settings.CHUNK_SIZE * Settings.CHUNK_SIZE) / 64;
-		for(int i = 0; i < tests; i++)
-		{
-			int xx = random.nextInt(Settings.CHUNK_SIZE);
-			int yy = random.nextInt(Settings.CHUNK_SIZE);
-			int zz = random.nextInt(Settings.CHUNK_SIZE);
-			
-			int x = xx + cx * Settings.CHUNK_SIZE;
-			int y = yy + cy * Settings.CHUNK_SIZE;
-			int z = zz + cz * Settings.CHUNK_SIZE;
-			
-			if (Fields.OctaveMap2D(x, z, 128) < 0.0d)
-				continue;
-			
-			if(ChunkPopulator.getBlock(x, y - 1, z) instanceof GrassBlock)
-			{
-				int px = xx + ox * Settings.CHUNK_SIZE;
-				int py = yy + oy * Settings.CHUNK_SIZE;
-				int pz = zz + oz * Settings.CHUNK_SIZE;
-				placeBlocks(px, py, pz, blocks);
-			}
-		}
-	}*/
 }

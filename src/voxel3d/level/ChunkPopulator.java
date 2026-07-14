@@ -26,6 +26,7 @@ public class ChunkPopulator implements Executable {
 		//structures.add(new CrimsonTree());
 		//structures.add(new CherryTree());
 		//structures.add(new HouseSmal());
+		//structures.add(new LargeTower());
 	}
 	
 	private final OverworldTerrainGenerator terrainGenerator;
